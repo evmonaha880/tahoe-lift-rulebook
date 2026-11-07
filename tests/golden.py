@@ -60,7 +60,7 @@ CASES = [
  ("TERRAIN UPDATE: The upper mountain at Squaw Valley will open tomorrow ahead of this weekend's storm. Lifts that will spin for the first time this season include: - Gold Coast - Big Blue - Shirley Lake - Mountain Meadow - Bailey's Beach - Funitel", [(S, "Gold Coast", None), (S, "Funitel", None)], []),
  ("Olympic Lady is now spinning for the first time this season! #squawlifts", [(R, "Olympic Lady", None)], []),
  ("It is going to be a wet day in Tahoe, with the forecast calling for rain, possibly transitioning to snow on the upper mountains by this afternoon. High winds across the crest will have an impact on lift operations; check here or the Squaw Alpine App for current lift status.", [(W, None, "wind")], [(H, None)]),
- ("Squaw One is now open, and the Aerial Tram is on a brief Mechanical Hold. #Squawlifts", [(R, "Squaw One", None), (H, "Tram", "mechanical")], [(H, "Squaw One")]),
+ ("Squaw One is now open, and the Aerial Tram is on a brief Mechanical Hold. #Squawlifts", [(R, "Wa She Shu", None), (H, "Tram", "mechanical")], [(H, "Wa She Shu")]),
  ("Sherwood is now open for skiing and riding, and Treeline Cirque is open to the top! #Alpinelifts", [(R, "Sherwood", None), (R, "Treeline Cirque", None)], []),
  ("Summit Chair at Alpine is on wind hold and Alpine Bowl Chair has been added to the schedule for 9am. #alpinelifts #squawlifts", [(H, "Summit", "wind"), (S, "Alpine Bowl", None)], []),
  ("UPDATE: Treeline Cirque is now open to the public #Alpinelifts Exhibition and Far East have been closed for the day #Squawlifts", [(R, "Treeline Cirque", None), (C, "Exhibition", None), (C, "Far East", None)], [(R, "Exhibition"), (R, "Far East")]),
@@ -75,7 +75,7 @@ CASES = [
  ("Far East will begin the day with a delay. #Squawlifts", [(D, "Far East", None)], [(O, None)]),
  ("The following lifts are now open at Alpine Meadows: - Summit - Roundhouse - Treeline Cirque - Sherwood - Meadow - Yellow - Scott - Kangaroo - Subway - Lakeview - Big & Little Carpets Alpine Bowl Chair will have a slightly delayed opening. #alpinelifts", [(R, "Summit", None), (D, "Alpine Bowl", None)], [(R, "Alpine Bowl")]),
  ("The following lifts at Alpine Meadows are now open: - Summit - Roundhouse - Meadow - Yellow - Scott - Kangaroo - Subway - Lakeview - Big Carpet Treeline Cirque and Sherwood will have a delayed opening. #Alpinelifts", [(R, "Summit", None), (D, "Treeline Cirque", None), (D, "Sherwood", None)], [(R, "Treeline Cirque"), (R, "Sherwood")]),
- ("Squaw One will have a delayed opening. #Squawlifts", [(D, "Squaw One", None)], []),
+ ("Squaw One will have a delayed opening. #Squawlifts", [(D, "Wa She Shu", None)], []),
  ("Headwall and Shirley Lake will have a delayed opening. #Squawlifts", [(D, "Headwall", None), (D, "Shirley Lake", None)], []),
  ("Due to increasing winds, Emigrant, Broken Arrow, Siberia and Granite Chief are now closed for the day. #squawlifts", [(C, "Emigrant", "wind"), (C, "Broken Arrow", "wind"), (C, "Siberia", "wind"), (C, "Granite Chief", "wind")], []),
  ("Summit, Alpine Bowl Chair, Yellow and Kangaroo are now off the schedule for the remainder of the day #alpinelifts", [(C, "Summit", None), (C, "Alpine Bowl", None), (C, "Yellow", None), (C, "Kangaroo", None)], []),
@@ -122,6 +122,7 @@ CASES = [
  ("At Palisades: 19 lifts 9am - 4pm, cloudy skies. • Tram • Funitel • Gold Coast • Baileys & Belmont • Mtn Mdw & Carpet • Big Blue • Shirley & Solitude #palisadesops", [(S, "Mountain Meadow", None), (S, "Belmont", None)], []),
  ("The following lifts are now spinning at Alpine Meadows: - Meadow - Kangaroo - Subway - Big & Little Carpets #alpinelifts", [(R, "Big Carpet", None), (R, "Little Carpet", None), (R, "Alpine Meadow", None)], [(R, "Mountain Meadow")]),
  ("The following lifts are open at Palisades: Exhibition Far East KT-22 Red Dog First Venture Ahsoka Carpet Boomer Magic Carpet B2B #palisadesops", [(R, "Boomer", None), (R, "Exhibition", None)], []),
+ ("Red Dog, Squaw Creek, and Far East are now closed for the remainder of the day. #squawlifts", [(C, "Resort Chair", None), (C, "Red Dog", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

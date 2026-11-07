@@ -13,8 +13,8 @@ LIFTS = {
     "Funitel": r"(?:the )?funi(?:tel)?",
     "KT-22": r"kt-?22|\bkt\b",
     "Red Dog": r"red dog(?! side)",
-    "Resort Chair": r"resort(?: chair)?(?! side)",
-    "Wa She Shu": r"wa ?she ?shu",
+    "Resort Chair": r"resort(?: chair)?(?! side)|squaw (?:creek|cr)\b",
+    "Wa She Shu": r"wa ?she ?shu|squaw (?:one|1)(?: express)?",
     "Siberia": r"siberia",
     "Headwall": r"headwall",
     "Emigrant": r"emigrant",
@@ -44,8 +44,6 @@ LIFTS = {
     "Subway": r"subway",
     "Broken Arrow": r"broken arrow",
     "Ahsoka Carpet": r"ahsoka|ashoka",
-    "Squaw One": r"squaw one(?: express)?",
-    "Squaw Creek": r"squaw creek",
     "Hot Wheels": r"hot wheels",
     "Kaya Carpet": r"kaya(?: carpet)?",
     "Tucker Carpet": r"tucker(?: carpet)?",
@@ -62,7 +60,7 @@ LIFT_NAMES = list(LIFTS.keys())
 # A bare "Meadow" is Alpine's when its own span, or failing that the whole post, names Alpine lifts and no Palisades-only lift.
 ALPINE_ONLY = {"Alpine Bowl", "Big Carpet", "Kangaroo", "Roundhouse", "Summit", "Yellow", "Lakeview", "Scott", "Subway", "Treeline Cirque", "Sherwood", "Sherwood Express", "Little Carpet"}
 PALISADES_ONLY = {"Tram", "Funitel", "KT-22", "Red Dog", "Resort Chair", "Wa She Shu", "Siberia", "Headwall", "Emigrant", "Silverado", "Solitude", "Granite Chief", "Big Blue",
-                  "Shirley Lake", "Bailey's Beach", "Belmont", "High Camp Carpet", "Gold Coast", "Far East", "Exhibition", "Squaw One", "Squaw Creek", "Broken Arrow", "Olympic Lady", "First Venture"}
+                  "Shirley Lake", "Bailey's Beach", "Belmont", "High Camp Carpet", "Gold Coast", "Far East", "Exhibition", "Broken Arrow", "Olympic Lady", "First Venture"}
 _CTX = {"t": ""}
 def _raw_hits(text):
     return [(LIFT_NAMES[int(m.lastgroup[1:])], m.group(0)) for m in LIFT_RE.finditer(text)]

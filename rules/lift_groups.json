@@ -82,24 +82,21 @@
  },
  "not_in_the_2026_lifts_file": {
   "legacy_names_in_posts": [
-   "Squaw One",
-   "Squaw Creek",
    "Hot Wheels",
    "Tucker Carpet"
   ],
   "in_file_not_in_parser": [
    "Shaka",
    "Wylee",
-   "Boomer",
    "The Pulley"
   ],
-  "note": "Legacy names appear in 2018-2021 posts (Squaw Valley era). The four beginner lifts have 0 posts except 'boomer' (5, meaning unchecked)."
+  "note": "Squaw One and Squaw Creek are no longer separate lifts: the parser folds them into Wa She Shu and Resort Chair (confirmed renames). Boomer is now a parser lift (2025-26 carpet). Shaka, Wylee and The Pulley have no posts."
  },
  "likely_renames_UNVERIFIED": {
-  "_note": "Read off the event counts by winter (a name vanishes the winter another appears). Not applied anywhere: per-lift analysis keeps the names as posted. Verify before merging.",
-  "Squaw Creek -> Wa She Shu": "Squaw Creek posts run 2018-19 to 2020-21; Wa She Shu first appears 2021-22.",
-  "Squaw One -> Resort Chair": "Squaw One posts run 2018-19 to 2020-21; Resort Chair first appears 2021-22.",
-  "Tucker Carpet -> Kaya Carpet": "Tucker 2018-19 to 2019-20; Kaya from 2020-21. Weakest of the three.",
+  "_note": "CORRECTED 2026-11-07. Squaw One -> Wa She Shu and Squaw Creek -> Resort Chair are CONFIRMED by public sources (Peak Rankings 'Palisades Tahoe Renames Squaw One and Squaw Creek Chairs', resort blog, Nov 2021). The parser now folds the old names into the current ones. Tucker Carpet -> Kaya Carpet is still unverified (no source found) and NOT merged.",
+  "Squaw One -> Wa She Shu": "CONFIRMED and applied in parser. Old name appears 2018-19 to 2020-21.",
+  "Squaw Creek -> Resort Chair": "CONFIRMED and applied in parser. Old name appears 2018-19 to 2020-21.",
+  "Tucker Carpet -> Kaya Carpet": "UNVERIFIED, not applied. Tucker 2018-19 to 2019-20; Kaya from 2020-21.",
   "Hot Wheels": "2018-19 only; no successor seen."
  },
  "first_seen_by_winter": {
@@ -109,6 +106,6 @@
   "High Camp Carpet": "2021-22",
   "Base to Base Gondola": "2022-23",
   "Ahsoka Carpet": "2023-24",
-  "note": "Emigrant has no events in 2021-22 and Silverado none in 2019-20 and 2025-26."
+  "note": "Wa She Shu and Resort Chair history now includes their old names Squaw One and Squaw Creek from 2018-19. Emigrant has no events in 2021-22 and Silverado none in 2019-20 and 2025-26."
  }
 }
