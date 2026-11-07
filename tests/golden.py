@@ -180,6 +180,12 @@ CASES = [
  ("9 lifts are scheduled at Alpine for 9am. Today's forecast is calling for cloudy skies, calm winds, and a high of 48.\n\n-Summit, Roundhouse, Treeline Cirque, Scott, Meadow, Subway, Big Carpet, Lakeview & Sherwood.\n#alpineops", [(S, "Summit", None), (S, "Alpine Meadow", None), (S, "Sherwood", None)], []),
  ("8 lifts are on schedule for 9am at Alpine and NOAA is forecasting sunshine, a high of 39 and NW winds of 10-15mph.\n-Summit\n-Roundhouse\n-Scott\n-Subway", [(S, "Summit", None), (S, "Subway", None)], []),
  ("Solitude and Tram off the schedule for the day. The B2B is open at Palisades only, off load available at the top of KT.", [(C, "Solitude", None), (C, "Tram", None)], [(S, "Solitude")]),
+ ("We will be running Kangaroo, Roundhouse, Meadow, and Treeline Cirque (mid station only) at Alpine and Exhibition, Red Dog and First Venture at Squaw. #squawlifts", [(S, "Kangaroo", None), (S, "Exhibition", None)], []),
+ ("Weather: mostly sunny and breezy. At Alpine 6 lifts are scheduled.\n• Summit\n• Roundhouse\n• TLC\n• Yellow\n• Meadow\n• Big Carpet\n#alpineops", [(S, "Summit", None), (S, "Big Carpet", None)], []),
+ ("More of the upper mountain is open at Squaw Valley! Now spinning:\n\n• The Aerial Tram\n• Bailey's Beach\n• Mountain Meadow\n• Belmont", [(R, "Tram", None), (R, "Belmont", None)], [(S, "Tram")]),
+ ("Our crews are working hard to get lifts open with an icy start to the morning. Delayed lifts at Palisades: Wa She Shu, Red Dog, Bailey’s Beach, Belmont", [(D, "Wa She Shu", None), (D, "Belmont", None)], []),
+ ("Wind holds at Alpine: Summit, B2B, Meadow, Scott, Subway, Lakeview. #palisadesops", [(H, "Summit", "wind"), (H, "Base to Base Gondola", "wind")], []),
+ ("The Aerial Tram is undergoing scheduled maintenance today.\n\nTo access Mountain Meadow, Bailey's Beach, Belmont, and Silverado, take the Funitel or Squaw One up the mountain to Big Blue or Gold Coast.", [], [(S, "Belmont"), (S, "Silverado")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

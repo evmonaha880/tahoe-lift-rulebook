@@ -129,7 +129,7 @@ def split_sentences(t):
     return out
 
 
-ROSTER_HDR = re.compile(r"(?:\b\d+\s+lifts?\b[^:.]{0,60}|\blifts?\b[^:.]{0,40}\b(?:today|on tap|on the schedule)|on the schedule(?: today)? at (?:palisades|alpine)|at (?:palisades|alpine)[^:.]{0,20}on schedule|today.s lifts|following lifts (?:open|will operate)[^:.]{0,30}|plan is to have the following lifts|(?:we )?anticipate having the following lifts[^:.]{0,30}|expect to start the day with the following lifts|(?:are )?projecting a? ?[\d:]+ opening for the following|updated (?:palisades|alpine) plan for [^:.]{0,12}|estimated opening time is[^:.]{0,30}for the following|(?:are )?(?:projected|projecting)[^:.]{0,30}for the following|(?<!open )(?<!now )(?<!spinning )at (?:palisades|alpine)|today at (?:squaw|alpine)[^:.]{0,30}|(?:attempting|trying|planning) to open the following lifts[^:.]{0,30}|(?:will have|we anticipate) the following lifts? at \d+ ?(?:am|pm)|starting the day at [^:.]{0,30}|(?:alpine meadows |squaw )?planned openings)\s*:", re.I)
+ROSTER_HDR = re.compile(r"(?:\b\d+\s+lifts?\b[^:.]{0,60}|\blifts?\b[^:.]{0,40}\b(?:today|on tap|on the schedule)|on the schedule(?: today)? at (?:palisades|alpine)|at (?:palisades|alpine)[^:.]{0,20}on schedule|today.s lifts|following lifts (?:open|will operate)[^:.]{0,30}|plan is to have the following lifts|(?:we )?anticipate having the following lifts[^:.]{0,30}|expect to start the day with the following lifts|(?:are )?projecting a? ?[\d:]+ opening for the following|updated (?:palisades|alpine) plan for [^:.]{0,12}|estimated opening time is[^:.]{0,30}for the following|(?:are )?(?:projected|projecting)[^:.]{0,30}for the following|(?<!open )(?<!now )(?<!spinning )at (?:palisades|alpine)|today at (?:squaw|alpine)[^:.]{0,30}|(?:attempting|trying|planning) to open the following lifts[^:.]{0,30}|what we got spinning today|(?:will have|we anticipate) the following lifts? at \d+ ?(?:am|pm)|starting the day at [^:.]{0,30}|(?:alpine meadows |squaw )?planned openings)\s*:", re.I)
 SEC_RE = re.compile(r"\b(Wind|Mechanical|Patrol|Maintenance|Electrical)\s+Holds?(?:\s+at\s+(?:alpine|palisades|squaw))?\s*:|\b(Wind\s+Closures?)\s*:|\b(Hold\s*/\s*Delay(?:ed)?)\s*:|\b(Delay(?:ed)?(?:\s+Openings?)?)\s*:|\b(Weather\s+Impacts?)\s*:|\b(Off[-\s](?:the\s+)?Schedule(?:\s+for\s+Today)?|Removed|Closed(?:\s+for\s+the\s+day)?)\s*:", re.I)
 def roster_with_sections(t, add, rule, body_start=0):
     """Roster posts ('Open at 9am: ... Wind Hold: X Delayed: Y') carry hold/delay/closed sections inside. Emit those, return roster text."""
@@ -169,8 +169,8 @@ def fill_causes(t, ev):
     return ev
 
 MARK_RE = re.compile(
-    r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?|(?<![\w-])(?<!schedule/on )(?<!schedule/)holds?(?=\s*:)|weather\s+holds?|mechan\.?\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
-    r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|scheduled\s+but\s+(?:on\s+)?delay(?:ed)?(?:\s*\([^)]*\))?|operational\s+delay(?:\s*\([^)]*\))?|experiencing\s+(?:\w+\s+)?delays?\s+[^:.]{0,70}following\s+lifts(?=\s*:)|delay(?:ed)?(?:\s+lift)?(?:\s+openings?)?)\s*[:,-]?)"
+    r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?(?:\s+at\s+(?:alpine|palisades|squaw))?|(?<![\w-])(?<!schedule/on )(?<!schedule/)holds?(?:\s+at\s+\w+)?(?=\s*:)|weather\s+holds?|mechan\.?\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
+    r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|scheduled\s+but\s+(?:on\s+)?delay(?:ed)?(?:\s*\([^)]*\))?|operational\s+delay(?:\s*\([^)]*\))?|experiencing\s+(?:\w+\s+)?delays?\s+[^:.]{0,70}following\s+lifts(?=\s*:)|delay(?:ed)?(?:\s+lifts?)?(?:\s+openings?)?(?:\s+at\s+(?:alpine|palisades|squaw))?)\s*[:,-]?)"
     r"|(?P<closed>(?:off[-\s](?:the\s+)?schedule(?:\s+for\s+(?:the\s+day|today))?|(?P<cc>wind)\s+closures?|(?<!and )closed\s+for\s+the\s+day(?=\s*:)|removed(?=\s*:))\s*[:-]?)"
     r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|\d{1,2}\s*(?:am|a)\s+open\s*:|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
     r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:|all\s+open\s+now\s*:)", re.I)
@@ -289,7 +289,7 @@ def _parse_post(p):
         return ev
     rh = ROSTER_HDR.search(t)
     if rh and len(find_lifts(t[rh.end():])) >= 2 and not re.match(r"^(?:palisades|alpine)\W", t, re.I) \
-            and not re.search(r"spinning|now open|\bare open\b|removed|\bclosed|off[- ]schedule|\bhold|delay|will not|not operate|not open", t[max(0, rh.start() - 90): rh.end()], re.I) \
+            and not re.search(r"spinning|now open|\bare open\b|removed|\bclosed|off[- ]schedule|\bhold|delay|will not|not operate|not open", re.sub(r"\(delays? likely\)", "", t[max(0, rh.start() - 90): rh.end()], flags=re.I), re.I) \
             and rh.start() <= 160 \
             and not re.search(r"\bon\s+(?:a\s+|an\s+)?(?:\w+\s+)?hold\b|\bremoved from the schedule\b|open to the public|\bare open\b|\bis open\b|\bnow open\b", t[rh.end():], re.I):
         roster = roster_with_sections(t, add, "P-001", rh.end())
@@ -323,13 +323,18 @@ def _parse_post(p):
         # a bare list of lifts (no verb) in a post that announces a schedule: "10 lifts are scheduled at Alpine ... \n\nSummit, Roundhouse, Scott &amp; the carpet"
         cand = s
         bm = re.search(r"\s[-•]\s*(?=[A-Z])", s)
-        if bm and len(find_lifts(s[bm.end():])) >= 2 and not re.search(r"now (?:open|spinning)|following|:|\bhold|delay|clos|remov|off[- ](?:the )?schedule|not (?:open|operat)", s[:bm.start()], re.I): cand = s[bm.end():]          # "...a high of 56. -Summit, Roundhouse, Scott"
+        if bm and len(find_lifts(s[bm.end():])) >= 2 and not s[:bm.start()].rstrip().endswith(":") and not re.search(r"now (?:open|spinning)|following|\bhold|delay|clos|remov|off[- ](?:the )?schedule|not (?:open|operat)", s[:bm.start()], re.I): cand = s[bm.end():]          # "...a high of 56. -Summit, Roundhouse, Scott"
         bl = find_lifts(cand)
-        if len(bl) >= 2 and re.search(r"schedul|on tap|spinning|running|lifts? (?:at|on)\b", t, re.I) \
-                and len([w for w in re.findall(r"[A-Za-z]{4,}", LIFT_RE.sub(" ", cand)) if w.lower() not in ("chair", "area", "carpet", "carpets", "lifts", "mid", "station", "mountain", "only", "with", "from", "side", "and", "the")]) <= 1 \
+        if len(bl) >= 2 and re.search(r"schedul|on tap|lifts? (?:at|on)\b", t, re.I) and (":" not in cand or re.match(r"\s*lifts?\s*:", cand, re.I)) \
+                and len([w for w in re.findall(r"[A-Za-z]{4,}", LIFT_RE.sub(" ", cand)) if w.lower() not in ("chair", "area", "carpet", "carpets", "lifts", "mid", "station", "mountain", "only", "with", "from", "side", "and", "the", "upper", "lower", "beginner", "areas")]) <= (2 if cand != s else 1) \
                 and not re.search(r"\b(?:is|are|will|has|have)\b|hold|delay|clos|remov|off (?:the )?schedule", cand.lower()) \
                 and not re.search(r"hold|delay|clos|remov|off (?:the )?schedule|:\s*$", before):
             add("P-001", "scheduled_opening", bl, None, note="roster_list"); continue
+        bh = re.search(r"following[^.]*\b(closed|off[- ](?:the )?schedule|removed|on (?:\w+ )?hold|delayed|on delay)\b[^.]*\.?\s*$", before)
+        if len(bl) >= 2 and bh and cand == s and not re.search(r"\b(?:is|are|will|has|have)\b", sl) \
+                and len([w for w in re.findall(r"[A-Za-z]{4,}", LIFT_RE.sub(" ", cand)) if w.lower() not in ("chair", "area", "carpet", "carpets", "lifts", "mid", "station", "mountain", "only", "the")]) <= 1:
+            k = bh.group(1); closed = k.startswith(("closed", "off", "removed"))
+            add("P-020" if closed else ("P-010" if "hold" in k else "P-030"), "closed_day" if closed else ("hold_start" if "hold" in k else "delay"), bl, cause_in(before)); continue
         if re.search(r"on the schedule but still on (?:a |an )?(\w+ )?hold|there goes [^:]{3,40}: (?:wind|mechanical|patrol) hold|experiencing (?:\w+ )?holds?\b", sl) and (find_lifts(s) or re.search(r"experiencing", sl)):
             hc = re.search(r"(wind|mechanical|patrol)\s+holds?", sl); add("P-010", "hold_start", find_lifts(s), hc.group(1) if hc else cause_in(s)); continue
         if re.search(r"\bwill not operate today\b|\bnot operate today\b|we have closed [^.]*? for the day|(?<!be )\bclosing (?!at\b|soon|time|in\b|down)(?:the )?\w", sl) and find_lifts(s) and not re.search(r"road|lot\b|parking|will be closing", sl):
@@ -362,6 +367,8 @@ def _parse_post(p):
         if re.search(r"continues? to download|will continue to download", sl):
             dl = find_lifts(re.sub(r"from high camp", "", s, flags=re.I)) or (prev_lifts if len(prev_lifts) == 1 else [])
             if dl: add("P-070", "partial", dl, None, detail="download_only")   # not terminal: the same sentence may carry the hold
+        if re.search(r"(?:are|is) planned for today|(?:we will be|we.re|we are) (?:running|hoping to run|aiming to open|planning to run)|(?:are|is) all scheduled\b|are on the schedule\b|are scheduled\b(?! to)", sl) and find_lifts(s) and not re.search(r"hold|delay|clos|off[- ]schedule|remov|not |tomorrow", sl) and (not re.search(r"mid-?station|only|sightseeing", sl) or re.search(r"(?:we will be|we.re|we are) (?:running|hoping|aiming|planning)", sl)):
+            add("P-001", "scheduled_opening", find_lifts(re.split(r"\bwe are hoping to run\b", s)[-1]) if "hoping to run" in sl else find_lifts(s), None, note="roster"); continue
         if re.search(r"\b(?:is|are) scheduled to (?:spin|open)\b", sl) and find_lifts(s) and not re.search(r"hold|delay|tomorrow", sl):
             add("P-001", "scheduled_opening", find_lifts(s.split(" and the ")[0]) or find_lifts(s), None)
             if not re.search(r"sightseeing|sched\. for", sl): continue
