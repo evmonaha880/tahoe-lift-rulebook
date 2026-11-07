@@ -37,7 +37,7 @@ Track text names three starting points, one of which is this project: *agents th
 ## Meta Model API ($5,000)
 - OpenAI-compatible. Base URL `https://api.meta.ai/v1`, model `muse-spark-1.3`, 1M-token context, structured JSON output, tool calling (from Meta's cookbook, https://github.com/meta-models/meta-model-cookbook/tree/main/01_api_fundamentals ). Free-tier limits per team: 2,400 requests and 800,000 tokens per minute.
 - $100 credits per participant; **claims close Saturday Nov 7 at 3:00 PM PT**; needs a dev.meta.ai account with billing verified and the same email as the hackathon acceptance. The API is US-only, so keep a fallback model.
-- **Key verified 2026-11-07:** the model list returns `muse-spark-1.3` (also 1.1, 1.2, image, voice and other models). No generation call has been made yet: credits had not arrived, and early calls can be charged to the card.
+- **Key verified 2026-11-07:** the model list returns `muse-spark-1.3` (also 1.1, 1.2, image, voice and other models). **Generation verified 2026-11-07 after credits arrived:** a post labelled as JSON (`hold_start`, Gondola, wind, 0.95) in 2.9 seconds, 511 tokens. **Gotcha:** the model spends reasoning tokens before answering (340 of 373 here). With `max_tokens` of 200 the call returned HTTP 200 with **empty content**. Use `max_tokens` of 1,000 or more, or `reasoning_effort: "low"`. A call using `response_format: json_object` was only tried with the too-small limit, so that option is untested.
 - Our use: an independent blind labeler of tweets, with structured output and an agreement score against the rule parser. The submission should state this role in one sentence with numbers.
 
 ## Subquadratic ($5,000 + credits)
