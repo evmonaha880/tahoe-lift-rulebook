@@ -63,7 +63,7 @@ def find_lifts(span):
         if name not in out: out.append(name)
     return out
 
-CAUSE_RE = [("wind", r"wind"), ("mechanical", r"mechanical|hose|power|electrical|maintenance"), ("patrol", r"patrol|avalanche|snow safety|control"), ("weather", r"icy|ice\b|storm|snow(?:fall)?|rain|conditions"),]
+CAUSE_RE = [("wind", r"wind"), ("mechanical", r"mechanical|hose|power|electrical|maintenance"), ("patrol", r"patrol|avalanche|snow safety|control"), ("weather", r"icy|ice\b|rime|icing|lightning|storm|snow(?:fall)?|rain|conditions"),]
 def cause_in(s):
     for c, p in CAUSE_RE:
         if re.search(p, s, re.I): return c
@@ -94,12 +94,14 @@ def split_sentences(t):
     parts = [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"“]|$)|\n+", t) if s.strip()]
     out = []
     for p in parts:   # split compound sentences: 'A is on hold, B and C are open, D will be closed'
-        for c in re.split(r",\s+(?=[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|on|has|have)\b)|\s+but\s+(?=[A-Za-z])|\s+and\s+(?=(?:off\s+(?:the\s+)?schedule|closed|opened|open)\b)", p):
-            if c and c.strip(): out.append(c.strip())
+        m_and = re.search(r"^(.*?\b(?:is|are|will|has|have)\b[^,]*?)\s+and\s+((?:the\s+)?[A-Z][\w’' -]{1,30}?\s+(?:is|are|will)\b.*)$", p)
+        for piece in (list(m_and.groups()) if m_and else [p]):
+            for c in re.split(r",\s+(?=[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|on|has|have)\b)|\s+but\s+(?=[A-Za-z])|\s+and\s+(?=(?:off\s+(?:the\s+)?schedule|closed|opened|open)\b)", piece):
+                if c and c.strip(): out.append(c.strip())
     return out
 
 
-SEC_RE = re.compile(r"\b(Wind|Mechanical|Patrol|Maintenance|Electrical)\s+Holds?\s*:|\b(Wind\s+Closures?)\s*:|\b(Hold\s*/\s*Delay(?:ed)?)\s*:|\b(Delayed(?:\s+Opening)?)\s*:|\b(Off(?:\s+the)?\s+Schedule|Closed)\s*:", re.I)
+SEC_RE = re.compile(r"\b(Wind|Mechanical|Patrol|Maintenance|Electrical)\s+Holds?\s*:|\b(Wind\s+Closures?)\s*:|\b(Hold\s*/\s*Delay(?:ed)?)\s*:|\b(Delay(?:ed)?(?:\s+Openings?)?)\s*:|\b(Off(?:\s+the)?\s+Schedule|Closed)\s*:", re.I)
 def roster_with_sections(t, add, rule, body_start=0):
     """Roster posts ('Open at 9am: ... Wind Hold: X Delayed: Y') carry hold/delay/closed sections inside. Emit those, return roster text."""
     ms = list(SEC_RE.finditer(t))
@@ -191,7 +193,7 @@ def _parse_post(p):
     AO = re.compile(r"all other (?:scheduled )?(?:\w+ )?lifts?\b[^.!?]*?\b(?:are|remain)\b[^.!?]*?\bon (?:a )?(?:(wind|mechanical|patrol|maintenance|lightning) )?(hold|delay)(?: due to ([^.!?]*))?[.!?]?", re.I)
     am = AO.search(t)
     if am:
-        c = (am.group(1) or "").lower().replace("maintenance", "mechanical") or (cause_in(am.group(3)) if am.group(3) else None)
+        c = {"maintenance": "mechanical", "lightning": "weather"}.get((am.group(1) or "").lower(), (am.group(1) or "").lower()) or (cause_in(am.group(3)) if am.group(3) else None)
         rest = (t[:am.start()] + " " + t[am.end():]).strip()
         add("P-013", "hold_start" if am.group(2).lower() == "hold" else "delay", ["ALL_OTHER"], c, **{"except": find_lifts(rest)})
         t = rest
@@ -230,6 +232,8 @@ def _parse_post(p):
     for s in split_sentences(t):
         sl = s.lower()
         if find_lifts(s): last_lifts = find_lifts(s)
+        if re.search(r"will be delayed|delayed (?:to|until)|(?:a few|\d+) minutes late|open(?:ing)? late", sl) and find_lifts(s) and not re.search(r"\bhold\b.*\bhold\b", sl):
+            add("P-030", "delay", find_lifts(s) if not re.search(r"\bis on\b.*\band will be delayed", sl) else find_lifts(re.split(r"\band will be", s)[0]), cause_in(s) if re.search(r"due to", sl) else None)
         if re.search(r"download(?:s|ing)? only|mid-?station|advanced (?:levels? )?only|not servicing beginner|(?:mtn|mountain) run only|no return access|sightseeing only|limited terrain|offload|side only", sl) and (find_lifts(s) or last_lifts) and not re.search(r"\bnot open\b", sl):
             add("P-070", "partial", find_lifts(s) or last_lifts, "wind" if re.search(r"wind", sl) else None, detail="limited")
         am = re.search(r"all other (?:scheduled )?(?:\w+ )?lifts?\b[^.]*?\bare\b[^.]*?\bon (?:a )?(?:(wind|mechanical|patrol|maintenance) )?(hold|delay)(?: due to ([^.]*))?", s, re.I)
@@ -238,7 +242,7 @@ def _parse_post(p):
             add("P-013", "hold_start" if am.group(2).lower() == "hold" else "delay", ["ALL_OTHER"], c, **{"except": find_lifts(t)}); continue
         if re.search(r"up and running (?:close to|around|by|at) \d|expected at \d+:\d+|will be open at approximately", sl) and (find_lifts(s) or last_lifts) and not re.search(r"\bhold\b", sl) or re.search(r"estimating .* up and running", sl):
             add("P-030", "delay", find_lifts(s) or last_lifts, cause_in(s)); continue
-        if re.search(r"are scheduled for \d|will operate from|a go for \d|we expect the following|planning to run the following|lifts open \d|\d ?(?:am|a) ?- ?\d+ ?(?:pm|p) today|planned ops|scheduled lifts|lifts? projected|projected \w* ?open|est(?:imated)?\.? \w+ open|on deck|what we.re spinning|following lifts are spinning|today at #?squawalpine|looking to open|we plan to spin|here.s what|today.s ops|lifts accessing|lifts spinning|lifts? (?:&|and) \d+ trails|\d+ chairlifts", sl) and not re.search(r"\bhold\b|\bclosed\b", sl):
+        if re.search(r"are scheduled for \d|will operate from|a go for \d|we expect the following|planning to run the following|lifts open \d|\d ?(?:am|a) ?- ?\d+ ?(?:pm|p) today|planned ops|(?<!all )scheduled lifts|lifts? projected|projected \w* ?open|est(?:imated)?\.? \w+ open|on deck|what we.re spinning|following lifts are spinning|today at #?squawalpine|looking to open|we plan to spin|here.s what|today.s ops|lifts accessing|lifts spinning|lifts? (?:&|and) \d+ trails|\d+ chairlifts", sl) and not re.search(r"\bhold\b|\bclosed\b", sl):
             roster = roster_with_sections(t, add, "P-001"); add("P-001", "scheduled_opening", find_lifts(roster), None); return ev
         if re.search(r"will operate from|lifts open \d|\d ?(?:am|a) ?- ?\d+ ?(?:pm|p) today", sl) and re.search(r"\bclosed\b", sl) and find_lifts(s):
             add("P-001", "scheduled_opening", [], None, note="mixed_with_closure")
