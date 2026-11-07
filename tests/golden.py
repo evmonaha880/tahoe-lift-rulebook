@@ -162,6 +162,11 @@ CASES = [
  ("Add Gold Coast and Siberia to that lift of wind holds. #squawlifts", [(H, "Gold Coast", "wind"), (H, "Siberia", "wind")], []),
  ("Winds have died down a bit and allowed us to open the following lifts:\n\n- Aerial Tram\n- Bailey's Beach\n- Big Blue\n\n#squawlifts", [(R, "Tram", None), (R, "Big Blue", None)], []),
  ("We will be attempting to open the following lifts at 9 am at Squaw Valley:\n- Red Dog\n- Squaw Creek\n- Far East\n- First Venture", [(S, "Red Dog", None), (S, "Resort Chair", None)], []),
+ ("The Funitel is currently on Wind Hold, we will continue to download at this time #squawlifts", [(H, "Funitel", "wind"), (P, "Funitel", None)], []),
+ ("6 lifts scheduled for 8a-1p. KT will spin until 2pm. Sunny, with a high near 70. #palisadesops", [(P, "KT-22", None)], []),
+ ("Delayed lift openings: Summit, Treeline Cirque, Sherwood, Yellow, and Base To Base. #palisadesops", [(D, "Summit", None), (D, "Base to Base Gondola", None)], []),
+ ("Mountain Meadow, Shirley Lake, Siberia, and KT-22 are now all closed due to lightning. #palisadesops", [(C, "Siberia", "weather"), (C, "KT-22", "weather")], []),
+ ("Gold Coast, Shirley Lake and Big Blue expected close to 10am. Delays are due to lift icing issues. #palisadesops", [(D, "Gold Coast", "weather")], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
