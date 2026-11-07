@@ -54,6 +54,15 @@
   "status": "proposed"
  },
  {
+  "rule_id": "P-014",
+  "event_type": "hold_start",
+  "pattern": "Group scope: 'all upper mountain lifts', 'all lifts at Alpine' ... on hold / delayed / closed (lift = UPPER_MOUNTAIN, LOWER_MOUNTAIN, ALL_ALPINE, ALL_PALISADES; not expanded to individual lifts)",
+  "winters": [
+   "2018-19"
+  ],
+  "status": "proposed"
+ },
+ {
   "rule_id": "P-020",
   "event_type": "closed_day",
   "pattern": "'<lifts> closed for the day/remainder' or 'off (the) schedule' or 'now closed'",
