@@ -45,6 +45,15 @@
   "status": "proposed"
  },
  {
+  "rule_id": "P-013",
+  "event_type": "hold_start",
+  "pattern": "'All other (scheduled) lifts ... on wind hold / on delay' (lift = ALL_OTHER, with the named lifts as exceptions)",
+  "winters": [
+   "2020-21"
+  ],
+  "status": "proposed"
+ },
+ {
   "rule_id": "P-020",
   "event_type": "closed_day",
   "pattern": "'<lifts> closed for the day/remainder' or 'off (the) schedule' or 'now closed'",

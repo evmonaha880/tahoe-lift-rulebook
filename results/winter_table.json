@@ -3,71 +3,71 @@
   "winter": "2018-19",
   "oni": 0.99,
   "phase": "weak El Ni\u00f1o",
-  "days_with_posts": 124,
-  "wind_hold_days": 67,
+  "days_with_posts": 125,
+  "wind_hold_days": 69,
   "gust60_days": 71,
-  "f1": 0.87,
-  "baseline_f1": 0.713
+  "f1": 0.886,
+  "baseline_f1": 0.726
  },
  {
   "winter": "2019-20",
   "oni": 0.71,
   "phase": "weak El Ni\u00f1o",
   "days_with_posts": 82,
-  "wind_hold_days": 44,
+  "wind_hold_days": 45,
   "gust60_days": 45,
-  "f1": 0.874,
-  "baseline_f1": 0.721
+  "f1": 0.876,
+  "baseline_f1": 0.732
  },
  {
   "winter": "2020-21",
   "oni": -0.99,
   "phase": "La Ni\u00f1a",
   "days_with_posts": 115,
-  "wind_hold_days": 50,
+  "wind_hold_days": 51,
   "gust60_days": 53,
-  "f1": 0.824,
-  "baseline_f1": 0.613
+  "f1": 0.816,
+  "baseline_f1": 0.622
  },
  {
   "winter": "2021-22",
   "oni": -0.76,
   "phase": "La Ni\u00f1a",
-  "days_with_posts": 156,
+  "days_with_posts": 157,
   "wind_hold_days": 46,
-  "gust60_days": 67,
-  "f1": 0.796,
-  "baseline_f1": 0.482
+  "gust60_days": 68,
+  "f1": 0.789,
+  "baseline_f1": 0.479
  },
  {
   "winter": "2022-23",
   "oni": -0.55,
   "phase": "La Ni\u00f1a",
   "days_with_posts": 187,
-  "wind_hold_days": 69,
+  "wind_hold_days": 70,
   "gust60_days": 86,
-  "f1": 0.865,
-  "baseline_f1": 0.556
+  "f1": 0.883,
+  "baseline_f1": 0.562
  },
  {
   "winter": "2023-24",
   "oni": 1.84,
   "phase": "strong El Ni\u00f1o",
-  "days_with_posts": 168,
-  "wind_hold_days": 49,
+  "days_with_posts": 169,
+  "wind_hold_days": 50,
   "gust60_days": 66,
-  "f1": 0.772,
-  "baseline_f1": 0.473
+  "f1": 0.783,
+  "baseline_f1": 0.481
  },
  {
   "winter": "2024-25",
   "oni": -0.46,
   "phase": "neutral",
-  "days_with_posts": 126,
-  "wind_hold_days": 49,
+  "days_with_posts": 127,
+  "wind_hold_days": 50,
   "gust60_days": 55,
-  "f1": 0.804,
-  "baseline_f1": 0.594
+  "f1": 0.816,
+  "baseline_f1": 0.602
  },
  {
   "winter": "2025-26",
@@ -76,7 +76,7 @@
   "days_with_posts": 90,
   "wind_hold_days": 21,
   "gust60_days": 35,
-  "f1": 0.714,
+  "f1": 0.69,
   "baseline_f1": 0.393
  }
 ]

@@ -76,6 +76,7 @@ RULES = [
     ("P-010", "hold_start", "'<lifts> is/are (now) on a [cause] hold' or 'will start/begin the day on [cause] hold'"),
     ("P-011", "hold_start", "Section header form 'Wind Hold: <lifts>' / 'Mechanical Hold:' / 'Patrol Hold:'"),
     ("P-012", "warning", "'expected to go on wind hold', 'going on a wind hold any minute', 'winds may impact lifts', 'likely snow safety delays'"),
+    ("P-013", "hold_start", "'All other (scheduled) lifts ... on wind hold / on delay' (lift = ALL_OTHER, with the named lifts as exceptions)"),
     ("P-020", "closed_day", "'<lifts> closed for the day/remainder' or 'off (the) schedule' or 'now closed'"),
     ("P-021", "closed_day", "'All lifts ... are now closed for the day' (lifts = all)"),
     ("P-030", "delay", "'Delayed Opening' or '<lift> on a mechanical delay'"),
@@ -90,7 +91,12 @@ RID = {r[0]: r for r in RULES}
 
 def split_sentences(t):
     t = re.sub(r"#\w+", "", t)
-    return [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"“]|$)|\n+", t) if s.strip()]
+    parts = [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"“]|$)|\n+", t) if s.strip()]
+    out = []
+    for p in parts:   # split compound sentences: 'A is on hold, B and C are open, D will be closed'
+        for c in re.split(r",\s+(?=[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|on|has|have)\b)|\s+but\s+(?=[A-Za-z])|\s+and\s+(?=(?:off\s+(?:the\s+)?schedule|closed|opened|open)\b)", p):
+            if c and c.strip(): out.append(c.strip())
+    return out
 
 
 SEC_RE = re.compile(r"\b(Wind|Mechanical|Patrol|Maintenance|Electrical)\s+Holds?\s*:|\b(Wind\s+Closures?)\s*:|\b(Hold\s*/\s*Delay(?:ed)?)\s*:|\b(Delayed(?:\s+Opening)?)\s*:|\b(Off(?:\s+the)?\s+Schedule|Closed)\s*:", re.I)
@@ -164,7 +170,12 @@ def sectional(t, add):
     return True
 
 def parse_post(p):
-    return fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
+    ev = fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
+    seen, out = set(), []
+    for e in ev:   # the same fact can be reached by two rules; keep one
+        k = (e["lift"], e["event_type"], e["parse_rule_id"])
+        if k not in seen: seen.add(k); out.append(e)
+    return out
 
 def _parse_post(p):
     raw = p["text"]
@@ -177,6 +188,13 @@ def _parse_post(p):
             ev.append({**base, "lift": l, "event_type": typ, "cause": cause,
                        "cause_source": "observed" if cause else "unstated", "parse_rule_id": rule, "confidence": 1.0, **kw})
     low = t.lower()
+    AO = re.compile(r"all other (?:scheduled )?(?:\w+ )?lifts?\b[^.!?]*?\bare\b[^.!?]*?\bon (?:a )?(?:(wind|mechanical|patrol|maintenance) )?(hold|delay)(?: due to ([^.!?]*))?[.!?]?", re.I)
+    am = AO.search(t)
+    if am:
+        c = (am.group(1) or "").lower().replace("maintenance", "mechanical") or (cause_in(am.group(3)) if am.group(3) else None)
+        rest = (t[:am.start()] + " " + t[am.end():]).strip()
+        add("P-013", "hold_start" if am.group(2).lower() == "hold" else "delay", ["ALL_OTHER"], c, **{"except": find_lifts(rest)})
+        t = rest
     fm = re.search(r"(?:the )?(?:below|following) lifts (?:are|will [\w ]*?)\s*(?:on|begin the day on|start the day on)\s+(?:a\s+)?(?:(wind|mechanical|patrol)\s+)?(hold|delay)", t, re.I)
     if fm and not re.search(r"[:]", t[fm.end():fm.end() + 3]):
         tail = re.split(r"(?<=[.!?])\s+", t[fm.end():], maxsplit=1)
@@ -212,7 +230,15 @@ def _parse_post(p):
     for s in split_sentences(t):
         sl = s.lower()
         if find_lifts(s): last_lifts = find_lifts(s)
-        if re.search(r"will operate from|lifts open \d|\d ?(?:am|a) ?- ?\d+ ?(?:pm|p) today|planned ops|scheduled lifts|lifts? projected|projected \w* ?open|est(?:imated)?\.? \w+ open|on deck|what we.re spinning|following lifts are spinning|today at #?squawalpine|looking to open|we plan to spin|here.s what|today.s ops|lifts accessing|lifts spinning|lifts? (?:&|and) \d+ trails|\d+ chairlifts", sl) and not re.search(r"\bhold\b|\bclosed\b", sl):
+        if re.search(r"download(?:s|ing)? only|mid-?station|advanced (?:levels? )?only|not servicing beginner|(?:mtn|mountain) run only|no return access|sightseeing only|limited terrain|offload at", sl) and (find_lifts(s) or last_lifts) and not re.search(r"\bnot open\b", sl):
+            add("P-070", "partial", find_lifts(s) or last_lifts, "wind" if re.search(r"wind", sl) else None, detail="limited")
+        am = re.search(r"all other (?:scheduled )?(?:\w+ )?lifts?\b[^.]*?\bare\b[^.]*?\bon (?:a )?(?:(wind|mechanical|patrol|maintenance) )?(hold|delay)(?: due to ([^.]*))?", s, re.I)
+        if am:
+            c = (am.group(1) or "").lower().replace("maintenance", "mechanical") or (cause_in(am.group(3)) if am.group(3) else None)
+            add("P-013", "hold_start" if am.group(2).lower() == "hold" else "delay", ["ALL_OTHER"], c, **{"except": find_lifts(t)}); continue
+        if re.search(r"up and running (?:close to|around|by|at) \d|expected at \d+:\d+|will be open at approximately", sl) and (find_lifts(s) or last_lifts) and not re.search(r"\bhold\b", sl) or re.search(r"estimating .* up and running", sl):
+            add("P-030", "delay", find_lifts(s) or last_lifts, cause_in(s)); continue
+        if re.search(r"will operate from|a go for \d|we expect the following|planning to run the following|lifts open \d|\d ?(?:am|a) ?- ?\d+ ?(?:pm|p) today|planned ops|scheduled lifts|lifts? projected|projected \w* ?open|est(?:imated)?\.? \w+ open|on deck|what we.re spinning|following lifts are spinning|today at #?squawalpine|looking to open|we plan to spin|here.s what|today.s ops|lifts accessing|lifts spinning|lifts? (?:&|and) \d+ trails|\d+ chairlifts", sl) and not re.search(r"\bhold\b|\bclosed\b", sl):
             roster = roster_with_sections(t, add, "P-001"); add("P-001", "scheduled_opening", find_lifts(roster), None); return ev
         if re.search(r"will operate from|lifts open \d|\d ?(?:am|a) ?- ?\d+ ?(?:pm|p) today", sl) and re.search(r"\bclosed\b", sl) and find_lifts(s):
             add("P-001", "scheduled_opening", [], None, note="mixed_with_closure")
@@ -274,7 +300,7 @@ def _parse_post(p):
             add("P-001" if "added" in sl else "P-020", "scheduled_opening" if "added" in sl else "closed_day", find_lifts(s), None); continue
         if re.search(r"stage \d+ wind alert|wind alert", sl): add("P-012", "warning", find_lifts(s), "wind"); continue
         if re.search(r"back up and running|up and running", sl) and not re.search(r"should be|will be|about an hour", sl): add("P-040", "reopen", find_lifts(s), None); continue
-        if re.search(r"will be delayed|expect delays|snow safety delays|delays and closures are possible", sl):
+        if re.search(r"will be delayed|expect (?:some )?delays|snow safety delays|delayed opening|delays and closures are possible", sl):
             add("P-030", "delay", find_lifts(s), cause_in(s) or "patrol"); continue
         if re.search(r"(?:will be )?opening at \d|opening tomorrow|opening in", sl) and find_lifts(s):
             add("P-001", "scheduled_opening", find_lifts(s), None); continue
@@ -291,7 +317,7 @@ def _parse_post(p):
         if re.search(r"parking (?:lots?|is)|lots? (?:are|is) full|we are (?:now )?parking at", sl):
             add("P-050", "parking", [], None); continue
         # P-021 all lifts closed
-        if re.search(r"all (?:the )?lifts.*(closed|on (?:\\w+ )?hold)|all lifts that", sl):
+        if re.search(r"all (?:the )?lifts.*(closed|on (?:\w+ )?hold)|all lifts that", sl):
             if re.search(r"on (?:\w+ )?hold", sl) and "closed" not in sl: add("P-021", "hold_start", ["ALL"], cause_in(s) or ("wind" if "wind hold" in sl else None))
             else: add("P-021", "closed_day", ["ALL"], cause_in(s) or ("wind" if "wind hold" in sl else None))
             continue
@@ -316,7 +342,7 @@ def _parse_post(p):
         if re.search(r"closed (?:for )?(?:the )?(?:day|remainder|rest)|off (?:the )?schedule|is closed|now closed|are closed|closed to the public", sl):
             if re.search(r"\broad\b|parking|exhibition will be closed to the public", sl): add("P-090", "other", [], None); continue
             subj = re.split(r"\b(?:is|are|will be)\b|[-:]|, (?:available|still)|\bclosed\b|\boff\b", s, maxsplit=1, flags=re.I)[0]
-            lifts = find_lifts(subj) or find_lifts(s)
+            lifts = find_lifts(subj) or find_lifts(s) or last_lifts
             dm = re.search(r"due to(.*)", s, re.I); c = cause_in(dm.group(1)) if dm else None
             add("P-020", "closed_day", lifts, c); continue
         # P-040 reopen

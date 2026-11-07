@@ -74,11 +74,12 @@ for Y in map(int, sys.argv[1:]):
     for e in ev: by[e["start"][:10]].append(e)
     for date, es in sorted(by.items()):
         sched = {e["lift"] for e in es if e["event_type"] == "scheduled_opening" and e["lift"] and e["lift"] != "ALL"}
-        lifts = set(sched) | {e["lift"] for e in es if e["lift"] and e["lift"] != "ALL" and e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "reopen")}
+        lifts = set(sched) | {e["lift"] for e in es if e["lift"] and e["lift"] not in ("ALL", "ALL_OTHER") and e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "reopen")}
+        if any(e["lift"] == "ALL_OTHER" for e in es): lifts = set(lifts) | {"(all other lifts)"}
         if not lifts: continue
         f = feats(weather, date, SN)
         for L in sorted(lifts):
-            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL")]
+            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL" or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])))]
             row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),
