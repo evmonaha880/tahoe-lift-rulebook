@@ -174,7 +174,7 @@ MARK_RE = re.compile(
     r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|scheduled\s+but\s+(?:on\s+)?delay(?:ed)?(?:\s*\([^)]*\))?|operational\s+delay(?:\s*\([^)]*\))?|experiencing\s+(?:\w+\s+)?delays?\s+[^:.]{0,70}following\s+lifts(?=\s*:)|delay(?:ed)?(?:\s+lifts?)?(?:\s+openings?)?(?:\s+at\s+(?:alpine|palisades|squaw))?)\s*[:,-]?)"
     r"|(?P<closed>(?:off[-\s](?:the\s+)?schedule(?:\s+for\s+(?:the\s+day|today))?|(?P<cc>wind)\s+closures?|(?<!and )closed\s+for\s+the\s+day(?=\s*:)|removed(?=\s*:))\s*[:-]?)"
     r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|\d{1,2}\s*(?:am|a)\s+open\s*:|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
-    r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:|all\s+open\s+now\s*:)", re.I)
+    r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:|all\s+open\s+now\s*:|(?:lifts\s+)?(?:have\s+)?re-?opened\s*:)", re.I)
 
 _LEFT = []   # prose that followed a list inside sectional(); parsed again by the caller
 def sectional(t, add):
@@ -506,7 +506,9 @@ def _parse_post(p):
         if re.search(r"on delay|delays? due to icing|icing on lifts", sl):
             add("P-030", "delay", find_lifts(s) or ["ALL"], "weather" if "ic" in sl else cause_in(s)); continue
         if re.search(r"mid-?station|uploads? only|min(?:ute)? schedule|open (?:till|until) \d", sl) and find_lifts(s):
-            add("P-070", "partial", find_lifts(s), "wind" if "wind" in sl else None, detail="limited"); continue
+            qm2 = re.search(r"mid-?station|uploads? only", sl)
+            pl = find_lifts(s[:qm2.start()])[-1:] if qm2 and len(find_lifts(s)) > 1 and find_lifts(s[:qm2.start()]) else find_lifts(s)   # only the lift named right before 'to the mid-station'
+            add("P-070", "partial", pl, "wind" if "wind" in sl else None, detail="limited"); continue
         if re.search(r"safety (?:tip|alert|first)|unmarked hazards|shuttle|storm totals|\d+ ?(?:hour|hr|h) totals|hour totals|forecast is for|happy holidays|chance of", sl) and not re.search(r"\bhold\b", sl):
             add("P-060" if re.search(r"totals|forecast|chance", sl) else "P-090", "other", [], None); continue
         if re.search(r"\blot\b.*\bfull\b|hidden valley|deer park", sl):
