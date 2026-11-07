@@ -123,6 +123,16 @@ CASES = [
  ("The following lifts are now spinning at Alpine Meadows: - Meadow - Kangaroo - Subway - Big & Little Carpets #alpinelifts", [(R, "Big Carpet", None), (R, "Little Carpet", None), (R, "Alpine Meadow", None)], [(R, "Mountain Meadow")]),
  ("The following lifts are open at Palisades: Exhibition Far East KT-22 Red Dog First Venture Ahsoka Carpet Boomer Magic Carpet B2B #palisadesops", [(R, "Boomer", None), (R, "Exhibition", None)], []),
  ("Red Dog, Squaw Creek, and Far East are now closed for the remainder of the day. #squawlifts", [(C, "Resort Chair", None), (C, "Red Dog", None)], []),
+ ("At Palisades, 18 lifts today: • Tram • Funitel • Wa She Shu • KT-22 • Exhibition • Resort Chair • First Venture & Kaya Carpet • Gold Coast", [(S, "Tram", None), (S, "Exhibition", None), (S, "Gold Coast", None)], [(R, None), (H, None)]),
+ ("We anticipate having the following lifts open around 9:30am: • Tram • Bailey’s Beach • Mountain Meadow • Big Blue • Gold Coast • Solitude #palisadesops", [(S, "Tram", None), (S, "Solitude", None)], [(R, None)]),
+ ("20\" of snow in 24hrs. At Alpine on schedule: • Treeline Cirque • Yellow • Meadow • Big Carpet Weather Impact: • B2B Gondola • Summit • Roundhouse • Scott", [(S, "Yellow", None), (W, "Base to Base Gondola", None), (W, "Summit", None)], [(W, "Yellow"), (H, None), (C, None)]),
+ ("Summit and Scott are off-schedule for the remainder of the day.", [(C, "Summit", None), (C, "Scott", None)], []),
+ ("Wa She Shu is on an operational hold. #palisadesops", [(H, "Wa She Shu", None)], []),
+ ("Solitude is slightly delayed, but will open shortly. #palisadesops", [(D, "Solitude", None)], []),
+ ("Red Dog is now loading. #palisadesops", [(R, "Red Dog", None)], []),
+ ("Funitel is on the schedule but still on Wind Hold.", [(H, "Funitel", "wind")], []),
+ ("All OPEN NOW: •Funitel •Tram •Gold Coast •Shirley Lake •Mountain Meadow •Bailey’s Beach", [(R, "Funitel", None), (R, "Shirley Lake", None)], [(S, None)]),
+ ("Palisades update: Open: -Exhibition -Red Dog -Far East Scheduled but on delay (no ETA): -KT Off Schedule for Today: -Tram -Gondola -Solitude", [(R, "Exhibition", None), (D, "KT-22", None), (C, "Tram", None), (C, "Solitude", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
