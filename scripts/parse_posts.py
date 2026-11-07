@@ -112,6 +112,7 @@ RULES = [
 ]
 RID = {r[0]: r for r in RULES}
 
+HEDGE_RE = re.compile(r"\bexpect(?:ing|ed)?\b[^.!?]{0,30}\bdelays?\b|\b(?:may|might|could)\b[^.!?]{0,40}\b(?:delays?|delayed|(?:go|be put|be placed) on (?:a |an )?(?:\w+ )?hold)\b|\b(?:possible|potential(?:ly)?|likely|anticipat\w*)\s+(?:\w+ ){0,2}(?:delays?|holds?)\b|\blikely to go on\b|\banticipat\w+ (?:some )?delays?\b")
 def split_sentences(t):
     t = re.sub(r"\s*#\w+\s*", ". ", t)
     parts = [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"“]|$)|\n+", t) if s.strip()]
@@ -277,6 +278,13 @@ def _parse_post(p):
     last_lifts = []
     for s in split_sentences(t):
         sl = s.lower()
+        # hedged statements are forecasts, not events: "expect delays", "may go on hold", "possible delays", "likely to go on wind hold"
+        if HEDGE_RE.search(sl) and not re.search(r"\bhas (?:been )?(?:delayed|put on)|\b(?:are|is) (?:now )?(?:on|delayed)\b(?! (?:the )?schedule)", sl.replace("may be delayed", "")) \
+                and not re.search(r"(?:possible|potential|expect(?:ed)?|anticipated)\s+(?:\w+ ){0,2}delays?\s*:", sl):   # "Possible delays: A B C" list headers stay with the sectional code
+            if not find_lifts(s) and not re.search(r"lift|operations", sl) and re.search(r"\broad\b|\brd\b|\bhwy\b|highway|\bi-80\b|traffic|accident|vehicle", t, re.I): add("P-090", "other", [], None, note="road"); continue
+            add("P-012", "warning", find_lifts(s) or group_scopes(s), cause_in(s))
+            if re.search(r"\b\d{1,2}\s+(?:\w+ )?lifts?\b[^.!?]{0,30}(?:schedul|on the schedule)", sl): add("P-001", "scheduled_opening", [], None, note="count_only")
+            continue
         if find_lifts(s): last_lifts = find_lifts(s)
         if re.search(r"will be delayed|delayed (?:to|until)|(?:a few|\d+) minutes late|open(?:ing)? late", sl) and find_lifts(s) and not re.search(r"\bhold\b.*\bhold\b", sl):
             add("P-030", "delay", find_lifts(s) if not re.search(r"\bis on\b.*\band will be delayed", sl) else find_lifts(re.split(r"\band will be", s)[0]), cause_in(s) if re.search(r"due to", sl) else None)

@@ -111,6 +111,12 @@ CASES = [
  ("Tram, Funitel, Gold Coast and Meadow are now open. #palisadesops", [(R, "Mountain Meadow", None)], [(R, "Alpine Meadow")]),
  ("8 lifts are scheduled for Alpine for 9am: Roundhouse, Treeline Cirque, Scott, Meadow, Subway, Big Carpet #alpineops", [(S, "Alpine Meadow", None)], [(S, "Mountain Meadow")]),
  ("Mtn Meadow and the Tram are now on wind hold. Meadow at Alpine is open.", [(H, "Mountain Meadow", "wind")], []),
+ ("We received 8\" overnight on the upper mountain. Expect delays this morning. #palisadesops", [(W, None, None)], [(D, None)]),
+ ("Red Dog and the Tram will start the day on a wind hold. Shirley Lake may be delayed due to mechanical issues. #palisadesops", [(W, "Shirley Lake", "mechanical"), (H, "Tram", "wind")], [(D, "Shirley Lake")]),
+ ("Winds are picking up. The Base to Base and Tram are likely to go on wind hold. Please plan to ride the shuttle bus.", [(W, "Base to Base Gondola", "wind"), (W, "Tram", "wind")], [(H, None)]),
+ ("Auto accident on HWY 89 about a mile North of Squaw. Expect delays.", [], [(D, None), (W, None)]),
+ ("10 lifts scheduled, expect delays due to snow safety and winds. High winds with gusts as high as 60 mph. #palisadesops", [(W, None, None), (S, None, None)], [(D, None)]),
+ ("24 hour storm totals: 0\" Palisades Base, 6\" upper mountain. 29 lifts on the schedule, with possible delays for upper mountain.", [(W, "UPPER_MOUNTAIN", None)], [(D, None)]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
