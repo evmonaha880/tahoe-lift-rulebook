@@ -107,7 +107,22 @@ def roster_with_sections(t, add, rule, body_start=0):
         if pl: add("P-012", "warning", pl[-1:], "wind")
     return roster
 
+def fill_causes(t, ev):
+    """If an event has no cause but the post states one ('due to high winds', 'because of lightning'), attach it. Only when the post names exactly one cause."""
+    m = re.search(r"(?:due to|because of|caused by)\s+([^.!]*)", t, re.I)
+    if not m: return ev
+    found = {c for c, p in (("wind", r"wind"), ("weather", r"lightning|ice|icing|rain|snow level"), ("patrol", r"avalanche|snow safety|patrol"), ("mechanical", r"mechanical|maintenance|electrical|power")) if re.search(p, m.group(1), re.I)}
+    if len(found) == 1:
+        c = found.pop()
+        for e in ev:
+            if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and not e["cause"]:
+                e["cause"], e["cause_source"] = c, "observed"; e["note_cause"] = "post-level"
+    return ev
+
 def parse_post(p):
+    return fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
+
+def _parse_post(p):
     raw = p["text"]
     t = " ".join(raw.replace("&amp;", "&").split())
     dt = datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles"))
