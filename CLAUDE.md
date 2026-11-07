@@ -24,6 +24,7 @@ It is **not** the earlier "Tahoe Lift Call" / "Daily Call" / Latitude / Suez wor
 3. `docs/DATA_SOURCES.md`: where every dataset is and how to get it.
 4. `docs/PARSING_RULES.md`: the per-winter tweet parsing loop and the rules ledger.
 5. `docs/DECISIONS.md`: what was chosen and what was rejected.
+6. `docs/SPONSOR_TRACKS.md`: prize requirements (Fetch.ai, Meta, Subquadratic) and submission steps. Reference only; nothing built for them yet.
 6. The owner's private `STATE.md` (outside the repo) for current status, spend and next action. Ask the owner for it if it was not provided.
 
 ## Working rules
