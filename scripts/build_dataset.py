@@ -35,7 +35,27 @@ def avy():
         if v: d[p["start_date"][:10]] = max(v)
     return d
 AV = avy()
-def feats(W, date):
+def snotel(Y):
+    """SNOTEL 784 hourly -> {datetime: (swe, depth, prec)} ; timestamps are local standard time per NRCS (UNVERIFIED for DST)"""
+    d = {}
+    f = os.path.join(R, "raw", "snotel", f"784_hourly_{Y}-{str(Y+1)[2:]}.csv")
+    for line in open(f):
+        if line.startswith("#") or line.startswith("Date") or not line.strip(): continue
+        c = line.rstrip("\n").split(",")
+        try: d[datetime.strptime(c[0], "%Y-%m-%d %H:%M")] = (fl(c[1]), fl(c[2]), fl(c[3]))
+        except Exception: pass
+    return d
+def snow_feats(S, date):
+    from datetime import timedelta
+    t9 = datetime.strptime(date, "%Y-%m-%d") + timedelta(hours=9)
+    g = lambda t, i: (S.get(t) or (None, None, None))[i]
+    def diff(i, h):
+        a, b = g(t9, i), g(t9 - timedelta(hours=h), i)
+        return max(0.0, a - b) if a is not None and b is not None else None
+    ups = [g(t9 - timedelta(hours=k), 1) for k in range(24, -1, -1)]
+    inc = sum(max(0.0, ups[i + 1] - ups[i]) for i in range(24) if ups[i] is not None and ups[i + 1] is not None) if all(u is not None for u in ups) else None
+    return {"swe24": diff(0, 24), "swe6": diff(0, 6), "prec24s": diff(2, 24), "new_snow24": inc, "depth": g(t9, 1)}
+def feats(W, date, S):
     def agg(h0, h1, key, fn, stations=RIDGE):
         vals = [x for h in range(h0, h1) for s in stations for x in W.get((date, h), {}).get(s, {}).get(key, [])]
         return fn(vals) if vals else None
@@ -43,11 +63,10 @@ def feats(W, date):
             "day_gust": agg(6, 16, "gust", max), "day_spd": agg(6, 16, "spd", max),
             "fnt_day_gust": agg(6, 16, "gust", max, ["Funitel Top"]),
             "temp_base": agg(6, 10, "temp", lambda v: sum(v) / len(v), ["Roundhouse Btm"]),
-            "snow24": agg(8, 10, "snow24", max, RIDGE + ["Roundhouse Btm"]), "prec24": agg(8, 10, "prec24", max, RIDGE + ["Roundhouse Btm"]),
-            "avy": AV.get(date)}
+            **snow_feats(S, date), "avy": AV.get(date)}
 rows = []
 for Y in map(int, sys.argv[1:]):
-    W = f"{Y}-{str(Y+1)[2:]}"; weather = load_weather(Y)
+    W = f"{Y}-{str(Y+1)[2:]}"; weather = load_weather(Y); SN = snotel(Y)
     ev = []
     for sp in ("train", "heldout"):
         for e in json.load(open(os.path.join(R, "derived", f"{W}_{sp}_events.json"))): e["split"] = sp; ev.append(e)
@@ -57,12 +76,15 @@ for Y in map(int, sys.argv[1:]):
         sched = {e["lift"] for e in es if e["event_type"] == "scheduled_opening" and e["lift"] and e["lift"] != "ALL"}
         lifts = set(sched) | {e["lift"] for e in es if e["lift"] and e["lift"] != "ALL" and e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "reopen")}
         if not lifts: continue
-        f = feats(weather, date)
+        f = feats(weather, date, SN)
         for L in sorted(lifts):
             mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL")]
             row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),
+                   "held_patrol": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "patrol" for e in mine)),
+                   "held_mech": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "mechanical" for e in mine)),
+                   "held_weather": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "weather" for e in mine)),
                    "held_unstated": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and not e["cause"] for e in mine)),
                    "first_event": min([e["start"][11:16] for e in mine] or [""]),
                    "in_heldout_posts": int(any(e["split"] == "heldout" for e in mine))}
@@ -74,4 +96,4 @@ n = len(rows); print(f"{n} lift-days -> {out}")
 for W in sorted({r['winter'] for r in rows}):
     x = [r for r in rows if r['winter'] == W]
     print(W, len(x), "lift-days;", sum(r['held'] for r in x), "held;", sum(r['held_wind'] for r in x), "wind-stated;",
-          f"{sum(r['early_gust'] is not None for r in x)/len(x):.0%} have early gust,", f"{sum(r['avy'] is not None for r in x)/len(x):.0%} have avalanche rating")
+          f"{sum(r['early_gust'] is not None for r in x)/len(x):.0%} have early gust, {sum(r['swe24'] is not None for r in x)/len(x):.0%} have snow,", f"{sum(r['avy'] is not None for r in x)/len(x):.0%} have avalanche rating")

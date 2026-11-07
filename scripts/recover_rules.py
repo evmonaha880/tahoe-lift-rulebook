@@ -4,13 +4,13 @@ usage: python3 -I scripts/recover_rules.py   -> rules/rulebook_palisades.json, r
 import os, csv, json, itertools, collections
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "derived", "lift_days.csv"))))
-NUM = ["early_gust", "early_spd", "day_gust", "day_spd", "fnt_day_gust", "temp_base", "avy"]
+NUM = ["early_gust", "early_spd", "day_gust", "day_spd", "fnt_day_gust", "temp_base", "avy", "swe24", "swe6", "prec24s", "new_snow24", "depth"]
 for r in rows:
     for k in NUM: r[k] = float(r[k]) if r[k] != "" else None
-    for k in ("held", "held_wind", "held_unstated"): r[k] = int(r[k])
+    for k in ("held", "held_wind", "held_unstated", "held_patrol", "held_mech", "held_weather"): r[k] = int(r[k])
     r["scheduled"] = r["scheduled"] == "True"
 WINTERS = sorted({r["winter"] for r in rows})
-FEATS = ["early_gust", "day_gust", "early_spd", "day_spd", "avy", "temp_base"]
+FEATS = ["early_gust", "day_gust", "early_spd", "day_spd", "avy", "temp_base", "swe24", "swe6", "prec24s"]
 def f1(tp, fp, fn): return 2 * tp / (2 * tp + fp + fn) if tp else 0.0
 def score(rs, pred, y):
     tp = sum(1 for r in rs if pred(r) and r[y]); fp = sum(1 for r in rs if pred(r) and not r[y]); fn = sum(1 for r in rs if not pred(r) and r[y])
@@ -32,7 +32,8 @@ res = {"day_level": {}, "lift_level": {}}
 # ---------- day level: did ANY lift hold for wind that day? (days with at least one lift post)
 days = {}
 for r in rows:
-    d = days.setdefault((r["winter"], r["date"]), dict(r, held_wind=0, held=0)); d["held_wind"] |= r["held_wind"]; d["held"] |= r["held"]
+    d = days.setdefault((r["winter"], r["date"]), dict(r, held_wind=0, held=0, held_patrol=0, held_mech=0, held_weather=0))
+    for k in ("held_wind", "held", "held_patrol", "held_mech", "held_weather"): d[k] |= r[k]
 D = list(days.values())
 print(f"DAY LEVEL: {len(D)} days with lift posts; wind-hold days {sum(d['held_wind'] for d in D)}; any-hold days {sum(d['held'] for d in D)}")
 print(f"{'held-out winter':16} {'n days':>6} {'base rate':>9} | {'learned rule':32} {'F1':>5} {'prec':>5} {'rec':>5} | {'baseline gust>=25':17} {'F1':>5} {'prec':>5} {'rec':>5}")
@@ -41,6 +42,39 @@ for W in WINTERS:
     s, f, t = fit(tr, "held_wind"); sc = score([d for d in te if d[f] is not None], lambda r: r[f] >= t, "held_wind"); bs = score(te, BASE, "held_wind")
     print(f"{W:16} {len(te):6} {sc['base_rate']:9.1%} | {f+' >= '+str(t):32} {sc['f1']:5.2f} {sc['precision'] or 0:5.2f} {sc['recall'] or 0:5.2f} | {'':17} {bs['f1']:5.2f} {bs['precision'] or 0:5.2f} {bs['recall'] or 0:5.2f}")
     res["day_level"][W] = dict(rule=f"{f} >= {t}", learned=sc, baseline=bs, trained_on=[w for w in WINTERS if w != W])
+def fit_pair(rs, y, feats):
+    """best 'A >= a AND B >= b' rule by F1 (tries a small grid of quantile thresholds)"""
+    best = None; cand = {}
+    for f in feats:
+        vals = sorted(r[f] for r in rs if r[f] is not None)
+        if len(vals) > 20: cand[f] = sorted({vals[int(len(vals) * q)] for q in (.3, .45, .6, .7, .8, .9, .95)})
+    for f1_, f2_ in itertools.combinations(cand, 2):
+        for a in cand[f1_]:
+            for b in cand[f2_]:
+                sub = [r for r in rs if r[f1_] is not None and r[f2_] is not None]
+                sc = score(sub, lambda r: r[f1_] >= a and r[f2_] >= b, y)
+                if best is None or sc["f1"] > best[0]["f1"]: best = (sc, (f1_, a), (f2_, b))
+    return best
+# ---------- cause families at day level: is it really "not wind only"?
+print("\nCAUSE FAMILIES (day level, leave-one-winter-out; F1 of the learned rule, 'n' = days with that stated cause)")
+res["cause_families"] = {}
+for fam, label in (("held_wind", "wind"), ("held_patrol", "snow safety / avalanche control"), ("held_mech", "mechanical"), ("held_weather", "lightning / ice / rain")):
+    n = sum(d[fam] for d in D); line = []; rules = []
+    for W in WINTERS:
+        tr = [d for d in D if d["winter"] != W]; te = [d for d in D if d["winter"] == W]; b = fit(tr, fam)
+        if not b or not sum(d[fam] for d in tr): line.append("  n/a"); continue
+        _, f, t = b; sc = score([d for d in te if d[f] is not None], lambda r: r[f] >= t, fam); line.append(f"{sc['f1']:5.2f} (base {sc['base_rate']:.0%})"); rules.append(f"{f}>={t}")
+    full = fit(D, fam)
+    print(f"{label:34} n={n:3} | " + " | ".join(line) + f" | best feature on all winters: {full[1]+' >= '+str(round(full[2], 2)) if full else '-'}")
+    res["cause_families"][label] = dict(days=n, folds=dict(zip(WINTERS, line)), best=(full[1], full[2]) if full else None)
+
+print("\nSNOW-SAFETY HOLDS, two-feature rule (snow AND avalanche danger etc.), leave-one-winter-out:")
+SNOWF = ["prec24s", "swe24", "swe6", "avy", "depth", "temp_base"]
+for W in WINTERS:
+    tr = [d for d in D if d["winter"] != W]; te = [d for d in D if d["winter"] == W]; b = fit_pair(tr, "held_patrol", SNOWF)
+    (_, (fa, a), (fb, bb)) = b; sub = [d for d in te if d[fa] is not None and d[fb] is not None]
+    sc = score(sub, lambda r: r[fa] >= a and r[fb] >= bb, "held_patrol"); allpos = 2 * sc["base_rate"] / (1 + sc["base_rate"])
+    print(f"  {W}: {fa}>={a:.2f} AND {fb}>={bb:.2f} -> F1 {sc['f1']:.2f} (precision {sc['precision']}, recall {sc['recall']}); 'always say hold' would score {allpos:.2f}")
 # ---------- lift level (scheduled lift-days only: the roster says the lift was meant to run)
 S = [r for r in rows if r["scheduled"]]
 cnt = collections.Counter(r["lift"] for r in S); LIFTS = [l for l, n in cnt.items() if n >= 40]

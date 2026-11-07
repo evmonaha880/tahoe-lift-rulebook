@@ -85,10 +85,10 @@
  "lift_level": {
   "2023-24": {
    "learned": {
-    "tp": 58,
-    "fp": 116,
-    "fn": 132,
-    "f1": 0.319
+    "tp": 68,
+    "fp": 100,
+    "fn": 122,
+    "f1": 0.38
    },
    "baseline": {
     "tp": 188,
@@ -100,9 +100,9 @@
   "2024-25": {
    "learned": {
     "tp": 38,
-    "fp": 63,
+    "fp": 67,
     "fn": 26,
-    "f1": 0.461
+    "f1": 0.45
    },
    "baseline": {
     "tp": 61,
@@ -124,6 +124,56 @@
     "fn": 0,
     "f1": 0.1
    }
+  }
+ },
+ "cause_families": {
+  "wind": {
+   "days": 120,
+   "folds": {
+    "2023-24": " 0.79 (base 29%)",
+    "2024-25": " 0.82 (base 40%)",
+    "2025-26": " 0.62 (base 24%)"
+   },
+   "best": [
+    "day_spd",
+    48.0
+   ]
+  },
+  "snow safety / avalanche control": {
+   "days": 60,
+   "folds": {
+    "2023-24": " 0.35 (base 10%)",
+    "2024-25": " 0.44 (base 20%)",
+    "2025-26": " 0.32 (base 20%)"
+   },
+   "best": [
+    "prec24s",
+    0.7999999999999989
+   ]
+  },
+  "mechanical": {
+   "days": 72,
+   "folds": {
+    "2023-24": " 0.40 (base 25%)",
+    "2024-25": " 0.32 (base 19%)",
+    "2025-26": " 0.27 (base 15%)"
+   },
+   "best": [
+    "avy",
+    1.0
+   ]
+  },
+  "lightning / ice / rain": {
+   "days": 9,
+   "folds": {
+    "2023-24": " 0.00 (base 1%)",
+    "2024-25": " 0.06 (base 4%)",
+    "2025-26": " 0.00 (base 2%)"
+   },
+   "best": [
+    "temp_base",
+    39.53125
+   ]
   }
  },
  "two_stage": {
@@ -151,8 +201,8 @@
    },
    "lift_sensitivity": {
     "Alpine Bowl": 0.57,
-    "Scott": 0.55,
     "Bailey's Beach": 0.55,
+    "Scott": 0.55,
     "Base to Base Gondola": 0.52,
     "Tram": 0.47,
     "Granite Chief": 0.46,
