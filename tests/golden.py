@@ -119,6 +119,9 @@ CASES = [
  ("24 hour storm totals: 0\" Palisades Base, 6\" upper mountain. 29 lifts on the schedule, with possible delays for upper mountain.", [(W, "UPPER_MOUNTAIN", None)], [(D, None)]),
  ("Strong gusts on the ridges. The following lifts will start the day on wind hold. \n\nBase to Base Gondola (both sides)\nGold Coast\nFunitel\n\n#palisadesops", [(H, "Gold Coast", "wind"), (H, "Funitel", "wind"), (H, "Base to Base Gondola", "wind")], []),
  ("Gold Coast Express and Siberia Express are now open! #squawlifts", [(R, "Gold Coast", None), (R, "Siberia", None)], [(R, "Funitel")]),
+ ("At Palisades: 19 lifts 9am - 4pm, cloudy skies. • Tram • Funitel • Gold Coast • Baileys & Belmont • Mtn Mdw & Carpet • Big Blue • Shirley & Solitude #palisadesops", [(S, "Mountain Meadow", None), (S, "Belmont", None)], []),
+ ("The following lifts are now spinning at Alpine Meadows: - Meadow - Kangaroo - Subway - Big & Little Carpets #alpinelifts", [(R, "Big Carpet", None), (R, "Little Carpet", None), (R, "Alpine Meadow", None)], [(R, "Mountain Meadow")]),
+ ("The following lifts are open at Palisades: Exhibition Far East KT-22 Red Dog First Venture Ahsoka Carpet Boomer Magic Carpet B2B #palisadesops", [(R, "Boomer", None), (R, "Exhibition", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
