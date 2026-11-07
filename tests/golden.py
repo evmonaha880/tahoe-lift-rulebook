@@ -133,6 +133,10 @@ CASES = [
  ("Funitel is on the schedule but still on Wind Hold.", [(H, "Funitel", "wind")], []),
  ("All OPEN NOW: •Funitel •Tram •Gold Coast •Shirley Lake •Mountain Meadow •Bailey’s Beach", [(R, "Funitel", None), (R, "Shirley Lake", None)], [(S, None)]),
  ("Palisades update: Open: -Exhibition -Red Dog -Far East Scheduled but on delay (no ETA): -KT Off Schedule for Today: -Tram -Gondola -Solitude", [(R, "Exhibition", None), (D, "KT-22", None), (C, "Tram", None), (C, "Solitude", None)], []),
+ ("Siberia and Headwall are now on Lightning Hold. #palisadesops", [(H, "Siberia", "weather"), (H, "Headwall", "weather")], []),
+ ("The following lifts are now open at Squaw:\n\n-Red Dog\n-Squaw Creek\n-First Venture\n-Ski School Carpets\n\nFar East will spin around 9:30, while KT remains on Wind Hold. #squawlifts", [(R, "Red Dog", None), (R, "Resort Chair", None), (H, "KT-22", "wind")], [(R, "KT-22"), (R, "Far East")]),
+ ("The following lifts are now open:\n\n- Aerial Tram\n- Big Blue\n- Shirley Lake\n- Mountain Meadow\n- Bailey's Beach\n\nGold Coast is currently on Patrol Hold as they complete snow safety. #squawlifts", [(R, "Big Blue", None), (H, "Gold Coast", "patrol")], [(R, "Gold Coast")]),
+ ("The following lifts at Squaw Valley will begin the day on Wind Hold:\n\n- Emigrant\n- Headwall\n\nBoth Solitude and Granite Chief will have delayed openings as the snow has created chair clearance issues. #squawlifts", [(H, "Emigrant", "wind"), (D, "Solitude", None)], [(H, "Solitude")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

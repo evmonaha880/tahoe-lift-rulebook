@@ -121,7 +121,7 @@ def split_sentences(t):
         m_and = re.search(r"^(.*?\b(?:is|are|will|has|have)\b[^.]*?),?\s+and\s+((?:the\s+)?[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|has been|have been)\b.*)$", p)
         if m_and and not re.search(r"\b(?:is|are|will|has|have)\b", m_and.group(1).rsplit(",", 1)[-1]): m_and = None   # 'A is X, B and C are Y': the 'and' joins a subject list
         for piece in (list(m_and.groups()) if m_and else [p]):
-            for c in re.split(r",\s+(?=[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|on|has|have)\b)|\s+but\s+(?=[A-Za-z])|\s+and\s+(?=(?:off\s+(?:the\s+)?schedule|closed|opened|open)\b)|(?<=\bhold)\s+(?=[A-Z][\w ]{1,30}?\s+(?:has|have|is|are)\b)", piece):
+            for c in re.split(r",\s+(?=[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|on|has|have)\b)|\s+but\s+(?=[A-Za-z])|,?\s+while\s+(?=[A-Z][\w’' -]{1,30}?\s+(?:is|are|will|remains?|has|have)\b)|\s+and\s+(?=(?:off\s+(?:the\s+)?schedule|closed|opened|open)\b)|(?<=\bhold)\s+(?=[A-Z][\w ]{1,30}?\s+(?:has|have|is|are)\b)", piece):
                 if c and c.strip():
                     if len(out) > n0 and LIFT_RE.match(c.strip()) and not re.search(r"\b(?:is|are|has|have|will|been)\b", out[-1]) and not out[-1].endswith(":"):
                         out[-1] += ", " + c.strip(); continue
@@ -211,9 +211,30 @@ def group_scopes(s):
         if g not in out: out.append(g)
     return out
 
+def split_roster_prose(raw):
+    """'Open: <header>: / bullet lines / then a prose sentence about other lifts' -> (roster text, prose text), else None.
+    Without this the prose sentence is swallowed by the roster and its on-hold lifts come out as open."""
+    lines = raw.split("\n")
+    seen_header = bullets = 0
+    for j, l in enumerate(lines):
+        x = l.strip()
+        if not x: continue
+        if x.endswith(":"): seen_header += 1; continue
+        if re.match(r"^[•\-\*–]", x) or len(x.split()) <= 4 and not re.search(r"\b(?:is|are|will|remains?)\b", x): bullets += 1; continue
+        if seen_header and bullets >= 2 and len(x.split()) >= 5 and re.search(r"\b(?:is|are|will|remains?|have|has)\b", x) and find_lifts(x) \
+                and re.search(r"\bhold\b|\bdelay|off[- ]schedule|closed|\bnot open", x, re.I) and not x.startswith("#"):
+            return "\n".join(lines[:j]), "\n".join(lines[j:])
+        if len(x.split()) >= 5: return None
+    return None
+
 def parse_post(p):
     _CTX["t"] = " ".join(p["text"].replace("&amp;", "&").split())
-    ev = fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
+    sp = split_roster_prose(p["text"])
+    if sp:
+        evs = _parse_post({**p, "text": sp[0]}) + _parse_post({**p, "text": sp[1]})
+        ev = fill_causes(_CTX["t"], evs)
+    else:
+        ev = fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
     seen, out = set(), []
     for e in ev:   # the same fact can be reached by two rules; keep one
         k = (e["lift"], e["event_type"], e["parse_rule_id"])
@@ -227,6 +248,7 @@ def _parse_post(p):
     base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None}
     ev = []
     def add(rule, typ, lifts, cause=None, **kw):
+        cause = {"lightning": "weather", "icing": "weather", "ice": "weather", "icy": "weather"}.get(cause, cause)   # one cause family for lightning / ice / rain
         for l in (lifts or [None]):
             ev.append({**base, "lift": l, "event_type": typ, "cause": cause,
                        "cause_source": "observed" if cause else "unstated", "parse_rule_id": rule, "confidence": 1.0, **kw})
@@ -355,7 +377,7 @@ def _parse_post(p):
             add("P-001", "scheduled_opening", find_lifts(s), None, note="count_only"); continue
         if re.search(r"tomorrow|next (?:week|weekend)|this weekend", sl) and re.search(r"opening|will open", sl):
             add("P-090", "other", [], None, note="announcement"); continue
-        if re.search(r"(?:will open|expected to open|aiming for an? \d|opening at|expected at|will open on schedule)", sl) and find_lifts(s) and not re.search(r"hold|delay|closed", sl):
+        if re.search(r"(?:will open|will spin (?:around|at|by) \d|expected to open|aiming for an? \d|opening at|expected at|will open on schedule)", sl) and find_lifts(s) and not re.search(r"hold|delay|closed", sl):
             tm = re.search(r"(?:open(?:ing)?|expected) (?:at|for) (?:approximately |about |around )?(\d{1,2})(?::\d\d)?\s*(am|pm|a|p)?", sl)
             hh = int(tm.group(1)) if tm else 9; sfx = (tm.group(2) or "")[:1] if tm else ""
             hh = hh % 12 + 12 if sfx == "p" else (hh % 12 if sfx == "a" else (hh if hh >= 8 else hh + 12))
