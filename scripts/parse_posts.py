@@ -137,7 +137,7 @@ def fill_causes(t, ev):
     return ev
 
 MARK_RE = re.compile(
-    r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:,-]?)"
+    r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
     r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|delay(?:ed)?(?:\s+openings?)?)\s*[:,-]?)"
     r"|(?P<closed>(?:off(?:\s+the)?\s+schedule(?:\s+for\s+the\s+day)?|(?P<cc>wind)\s+closures?)\s*[:-]?)"
     r"|(?P<sched>(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
@@ -153,7 +153,7 @@ def sectional(t, add):
         seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else len(t)]
         if not m.group(0).rstrip().endswith(":"):
             seg = re.split(r"[.!?](?:\s|$)", seg, maxsplit=1)[0]          # no colon: only the same sentence can be this marker's list
-            if not (re.match(r"\s*-", seg) or LIFT_RE.match(seg.lstrip(" ,"))): seg = ""
+            if not (re.match(r"\s*-", seg) or LIFT_RE.match(seg.lstrip())): seg = ""
         kind = m.lastgroup if m.lastgroup in ("hold", "delay", "closed", "sched", "open") else next(k for k in ("hold", "delay", "closed", "sched", "open") if m.group(k))
         segs.append((kind, m, seg, find_lifts(seg)))
     withlifts = [x for x in segs if x[3]]
@@ -260,7 +260,9 @@ def _parse_post(p):
             add("P-090", "other", [], None, note="announcement"); continue
         if re.search(r"(?:will open|expected to open|aiming for an? \d|opening at|expected at|will open on schedule)", sl) and find_lifts(s) and not re.search(r"hold|delay|closed", sl):
             tm = re.search(r"(?:open(?:ing)?|expected) (?:at|for) (?:approximately |about |around )?(\d{1,2})(?::\d\d)?\s*(am|pm|a|p)?", sl)
-            late = bool(tm) and ((int(tm.group(1)) % 12) + (12 if (tm.group(2) or "").startswith("p") or (not tm.group(2) and int(tm.group(1)) < 8) else 0)) >= 10
+            hh = int(tm.group(1)) if tm else 9; sfx = (tm.group(2) or "")[:1] if tm else ""
+            hh = hh % 12 + 12 if sfx == "p" else (hh % 12 if sfx == "a" else (hh if hh >= 8 else hh + 12))
+            late = bool(tm) and hh >= 10
             add("P-030" if late else "P-001", "delay" if late else "scheduled_opening", find_lifts(s), None); continue
         if re.search(r"back open|to the open list|is back open", sl) and find_lifts(s):
             add("P-040", "reopen", find_lifts(s), None); continue
