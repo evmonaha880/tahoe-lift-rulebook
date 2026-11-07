@@ -167,6 +167,10 @@ CASES = [
  ("Delayed lift openings: Summit, Treeline Cirque, Sherwood, Yellow, and Base To Base. #palisadesops", [(D, "Summit", None), (D, "Base to Base Gondola", None)], []),
  ("Mountain Meadow, Shirley Lake, Siberia, and KT-22 are now all closed due to lightning. #palisadesops", [(C, "Siberia", "weather"), (C, "KT-22", "weather")], []),
  ("Gold Coast, Shirley Lake and Big Blue expected close to 10am. Delays are due to lift icing issues. #palisadesops", [(D, "Gold Coast", "weather")], []),
+ ("Alpine\n\nOpen at 9am:\nSummit\nRoundhouse\nTreeline Cirque\nKangaroo\n\nHold:\nScott\nAlpine Bowl Chair\n\n#palisadesops", [(S, "Summit", None), (H, "Scott", None), (H, "Alpine Bowl", None)], [(S, "Scott"), (R, "Scott")]),
+ ("At Alpine: 13 lifts on the schedule\n• Roundhouse\n• Treeline Cirque\n• Sherwood\n• Subway\nWind hold: Lakeview, Scott, Summit\nWeather impact: ABC\n#palisadesops", [(S, "Roundhouse", None), (H, "Lakeview", "wind"), (H, "Summit", "wind")], [(H, "Roundhouse")]),
+ ("Icy Conditions Today. Be prepared for operational delays and variable conditions.", [(W, None, None)], [(D, None)]),
+ ("At Palisades, we are experiencing delays due to mechanical/weather issues on the following lifts:\n• Funitel\n• Gold Coast\n• Resort Chair\n\nWe are anticipating a 9am opening for the following:\n• First Venture", [(D, "Funitel", None), (D, "Gold Coast", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
