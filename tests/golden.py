@@ -117,6 +117,8 @@ CASES = [
  ("Auto accident on HWY 89 about a mile North of Squaw. Expect delays.", [], [(D, None), (W, None)]),
  ("10 lifts scheduled, expect delays due to snow safety and winds. High winds with gusts as high as 60 mph. #palisadesops", [(W, None, None), (S, None, None)], [(D, None)]),
  ("24 hour storm totals: 0\" Palisades Base, 6\" upper mountain. 29 lifts on the schedule, with possible delays for upper mountain.", [(W, "UPPER_MOUNTAIN", None)], [(D, None)]),
+ ("Strong gusts on the ridges. The following lifts will start the day on wind hold. \n\nBase to Base Gondola (both sides)\nGold Coast\nFunitel\n\n#palisadesops", [(H, "Gold Coast", "wind"), (H, "Funitel", "wind"), (H, "Base to Base Gondola", "wind")], []),
+ ("Gold Coast Express and Siberia Express are now open! #squawlifts", [(R, "Gold Coast", None), (R, "Siberia", None)], [(R, "Funitel")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
