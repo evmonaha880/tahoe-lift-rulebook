@@ -35,10 +35,11 @@ Track text names three starting points, one of which is this project: *agents th
 ## Meta Model API ($5,000)
 - OpenAI-compatible. Base URL `https://api.meta.ai/v1`, model `muse-spark-1.3`, 1M-token context, structured JSON output, tool calling (from Meta's cookbook, https://github.com/meta-models/meta-model-cookbook/tree/main/01_api_fundamentals ). Free-tier limits per team: 2,400 requests and 800,000 tokens per minute.
 - $100 credits per participant; **claims close Saturday Nov 7 at 3:00 PM PT**; needs a dev.meta.ai account with billing verified and the same email as the hackathon acceptance. The API is US-only, so keep a fallback model.
+- **Key verified 2026-11-07:** the model list returns `muse-spark-1.3` (also 1.1, 1.2, image, voice and other models). No generation call has been made yet: credits had not arrived, and early calls can be charged to the card.
 - Our use: an independent blind labeler of tweets, with structured output and an agreement score against the rule parser. The submission should state this role in one sentence with numbers.
 
 ## Subquadratic ($5,000 + credits)
-- Docs https://docs.subq.ai/ . Base URL `https://api.subq.ai/v1`; the quickstart posts to `/v1/systemone` with model `subq-snap-1.1`, a `state` (the text to reason over) and `questions` (each with instructions and criteria per answer). It behaves like a long-context classifier. **Not yet called by us.**
+- Docs https://docs.subq.ai/ . Base URL `https://api.subq.ai/v1`; the quickstart posts to `/v1/systemone` with model `subq-snap-1.1`, a `state` (the text to reason over) and `questions` (each with instructions and criteria per answer). It behaves like a long-context classifier. **Verified 2026-11-07:** a test call worked. Each question comes back as a score between 0 and 1 (`noul`, 0.99 on a clear wind-hold post) plus token usage (119 input tokens for a one-sentence post). Per-question scores can serve as confidence values in the rules ledger.
 - Our use: load a whole winter of posts at once to discover wording templates, and classify posts as an independent reader. Report tokens used, templates found and agreement.
 
 ## Gemini / DeepMind and MongoDB
