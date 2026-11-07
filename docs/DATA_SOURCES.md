@@ -64,10 +64,31 @@ Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, no
 - **ONI:** `https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt`. **RONI:** `https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt`. **VERIFIED:** 1950 to ASO 2026 (ASO 2026: ONI 2.46, RONI 1.97). Free. Pulled by `scripts/pull_free.py`.
 - NOAA's current monitor is RONI; keep both.
 - Context: CPC El Niño Advisory, next discussion scheduled Nov 12, 2026.
+- **Winter labels (VERIFIED from the files; Dec-Jan-Feb value; ONI / RONI):**
 
-## 5. Sierra Avalanche Center: UNVERIFIED
-- Daily forecast for the Central Sierra Nevada published at 7am; an observations archive exists at `archive.sierraavalanchecenter.org`.
-- The forecast page needs a browser to render; a plain scrape returned no content. **What fields exist and whether history is downloadable are unknown.** It covers backcountry, not resort control work. Resort control work shows up in lift posts as "patrol".
+| Winter | ONI | RONI | Label (by ONI) |
+|---|---|---|---|
+| 2009-10 | +1.47 | +1.44 | moderate El Niño |
+| 2014-15 | +0.73 | +0.54 | weak El Niño |
+| 2015-16 | +2.50 | +2.14 | very strong El Niño |
+| 2016-17 | -0.08 | -0.60 | neutral (La Niña by RONI) |
+| 2017-18 | -0.71 | -1.08 | La Niña |
+| 2018-19 | +0.99 | +0.68 | weak El Niño |
+| 2019-20 | +0.71 | +0.14 | weak El Niño (neutral by RONI) |
+| 2020-21 | -0.99 | -1.32 | La Niña |
+| 2021-22 | -0.76 | -1.18 | La Niña |
+| 2022-23 | -0.55 | -0.86 | La Niña |
+| 2023-24 | +1.84 | +1.13 | strong by ONI, moderate by RONI |
+| 2024-25 | -0.46 | -1.10 | neutral by ONI, La Niña by RONI |
+| 2025-26 | -0.39 | -0.91 | neutral by ONI, La Niña by RONI |
+
+- **Consequence:** only three winters with lift posts and stations are El Niño winters (2018-19 weak, 2019-20 weak, 2023-24 strong or moderate depending on the index). All are weaker than the very strong event forecast for 2026-27. The best strong analog, 2015-16, predates the station records; whether the ops account posted lift status that winter is **not checked**. El Niño findings from this data are an extrapolation and must be labelled as such.
+
+## 5. Sierra Avalanche Center: public API, VERIFIED 2026-11-07 (not yet pulled)
+- **Access:** `https://api.avalanche.org/v2/public/products?avalanche_center_id=SAC` returns JSON with no key. One call returned 3,033 products (3 MB). The `date` parameter did not filter, so the whole archive comes back at once. Zone list: `.../products/map-layer/SAC` (one zone: Central Sierra Nevada).
+- **Depth:** 2013-04-09 to 2026-11-07. Counts by type: 2,125 forecasts, 849 weather products, 59 summaries. About 150 products a year in 2014-2019, about 300 a year from 2020 (daily in season).
+- **Fields on a forecast:** danger rating per elevation band (lower, middle, upper) for today and tomorrow, `bottom_line` text, `danger_level_text`, `json_data` (probably avalanche problems; **not yet inspected**), publish and expiry times. `weather_data` was empty on every record.
+- **Limits:** one zone for the whole region. **Not verified that Palisades lies inside the zone.** It is a backcountry forecast, not resort control work; control work shows up in lift posts as "patrol". Likely use: daily danger rating as one signal for patrol-related holds and late openings.
 
 ## 6. Weather-service API (Synoptic): DEAD for history
 - **VERIFIED 2026-11-07:** the account's token returned "no access to the requested history" for every history call, including last winter and another mountain. Metadata calls still work. Do not plan on it. Its station metadata was useful once for finding station lists.
