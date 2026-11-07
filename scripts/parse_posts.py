@@ -370,8 +370,12 @@ def _parse_post(p):
             add("P-040", "reopen", find_lifts(s), None, note="status_roster"); continue
         if re.search(r"expected opening time is \d", sl) and (find_lifts(s) or prev_lifts):
             add("P-030", "delay", find_lifts(s) or prev_lifts, cause_in(s)); continue
-        if re.search(r"(?:will|to) (?:operate|operating|be operating|spin|run) (?:until|till) \d|will be operating until \d|last download at \d", sl) and (find_lifts(s) or prev_lifts):
-            add("P-070", "partial", find_lifts(s) or (prev_lifts if len(prev_lifts) == 1 else []), None, detail="early_close")   # not terminal: the sentence may also schedule or hold the lift
+        if re.search(r"\b(?:open|operate|operating|spin|spinning|run|running|go)\b[^.:]{0,60}?\b(?:until|till) \d|last download at \d", sl) and (find_lifts(s) or prev_lifts):
+            start = 0
+            for em in re.finditer(r"\b(?:open|operate|operating|spin|spinning|run|running|go)\b[^.:]{0,60}?\b(?:until|till) \d|last download at \d", s, re.I):
+                ll = find_lifts(s[start: em.end()])[-3:] or (prev_lifts if len(prev_lifts) == 1 else [])
+                if ll: add("P-070", "partial", ll, None, detail="early_close")      # not terminal: the sentence may also schedule or open the lift
+                start = em.end()
         if re.search(r"expected close to \d|anticipated to open at \d|estimated open time of \d", sl) and find_lifts(s):
             tm = re.search(r"(\d{1,2})(?::(\d\d))?\s*(am|pm)?", sl[sl.index("expected close to") if "expected close to" in sl else 0:])
             add("P-030", "delay", find_lifts(s), cause_in(s)) if re.search(r"delays? are due|icing|\bice\b", sl) or "close to 10" in sl else add("P-001", "scheduled_opening", find_lifts(s), None); continue
