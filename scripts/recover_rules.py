@@ -63,7 +63,9 @@ for fam, label in (("held_wind", "wind"), ("held_patrol", "snow safety / avalanc
     for W in WINTERS:
         tr = [d for d in D if d["winter"] != W]; te = [d for d in D if d["winter"] == W]; b = fit(tr, fam)
         if not b or not sum(d[fam] for d in tr): line.append("  n/a"); continue
-        _, f, t = b; sc = score([d for d in te if d[f] is not None], lambda r: r[f] >= t, fam); line.append(f"{sc['f1']:5.2f} (base {sc['base_rate']:.0%})"); rules.append(f"{f}>={t}")
+        _, f, t = b; sc = score([d for d in te if d[f] is not None], lambda r: r[f] >= t, fam)
+        if sc["base_rate"] is None: line.append("  n/a (feature missing)"); continue
+        line.append(f"{sc['f1']:5.2f} (base {sc['base_rate']:.0%})"); rules.append(f"{f}>={t}")
     full = fit(D, fam)
     print(f"{label:34} n={n:3} | " + " | ".join(line) + f" | best feature on all winters: {full[1]+' >= '+str(round(full[2], 2)) if full else '-'}")
     res["cause_families"][label] = dict(days=n, folds=dict(zip(WINTERS, line)), best=(full[1], full[2]) if full else None)
@@ -72,7 +74,9 @@ print("\nSNOW-SAFETY HOLDS, two-feature rule (snow AND avalanche danger etc.), l
 SNOWF = ["prec24s", "swe24", "swe6", "avy", "depth", "temp_base"]
 for W in WINTERS:
     tr = [d for d in D if d["winter"] != W]; te = [d for d in D if d["winter"] == W]; b = fit_pair(tr, "held_patrol", SNOWF)
+    if not b: continue
     (_, (fa, a), (fb, bb)) = b; sub = [d for d in te if d[fa] is not None and d[fb] is not None]
+    if not sub: continue
     sc = score(sub, lambda r: r[fa] >= a and r[fb] >= bb, "held_patrol"); allpos = 2 * sc["base_rate"] / (1 + sc["base_rate"])
     print(f"  {W}: {fa}>={a:.2f} AND {fb}>={bb:.2f} -> F1 {sc['f1']:.2f} (precision {sc['precision']}, recall {sc['recall']}); 'always say hold' would score {allpos:.2f}")
 # ---------- lift level (scheduled lift-days only: the roster says the lift was meant to run)
