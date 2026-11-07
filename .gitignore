@@ -1,0 +1,6 @@
+# raw data is re-pullable and some of it (X posts) cannot be redistributed; keep it out of the repo
+data/raw/
+data/derived/
+.playwright-mcp/
+*.log
+.DS_Store
