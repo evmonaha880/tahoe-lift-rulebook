@@ -176,6 +176,10 @@ CASES = [
  ("Due to high winds impacting the ability to operate lifts, Alpine is closed for the day. KT, Red Dog, Far East are still operating at Palisades.", [(C, "ALL_ALPINE", "wind")], []),
  ("We are adding Olympic Lady to the schedule and moving Belmont crews there. As a result, Belmont is off the schedule for the day.", [(S, "Olympic Lady", None), (C, "Belmont", None)], [(S, "Belmont")]),
  ("The Aerial Tram is on lightning hold. It will only be downloading for the remainder of the day. #palisadesops", [(H, "Tram", "weather"), (P, "Tram", None)], []),
+ ("The following are off schedule due to increasing winds.\n\n•Summit\n•Scott\n•Lakeview\n•Yellow", [(C, "Summit", None), (C, "Yellow", None)], [(S, "Summit")]),
+ ("9 lifts are scheduled at Alpine for 9am. Today's forecast is calling for cloudy skies, calm winds, and a high of 48.\n\n-Summit, Roundhouse, Treeline Cirque, Scott, Meadow, Subway, Big Carpet, Lakeview & Sherwood.\n#alpineops", [(S, "Summit", None), (S, "Alpine Meadow", None), (S, "Sherwood", None)], []),
+ ("8 lifts are on schedule for 9am at Alpine and NOAA is forecasting sunshine, a high of 39 and NW winds of 10-15mph.\n-Summit\n-Roundhouse\n-Scott\n-Subway", [(S, "Summit", None), (S, "Subway", None)], []),
+ ("Solitude and Tram off the schedule for the day. The B2B is open at Palisades only, off load available at the top of KT.", [(C, "Solitude", None), (C, "Tram", None)], [(S, "Solitude")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

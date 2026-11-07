@@ -312,10 +312,24 @@ def _parse_post(p):
     if re.search(r"^(?:open at|these lifts are now open|the following lifts are now open|projected for|for (?:alpine|palisades), we expect)", t, re.I):
         add("P-002", "reopen", find_lifts(t), None, note="status_roster"); return ev
     last_lifts = []
+    _last_s = ""
+    _hist = []
     for s in split_sentences(t):
         sl = s.lower()
         prev_lifts = last_lifts
+        prev_s, _last_s = _last_s, s
+        before = " ".join(_hist[-3:]).lower(); _hist.append(s)
         if find_lifts(s): last_lifts = find_lifts(s)
+        # a bare list of lifts (no verb) in a post that announces a schedule: "10 lifts are scheduled at Alpine ... \n\nSummit, Roundhouse, Scott &amp; the carpet"
+        cand = s
+        bm = re.search(r"\s[-•]\s*(?=[A-Z])", s)
+        if bm and len(find_lifts(s[bm.end():])) >= 2 and not re.search(r"now (?:open|spinning)|following|:|\bhold|delay|clos|remov|off[- ](?:the )?schedule|not (?:open|operat)", s[:bm.start()], re.I): cand = s[bm.end():]          # "...a high of 56. -Summit, Roundhouse, Scott"
+        bl = find_lifts(cand)
+        if len(bl) >= 2 and re.search(r"schedul|on tap|spinning|running|lifts? (?:at|on)\b", t, re.I) \
+                and len([w for w in re.findall(r"[A-Za-z]{4,}", LIFT_RE.sub(" ", cand)) if w.lower() not in ("chair", "area", "carpet", "carpets", "lifts", "mid", "station", "mountain", "only", "with", "from", "side", "and", "the")]) <= 1 \
+                and not re.search(r"\b(?:is|are|will|has|have)\b|hold|delay|clos|remov|off (?:the )?schedule", cand.lower()) \
+                and not re.search(r"hold|delay|clos|remov|off (?:the )?schedule|:\s*$", before):
+            add("P-001", "scheduled_opening", bl, None, note="roster_list"); continue
         if re.search(r"on the schedule but still on (?:a |an )?(\w+ )?hold|there goes [^:]{3,40}: (?:wind|mechanical|patrol) hold|experiencing (?:\w+ )?holds?\b", sl) and (find_lifts(s) or re.search(r"experiencing", sl)):
             hc = re.search(r"(wind|mechanical|patrol)\s+holds?", sl); add("P-010", "hold_start", find_lifts(s), hc.group(1) if hc else cause_in(s)); continue
         if re.search(r"\bwill not operate today\b|\bnot operate today\b|we have closed [^.]*? for the day|(?<!be )\bclosing (?!at\b|soon|time|in\b|down)(?:the )?\w", sl) and find_lifts(s) and not re.search(r"road|lot\b|parking|will be closing", sl):
