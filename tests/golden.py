@@ -149,6 +149,12 @@ CASES = [
  ("The Funitel is now open! Note: Mountain Run access only. #palisadesops", [(P, "Funitel", None)], []),
  ("Parking Update: The Alpine lots are filling up quickly. The lots at the Village at Palisades Tahoe are about half full. #palisadesops", [("parking", None, None)], [(O, None)]),
  ("Good news! Treeline Cirque is off wind hold and back on the schedule. #alpinelifts", [(R, "Treeline Cirque", None)], []),
+ ("Starting the day at Squaw Valley:\n• KT-22\n• Exhibition\n• Red Dog\n• Far East\n#squawlifts", [(S, "KT-22", None), (S, "Red Dog", None)], []),
+ ("Great news! We are adding Granite Chief and Emigrant to the schedule today. #squawlifts", [(S, "Granite Chief", None), (S, "Emigrant", None)], []),
+ ("Mechanical hold on Shirley Lake. #squawlifts", [(H, "Shirley Lake", "mechanical")], []),
+ ("The Tram is no longer uploading due to strong winds #squawlifts", [(P, "Tram", "wind")], []),
+ ("We are anticipating approximately a 10 minute delay on KT-22 opening this morning. #squawlifts", [(W, "KT-22", None)], [(D, "KT-22")]),
+ ("Big Blue has been added to the schedule today and is now open! #palisadesops", [(R, "Big Blue", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

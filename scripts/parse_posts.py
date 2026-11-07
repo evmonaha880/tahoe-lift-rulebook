@@ -129,7 +129,7 @@ def split_sentences(t):
     return out
 
 
-ROSTER_HDR = re.compile(r"(?:\b\d+\s+lifts?\b[^:.]{0,60}|\blifts?\b[^:.]{0,40}\b(?:today|on tap|on the schedule)|on the schedule(?: today)? at (?:palisades|alpine)|at (?:palisades|alpine)[^:.]{0,20}on schedule|today.s lifts|following lifts (?:open|will operate)[^:.]{0,30}|plan is to have the following lifts|(?:we )?anticipate having the following lifts[^:.]{0,30}|expect to start the day with the following lifts|(?:are )?projecting a? ?[\d:]+ opening for the following|updated (?:palisades|alpine) plan for [^:.]{0,12}|estimated opening time is[^:.]{0,30}for the following|(?:are )?(?:projected|projecting)[^:.]{0,30}for the following|(?<!open )(?<!now )(?<!spinning )at (?:palisades|alpine))\s*:", re.I)
+ROSTER_HDR = re.compile(r"(?:\b\d+\s+lifts?\b[^:.]{0,60}|\blifts?\b[^:.]{0,40}\b(?:today|on tap|on the schedule)|on the schedule(?: today)? at (?:palisades|alpine)|at (?:palisades|alpine)[^:.]{0,20}on schedule|today.s lifts|following lifts (?:open|will operate)[^:.]{0,30}|plan is to have the following lifts|(?:we )?anticipate having the following lifts[^:.]{0,30}|expect to start the day with the following lifts|(?:are )?projecting a? ?[\d:]+ opening for the following|updated (?:palisades|alpine) plan for [^:.]{0,12}|estimated opening time is[^:.]{0,30}for the following|(?:are )?(?:projected|projecting)[^:.]{0,30}for the following|(?<!open )(?<!now )(?<!spinning )at (?:palisades|alpine)|today at (?:squaw|alpine)[^:.]{0,30}|starting the day at [^:.]{0,30}|(?:alpine meadows |squaw )?planned openings)\s*:", re.I)
 SEC_RE = re.compile(r"\b(Wind|Mechanical|Patrol|Maintenance|Electrical)\s+Holds?\s*:|\b(Wind\s+Closures?)\s*:|\b(Hold\s*/\s*Delay(?:ed)?)\s*:|\b(Delay(?:ed)?(?:\s+Openings?)?)\s*:|\b(Weather\s+Impacts?)\s*:|\b(Off[-\s](?:the\s+)?Schedule(?:\s+for\s+Today)?|Removed|Closed(?:\s+for\s+the\s+day)?)\s*:", re.I)
 def roster_with_sections(t, add, rule, body_start=0):
     """Roster posts ('Open at 9am: ... Wind Hold: X Delayed: Y') carry hold/delay/closed sections inside. Emit those, return roster text."""
@@ -283,7 +283,7 @@ def _parse_post(p):
         return ev
     rh = ROSTER_HDR.search(t)
     if rh and len(find_lifts(t[rh.end():])) >= 2 and not re.match(r"^(?:palisades|alpine)\W", t, re.I) \
-            and not re.search(r"spinning|now open|\bare open\b|removed|\bclosed|off[- ]schedule|\bhold|delay", t[max(0, rh.start() - 70): rh.end()], re.I) \
+            and not re.search(r"spinning|now open|\bare open\b|removed|\bclosed|off[- ]schedule|\bhold|delay|will not|not operate|not open", t[max(0, rh.start() - 90): rh.end()], re.I) \
             and rh.start() <= 160 \
             and not re.search(r"\bon\s+(?:a\s+|an\s+)?(?:\w+\s+)?hold\b|\bremoved from the schedule\b|open to the public|\bare open\b|\bis open\b|\bnow open\b", t[rh.end():], re.I):
         roster = roster_with_sections(t, add, "P-001", rh.end())
@@ -312,6 +312,16 @@ def _parse_post(p):
         if find_lifts(s): last_lifts = find_lifts(s)
         if re.search(r"on the schedule but still on (?:a |an )?(\w+ )?hold|there goes [^:]{3,40}: (?:wind|mechanical|patrol) hold|experiencing (?:\w+ )?holds?\b", sl) and (find_lifts(s) or re.search(r"experiencing", sl)):
             hc = re.search(r"(wind|mechanical|patrol)\s+holds?", sl); add("P-010", "hold_start", find_lifts(s), hc.group(1) if hc else cause_in(s)); continue
+        if re.match(r"(?:wind|mechanical|patrol) hold on\b", sl) and find_lifts(s):
+            add("P-010", "hold_start", find_lifts(s), sl.split()[0]); continue
+        if re.search(r"\b(?:adding|added)\b.{0,60}\bto the (?:squaw |palisades |alpine )?schedule", sl) and find_lifts(s) and not re.search(r"hold|back|\bopen\b|\bspin", sl):
+            add("P-001", "scheduled_opening", find_lifts(s), None); continue
+        if re.search(r"now clear and open|no longer uploading", sl) and find_lifts(s):
+            if "uploading" in sl: add("P-070", "partial", find_lifts(s), cause_in(s) or "wind", detail="no_upload")
+            else: add("P-040", "reopen", find_lifts(s), None)
+            continue
+        if re.search(r"anticipating (?:approximately )?an? \d+ ?(?:minute|min)s? delay", sl) and find_lifts(s):
+            add("P-012", "warning", find_lifts(s), cause_in(s)); continue
         if re.match(r"(?:it|they) will (?:have an? |be )(?:\w+ )?(?:on )?delay", sl) and prev_lifts and not find_lifts(s):   # "Yellow has been added to the schedule, but it will have a delayed opening"
             add("P-030", "delay", prev_lifts, cause_in(s)); continue
         sm = re.match(r"(?:still|currently) on (?:a |an )?(?:(wind|mechanical|patrol) )?hold\b", sl)
