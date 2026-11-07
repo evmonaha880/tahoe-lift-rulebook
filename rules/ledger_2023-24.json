@@ -1,0 +1,128 @@
+[
+ {
+  "rule_id": "P-001",
+  "event_type": "scheduled_opening",
+  "pattern": "Post starts 'Palisades'/'Alpine' and gives 'N lifts', 'Open at <time>' or 'lifts scheduled for'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-002",
+  "event_type": "scheduled_opening",
+  "pattern": "'Open:' / 'Now open:' / 'Operating Update' lift roster (status snapshot, lifts listed with no verb)",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-010",
+  "event_type": "hold_start",
+  "pattern": "'<lifts> is/are (now) on a [cause] hold' or 'will start/begin the day on [cause] hold'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-011",
+  "event_type": "hold_start",
+  "pattern": "Section header form 'Wind Hold: <lifts>' / 'Mechanical Hold:' / 'Patrol Hold:'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-012",
+  "event_type": "warning",
+  "pattern": "'expected to go on wind hold', 'going on a wind hold any minute', 'winds may impact lifts', 'likely snow safety delays'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-020",
+  "event_type": "closed_day",
+  "pattern": "'<lifts> closed for the day/remainder' or 'off (the) schedule' or 'now closed'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-021",
+  "event_type": "closed_day",
+  "pattern": "'All lifts ... are now closed for the day' (lifts = all)",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-030",
+  "event_type": "delay",
+  "pattern": "'Delayed Opening' or '<lift> on a mechanical delay'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-040",
+  "event_type": "reopen",
+  "pattern": "'<lifts> is/are (now/also) open' or 're-opened'",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-050",
+  "event_type": "parking",
+  "pattern": "Parking lots full / parking at <alternate lot>",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-003",
+  "event_type": "scheduled_opening",
+  "pattern": "No prefix needed: 4+ lifts named with a time range (e.g. 9am-4pm) and no hold/close verb",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-070",
+  "event_type": "partial",
+  "pattern": "Downloads only / mid-station only / sightseeing only / closing at <time> for maintenance",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-060",
+  "event_type": "other",
+  "pattern": "Weather report: starts 'Palisades:' / 'Alpine:' / 'Snow and Weather:' with no lift roster (filtered)",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-090",
+  "event_type": "other",
+  "pattern": "Road status, promotions, safety message, events (filtered)",
+  "winters": [
+   "2023-24"
+  ],
+  "status": "proposed"
+ }
+]
