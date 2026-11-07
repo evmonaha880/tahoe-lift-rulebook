@@ -94,6 +94,11 @@ CASES = [
  ("All scheduled lifts at Alpine are currently on patrol hold. We are working to get open in the next 30-45 minutes.", [(H, "ALL_ALPINE", "patrol")], []),
  ("All chair lifts at Palisades Tahoe are now closed for the day now due to avalanche concerns. Only ski school carpets remain open. #palisadesops", [(C, "ALL_PALISADES", "patrol")], []),
  ("Update: All lifts at Alpine, except *Roundhouse* will be closing at 3pm today as Liberty Energy works to restore power to the Alpine Base. #ptdispatch", [(C, "ALL_ALPINE", None)], []),
+ ("At Palisades, the following lifts are open: • Tram • Oly Lady • Exhib. • 1st Vent. • SnoVentures #palisadesops", [(R, "Olympic Lady", None), (R, "Exhibition", None), (R, "First Venture", None), (R, "SnoVentures", None)], []),
+ ("12 lifts are on the schedule at Alpine with sunny skies. • Summit, ABC, Roundhouse, Kangaroo • TLC, Yellow, Scott #alpineops", [(S, "Alpine Bowl", None), (S, "Treeline Cirque", None)], []),
+ ("SnoVentures Carpet is closed for the remainder of the day. #squawlifts", [(C, "SnoVentures", None)], []),
+ ("Siberia and Headwall lifts at Squaw and Summit, Scott, and ABC lifts at Alpine are now on Lightning Hold. #squawlifts #alpinelifts", [(H, "Alpine Bowl", None)], []),
+ ("Now open at Squaw Valley: | • Tram | • Funitel | • 1st Venture | • Blmont | • Bg Blue | • Shirley Lke", [(R, "Belmont", None), (R, "Big Blue", None), (R, "First Venture", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
