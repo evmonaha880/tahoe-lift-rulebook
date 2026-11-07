@@ -103,6 +103,10 @@ CASES = [
  ("Palisades Lift Update: Est 9am Open: Base to Base Funitel Tram KT-22 Oly Lady Red Dog Far East Resort Exhib. Shirley Granite Solitude Delay: Headwall", [(S, "Funitel", None), (S, "Exhibition", None), (D, "Headwall", None)], [(R, None)]),
  ("At Alpine the following lifts are now open: • Treeline Cirque • Meadow • Subway • Big Carpet On Wind Hold: • Roundhouse • Yellow Closed for the day: Summit #palisadesops", [(H, "Roundhouse", "wind"), (C, "Summit", None)], [(H, "Summit")]),
  ("Alpine Update: Open: •Roundhouse •Treeline – Mid-Station •Meadow •Subway •Big Carpet Operational Delay (no ETA at this time): •Summit •Sherwood •Yellow Wind Hold: •Scott", [(D, "Summit", None), (D, "Sherwood", None), (D, "Yellow", None), (H, "Scott", "wind")], []),
+ ("Palisades projected 9am Opening: KT-22 Far East Red Dog First Venture Kaya Carpet Resort Chair All other lifts on Wind Hold. 52mph sustained winds with 89mph gusts at top of Siberia right now", [(H, "ALL_OTHER", "wind")], [(H, "KT-22")]),
+ ("At Alpine we expect the following this morning with all other scheduled lifts on a weather impact delay: -Treeline -Roundhouse -Meadow -Yellow -Kangaroo -Subway -The carpets #palisadesops", [(D, "ALL_OTHER", None)], [(D, "Roundhouse"), (D, "Treeline Cirque")]),
+ ("For Palisades, the plan is to have the following lifts: -KT-22 -Exhibition -Resort Chair. All other lifts remain on standby due to weather.", [(H, "ALL_OTHER", None)], [(H, "KT-22")]),
+ ("Gold Coast and Shirley are on wind hold. All other lifts that were on a wind hold at Palisades are now off the schedule. #palisadesops", [(H, "Gold Coast", "wind"), (H, "Shirley Lake", "wind")], [(H, "ALL_OTHER")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

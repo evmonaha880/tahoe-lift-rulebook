@@ -209,12 +209,12 @@ def _parse_post(p):
     t = re.sub(r"\b(wind|mechanical|patrol)hold\b", r"\1 hold", t, flags=re.I)
     t = re.sub(r"\boff (?:lift )?maintenance\b", "off maintenance hold", t, flags=re.I)
     low = t.lower()
-    AO = re.compile(r"all other (?:scheduled )?(?:\w+ )?lifts?\b[^.!?]*?\b(?:are|remain)\b[^.!?]*?\bon (?:a )?(?:(wind|mechanical|patrol|maintenance|lightning) )?(hold|delay)(?: due to ([^.!?]*))?[.!?]?", re.I)
+    AO = re.compile(r"all other (?:scheduled )?(?:\w+ )?lifts?\b(?! that)(?:[^.!?]*?\b(?:are|remain)\b)?[^.!?]*?\bon (?:an? )?(?:(wind|mechanical|patrol|maintenance|lightning|weather impact|weather|operational) )?(hold|delay|standby)(?: due to ([^.!?]*))?[.!?]?", re.I)
     am = AO.search(t)
     if am:
-        c = {"maintenance": "mechanical", "lightning": "weather"}.get((am.group(1) or "").lower(), (am.group(1) or "").lower()) or (cause_in(am.group(3)) if am.group(3) else None)
+        c = {"maintenance": "mechanical", "lightning": "weather", "weather impact": "weather", "operational": None}.get((am.group(1) or "").lower(), (am.group(1) or "").lower()) or (cause_in(am.group(3)) if am.group(3) else None)
         rest = (t[:am.start()] + " " + t[am.end():]).strip()
-        add("P-013", "hold_start" if am.group(2).lower() == "hold" else "delay", ["ALL_OTHER"], c, **{"except": find_lifts(rest)})
+        add("P-013", "delay" if am.group(2).lower() == "delay" else "hold_start", ["ALL_OTHER"], c, **{"except": find_lifts(rest)})
         t = rest
     fm = re.search(r"(?:the )?(?:below|following) lifts (?:are|will [\w ]*?)\s*(?:on|begin the day on|start the day on)\s+(?:a\s+)?(?:(wind|mechanical|patrol)\s+)?(hold|delay)", t, re.I)
     if fm and not re.search(r"[:]", t[fm.end():fm.end() + 3]):
