@@ -116,7 +116,7 @@ li.held{{background:color-mix(in srgb,var(--bad) 22%,transparent)}}li.ran{{backg
 <ul>
 <li>Gust units come straight from the station feed and were not independently confirmed here; read thresholds as relative, not as a posted limit.</li>
 <li>The day-level rule uses the whole day's maximum gust. A morning-only version was not fitted on held-out winters, so the replay is a same-day check, not a forecast.</li>
-<li>Labels come from a parser (76 golden test cases) plus two independent model readers; 3 to 6% of posts per winter stay unmatched.</li>
+<li>Labels come from a parser (89 golden test cases) plus two independent model readers; 1 to 5% of posts per winter stay unmatched.</li>
 <li>Whether pre-event data pulls are acceptable to the organizers is unconfirmed. All code in this repo was written at the event.</li>
 </ul>
 <p class=sm>Built at the AIE Code Summit Hackathon, Software Archaeology track, 2026-11-07. Source: github.com/evmonaha880/tahoe-lift-rulebook.</p>
