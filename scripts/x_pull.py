@@ -16,13 +16,14 @@ while True:
     try:
         with urllib.request.urlopen(r, timeout=90) as resp: j = json.load(resp)
     except urllib.error.HTTPError as e:
-        print("HTTP", e.code, e.read()[:200]); break
+        print("FAILED: HTTP", e.code, e.read()[:200], "- nothing written"); sys.exit(1)
     pages += 1
     posts += j.get("data", [])
     nxt = j.get("meta", {}).get("next_token")
     if not nxt: break
     time.sleep(1.1)
+if not posts: print("no posts - nothing written"); sys.exit(2)
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
-json.dump(posts, open(OUT, "w"))
+json.dump(posts, open(OUT + ".tmp", "w")); os.replace(OUT + ".tmp", OUT)
 ds = sorted(x["created_at"] for x in posts)
-print(f"{len(posts)} posts, {pages} page(s), ~${len(posts)*0.005:.2f}; {ds[0][:10]} to {ds[-1][:10]}" if posts else "no posts")
+print(f"{len(posts)} posts, {pages} page(s), ~${len(posts)*0.005:.2f}; {ds[0][:10]} to {ds[-1][:10]}")
