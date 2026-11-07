@@ -86,6 +86,14 @@ CASES = [
  ("After further evaluation, the scheduled lifts will open at 9am. The Tram (for sightseeing only) will remain on hold until further notice. We will update if anything changes.", [(P, "Tram", None)], [(S, "Tram")]),
  ("Due to increased level of Avalanche danger, we may experience delays opening Red Dog, Squaw Creek and Far East. Exhibition (to mid-station) will run 9am-4pm. Alpine Meadows is currently experiencing a power outage.", [(W, "Red Dog", "patrol"), (W, "Far East", "patrol"), (P, "Exhibition", None)], [(S, "Red Dog"), (S, "Far East")]),
  ("Siberia is now on wind hold. Roundhouse has also been put on a hold until further notice. #Squawlifts #Alpinelifts", [(H, "Siberia", "wind"), (H, "Roundhouse", None)], []),
+ # --- group scopes (upper / lower mountain, all lifts at a site) ---
+ ("All Upper Mountain lifts at Squaw Valley are on Wind Hold. The Funitel will operate for Mountain Run only #squawlifts", [(H, "UPPER_MOUNTAIN", "wind"), (P, "Funitel", None)], []),
+ ("Due to very high winds over the crest (98 mph!), all aerial lifts at Alpine and all upper mountain lifts at Squaw will start the day on wind hold. #squawlifts", [(H, "ALL_ALPINE", "wind"), (H, "UPPER_MOUNTAIN", "wind")], []),
+ ("All lifts at Alpine will be on a maintenance hold until further notice. We are experiencing power issues and once resolved will reopen lifts. #palisadesops", [(H, "ALL_ALPINE", "mechanical")], [(R, None)]),
+ ("Upper Mountain at Palisades expected at 9:30/9:45am. #palisadesops", [(D, "UPPER_MOUNTAIN", None)], []),
+ ("All scheduled lifts at Alpine are currently on patrol hold. We are working to get open in the next 30-45 minutes.", [(H, "ALL_ALPINE", "patrol")], []),
+ ("All chair lifts at Palisades Tahoe are now closed for the day now due to avalanche concerns. Only ski school carpets remain open. #palisadesops", [(C, "ALL_PALISADES", "patrol")], []),
+ ("Update: All lifts at Alpine, except *Roundhouse* will be closing at 3pm today as Liberty Energy works to restore power to the Alpine Base. #ptdispatch", [(C, "ALL_ALPINE", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
