@@ -32,6 +32,8 @@ Track text names three starting points, one of which is this project: *agents th
 
 **Plan if we do it (not started):** an agent that answers "why did this lift hold, and will it today?" It must not be a thin wrapper: it should chain several tools (look up the matching rule in the rulebook; retrieve historical analog days with observed vs inferred labels; fetch live station readings and the forecast; report the rule's held-out accuracy), and handle a failed tool call gracefully. Start only if core results exist by about 2:30 PM.
 
+**ASI:One API (verified 2026-11-07):** OpenAI-compatible, base URL `https://api.asi1.ai/v1`, models `asi1-mini`, `asi1`, `asi1-ultra`. A one-word test call on `asi1-mini` succeeded with no credit purchase. The agent itself may use any model, so ASI:One credits are not required unless the agent calls ASI:One's own models. Fetch's page also advertises one free month of ASI:One Pro and Agentverse Premium with two promo codes; the redemption steps are in two walkthrough videos, which have not been watched: https://drive.google.com/file/d/17iBT9I2xnllnYerECd53nnhAfOxS-WdD/view and https://drive.google.com/file/d/1adhDjri7DvzGwEcZNlVlHj7rweMdv_0u/view
+
 ## Meta Model API ($5,000)
 - OpenAI-compatible. Base URL `https://api.meta.ai/v1`, model `muse-spark-1.3`, 1M-token context, structured JSON output, tool calling (from Meta's cookbook, https://github.com/meta-models/meta-model-cookbook/tree/main/01_api_fundamentals ). Free-tier limits per team: 2,400 requests and 800,000 tokens per minute.
 - $100 credits per participant; **claims close Saturday Nov 7 at 3:00 PM PT**; needs a dev.meta.ai account with billing verified and the same email as the hackathon acceptance. The API is US-only, so keep a fallback model.
