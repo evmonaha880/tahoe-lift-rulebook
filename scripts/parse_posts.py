@@ -84,6 +84,29 @@ def split_sentences(t):
     t = re.sub(r"#\w+", "", t)
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"“]|$)|\n+", t) if s.strip()]
 
+
+SEC_RE = re.compile(r"\b(Wind|Mechanical|Patrol|Maintenance|Electrical)\s+Holds?\s*:|\b(Delayed(?:\s+Opening)?)\s*:|\b(Off(?:\s+the)?\s+Schedule|Closed)\s*:", re.I)
+def roster_with_sections(t, add, rule, body_start=0):
+    """Roster posts ('Open at 9am: ... Wind Hold: X Delayed: Y') carry hold/delay/closed sections inside. Emit those, return roster text."""
+    ms = list(SEC_RE.finditer(t))
+    roster = t[body_start: ms[0].start()] if ms else t[body_start:]
+    for i, m in enumerate(ms):
+        seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else len(t)]
+        lifts = find_lifts(seg)
+        if m.group(1): add("P-011", "hold_start", lifts, {"maintenance": "mechanical", "electrical": "mechanical"}.get(m.group(1).lower(), m.group(1).lower()))
+        elif m.group(2): add("P-030", "delay", lifts, None)
+        else: add("P-020", "closed_day", lifts, None)
+    for m in re.finditer(r"\(([^)]*(?:mid-?station only|m(?:ou)?n(?:ta)?i?n?\.? ?run|must download|download|access to)[^)]*)\)", roster, re.I):
+        pl = find_lifts(roster[max(0, m.start() - 40): m.start()])
+        if pl: add("P-070", "partial", pl[-1:], None, detail="restricted")
+    for m in re.finditer(r"([\w ]{3,30}?)\s+to (?:the )?mid-?station\b", roster, re.I):
+        pl = find_lifts(m.group(1))
+        if pl: add("P-070", "partial", pl[-1:], None, detail="mid_station_only")
+    for m in re.finditer(r"\(([^)]*wind alert[^)]*)\)", roster, re.I):
+        pl = find_lifts(roster[max(0, m.start() - 40): m.start()])
+        if pl: add("P-012", "warning", pl[-1:], "wind")
+    return roster
+
 def parse_post(p):
     raw = p["text"]
     t = " ".join(raw.replace("&amp;", "&").split())
@@ -97,14 +120,15 @@ def parse_post(p):
     low = t.lower()
     # P-001 scheduled opening
     if re.match(r"^(?:palisades|alpine)[^:]{0,20}:", t, re.I) and re.search(r"\b\d+ lifts?\b|open at \d|lifts? (?:are )?(?:scheduled|on the schedule)", t, re.I):
-        lifts = find_lifts(t.split(":", 1)[1])
+        roster = roster_with_sections(t, add, "P-001", t.index(":") + 1)
+        lifts = find_lifts(roster)
         add("P-001", "scheduled_opening", lifts, None, note="roster" if lifts else None,
             wind_warning=bool(re.search(r"wind", t, re.I) and re.search(r"impact", t, re.I)))
         return ev
     if re.match(r"^(?:palisades|alpine)\s+open at \d", t, re.I):
-        add("P-001", "scheduled_opening", find_lifts(t), None); return ev
-    if re.match(r"^(?:palisades|alpine)?\s*(?:operations? update|update|now open|open)\s*:", t, re.I) and not re.search(r"\bhold\b", t, re.I):
-        add("P-002", "scheduled_opening", find_lifts(t), None); return ev
+        roster = roster_with_sections(t, add, "P-001"); add("P-001", "scheduled_opening", find_lifts(roster), None); return ev
+    if re.match(r"^(?:palisades|alpine)?\s*(?:operations? update|update|now open|open)\s*:", t, re.I) and True:
+        roster = roster_with_sections(t, add, "P-002"); add("P-002", "scheduled_opening", find_lifts(roster), None); return ev
     # P-011 section headers (can coexist in one post)
     hdr = re.findall(r"(Wind|Mechanical|Patrol) Hold:\s*([^:]*?)(?=\s+(?:Off(?: the)? Schedule|Delayed|Open|Closed)\s*:|$)", t, re.I)
     if hdr:
@@ -115,9 +139,33 @@ def parse_post(p):
         for seg in re.findall(r"Delayed:\s*([^:]*?)(?=\s+(?:Open|Closed|Off(?: the)? Schedule)\s*:|$)", t, re.I): add("P-030", "delay", find_lifts(seg), None)
         add("P-002", "scheduled_opening", find_lifts(re.split(r"delayed\s*:", t, flags=re.I)[0]), None); return ev
     if len(find_lifts(t)) >= 4 and re.search(r"\d\s*(?:am|a|pm|p)?\s*-\s*\d+\s*(?:am|a|pm|p)\b", t, re.I) and not re.search(r"\b(?:hold|closed|delayed)\b", t, re.I):
-        add("P-003", "scheduled_opening", find_lifts(t), None); return ev
+        roster = roster_with_sections(t, add, "P-003"); add("P-003", "scheduled_opening", find_lifts(roster), None); return ev
+    if re.search(r"^(?:open at|these lifts are now open|the following lifts are now open|projected for|for (?:alpine|palisades), we expect)", t, re.I):
+        add("P-002", "scheduled_opening", find_lifts(t), None); return ev
     for s in split_sentences(t):
         sl = s.lower()
+        if re.search(r"\b\d+ (?:lower mountain )?lifts?\b.{0,40}(?:schedul|for \d|\d ?(?:am|a)\b)|lifts? (?:are )?(?:on the )?schedul", sl) and not re.search(r"on delay|on hold", sl):
+            add("P-001", "scheduled_opening", find_lifts(s), None, note="count_only"); continue
+        if re.search(r"(?:will open|expected to open|aiming for an? \d|opening at|expected at|will open on schedule)", sl) and find_lifts(s) and not re.search(r"hold|delay|closed", sl):
+            add("P-001", "scheduled_opening", find_lifts(s), None); continue
+        if re.search(r"back open|to the open list|is back open", sl) and find_lifts(s):
+            add("P-040", "reopen", find_lifts(s), None); continue
+        if re.search(r"list of (?:closures|wind holds?)|added to (?:the )?(?:list of )?(?:wind )?holds?|(?:been|be) put on (?:a )?(\w+ )?hold|adding .* to the list|back on wind hold", sl) and find_lifts(s):
+            hc = cause_in(s) or "wind"
+            add("P-010" if "hold" in sl else "P-020", "hold_start" if "hold" in sl else "closed_day", find_lifts(s), hc); continue
+        if re.search(r"on delay|delays? due to icing|icing on lifts", sl):
+            add("P-030", "delay", find_lifts(s) or ["ALL"], "weather" if "ic" in sl else cause_in(s)); continue
+        if re.search(r"mid-?station|uploads? only|min(?:ute)? schedule|open (?:till|until) \d", sl) and find_lifts(s):
+            add("P-070", "partial", find_lifts(s), "wind" if "wind" in sl else None, detail="limited"); continue
+        if re.search(r"safety (?:tip|alert|first)|unmarked hazards|shuttle|storm totals|\d+ ?(?:hour|hr|h) totals|hour totals|forecast is for|happy holidays|chance of", sl) and not re.search(r"\bhold\b", sl):
+            add("P-060" if re.search(r"totals|forecast|chance", sl) else "P-090", "other", [], None); continue
+        if re.search(r"\blot\b.*\bfull\b|hidden valley|deer park", sl):
+            add("P-050", "parking", [], None); continue
+        if re.search(r"(?:\bon|put on|added to|to the list of) (?:a |the )?(?:\w+ )?(?:wind |mechanical |patrol |maintenance )?holds?\b", sl) and find_lifts(s) and not re.search(r"expected to go|may go|could go|will be put", sl):
+            hm = re.search(r"(wind|mechanical|patrol|maintenance|electrical|icing)\s+holds?", sl)
+            hc = {"maintenance": "mechanical", "electrical": "mechanical", "icing": "weather"}.get(hm.group(1), hm.group(1)) if hm else None
+            subj = re.split(r"\b(?:remains?|is|are|will|also|have|has)\b", s, maxsplit=1, flags=re.I)[0]
+            add("P-010", "hold_start", find_lifts(subj) or find_lifts(s), hc); continue
         if re.search(r"download(?:s|ing)? only|downloads? only|mid-?station only|sightseeing only|closing at \d.*maintenance|will be closing at \d", sl) and find_lifts(s):
             add("P-070", "partial", find_lifts(s), cause_in(s) or ("wind" if re.search(r"wind", sl) else None), detail="download_only" if "download" in sl else "limited"); continue
         if re.search(r"may go on hold|may go on wind hold", sl): add("P-012", "warning", find_lifts(s), "wind"); continue
@@ -153,7 +201,7 @@ def parse_post(p):
         if re.search(r"parking (?:lots?|is)|lots? (?:are|is) full|we are (?:now )?parking at", sl):
             add("P-050", "parking", [], None); continue
         # P-021 all lifts closed
-        if re.search(r"all (?:the )?lifts.*(closed|on hold)|all lifts that", sl):
+        if re.search(r"all (?:the )?lifts.*(closed|on (?:\\w+ )?hold)|all lifts that", sl):
             add("P-021", "closed_day", ["ALL"], cause_in(s) or ("wind" if "wind hold" in sl else None)); continue
         # P-010 holds
         m = re.search(r"^(.*?)\s+(?:is|are|will be|will|also|-)\s*(?:all\s+)?(?:now\s+|also\s+|still\s+)?(?:(?:start|begin|starting|beginning|going)\s+the day\s+)?(?:on|begin the day on|start the day on)\s+(?:a\s+)?(\w+)?\s*(?:hold)\b", s, re.I)

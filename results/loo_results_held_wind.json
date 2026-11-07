@@ -1,0 +1,306 @@
+{
+ "day_level": {
+  "2023-24": {
+   "rule": "day_spd >= 47.6",
+   "learned": {
+    "tp": 44,
+    "fp": 19,
+    "fn": 5,
+    "n": 168,
+    "precision": 0.698,
+    "recall": 0.898,
+    "f1": 0.786,
+    "base_rate": 0.292
+   },
+   "baseline": {
+    "tp": 49,
+    "fp": 109,
+    "fn": 0,
+    "n": 168,
+    "precision": 0.31,
+    "recall": 1.0,
+    "f1": 0.473,
+    "base_rate": 0.292
+   },
+   "trained_on": [
+    "2024-25",
+    "2025-26"
+   ]
+  },
+  "2024-25": {
+   "rule": "day_spd >= 54.4",
+   "learned": {
+    "tp": 36,
+    "fp": 5,
+    "fn": 14,
+    "n": 124,
+    "precision": 0.878,
+    "recall": 0.72,
+    "f1": 0.791,
+    "base_rate": 0.403
+   },
+   "baseline": {
+    "tp": 50,
+    "fp": 64,
+    "fn": 0,
+    "n": 124,
+    "precision": 0.439,
+    "recall": 1.0,
+    "f1": 0.61,
+    "base_rate": 0.403
+   },
+   "trained_on": [
+    "2023-24",
+    "2025-26"
+   ]
+  },
+  "2025-26": {
+   "rule": "day_spd >= 51.9",
+   "learned": {
+    "tp": 13,
+    "fp": 8,
+    "fn": 7,
+    "n": 89,
+    "precision": 0.619,
+    "recall": 0.65,
+    "f1": 0.634,
+    "base_rate": 0.225
+   },
+   "baseline": {
+    "tp": 20,
+    "fp": 65,
+    "fn": 0,
+    "n": 89,
+    "precision": 0.235,
+    "recall": 1.0,
+    "f1": 0.381,
+    "base_rate": 0.225
+   },
+   "trained_on": [
+    "2023-24",
+    "2024-25"
+   ]
+  }
+ },
+ "lift_level": {
+  "2023-24": {
+   "learned": {
+    "tp": 58,
+    "fp": 116,
+    "fn": 132,
+    "f1": 0.319
+   },
+   "baseline": {
+    "tp": 188,
+    "fp": 1069,
+    "fn": 2,
+    "f1": 0.26
+   }
+  },
+  "2024-25": {
+   "learned": {
+    "tp": 38,
+    "fp": 63,
+    "fn": 26,
+    "f1": 0.461
+   },
+   "baseline": {
+    "tp": 61,
+    "fp": 329,
+    "fn": 3,
+    "f1": 0.269
+   }
+  },
+  "2025-26": {
+   "learned": {
+    "tp": 0,
+    "fp": 2,
+    "fn": 1,
+    "f1": 0.0
+   },
+   "baseline": {
+    "tp": 1,
+    "fp": 18,
+    "fn": 0,
+    "f1": 0.1
+   }
+  }
+ },
+ "two_stage": {
+  "2023-24": {
+   "rule": "day_spd >= 47.6",
+   "learned": {
+    "tp": 50,
+    "fp": 108,
+    "fn": 190,
+    "n": 3112,
+    "precision": 0.316,
+    "recall": 0.208,
+    "f1": 0.251,
+    "base_rate": 0.077
+   },
+   "baseline": {
+    "tp": 240,
+    "fp": 2650,
+    "fn": 0,
+    "n": 3112,
+    "precision": 0.083,
+    "recall": 1.0,
+    "f1": 0.153,
+    "base_rate": 0.077
+   },
+   "lift_sensitivity": {
+    "Granite Chief": 0.46,
+    "Base to Base Gondola": 0.46,
+    "Bailey's Beach": 0.38,
+    "Big Blue": 0.38,
+    "Tram": 0.33,
+    "Alpine Bowl": 0.33,
+    "Treeline Cirque": 0.31,
+    "Roundhouse": 0.3,
+    "Summit": 0.27,
+    "Mountain Meadow": 0.27,
+    "Subway": 0.27,
+    "Yellow": 0.22,
+    "Scott": 0.22,
+    "Gold Coast": 0.16,
+    "Siberia": 0.16,
+    "Shirley Lake": 0.16,
+    "Funitel": 0.12,
+    "Ahsoka Carpet": 0.1,
+    "First Venture": 0.07,
+    "Wa She Shu": 0.06,
+    "Kangaroo": 0.05,
+    "Belmont": 0.05,
+    "Far East": 0.04,
+    "KT-22": 0.03,
+    "Big Carpet": 0.02,
+    "Red Dog": 0.02,
+    "Resort Chair": 0.02,
+    "Exhibition": 0.02
+   }
+  },
+  "2024-25": {
+   "rule": "day_spd >= 54.4",
+   "learned": {
+    "tp": 10,
+    "fp": 19,
+    "fn": 25,
+    "n": 518,
+    "precision": 0.345,
+    "recall": 0.286,
+    "f1": 0.312,
+    "base_rate": 0.068
+   },
+   "baseline": {
+    "tp": 35,
+    "fp": 395,
+    "fn": 0,
+    "n": 518,
+    "precision": 0.081,
+    "recall": 1.0,
+    "f1": 0.151,
+    "base_rate": 0.068
+   },
+   "lift_sensitivity": {
+    "Base to Base Gondola": 0.6,
+    "Tram": 0.58,
+    "Emigrant": 0.57,
+    "Belmont": 0.48,
+    "Mountain Meadow": 0.45,
+    "Solitude": 0.4,
+    "Headwall": 0.39,
+    "Silverado": 0.37,
+    "Bailey's Beach": 0.33,
+    "Summit": 0.33,
+    "Lakeview": 0.33,
+    "Big Blue": 0.32,
+    "Siberia": 0.24,
+    "Gold Coast": 0.23,
+    "Wa She Shu": 0.22,
+    "Shirley Lake": 0.21,
+    "Scott": 0.21,
+    "Granite Chief": 0.2,
+    "Funitel": 0.17,
+    "Alpine Bowl": 0.16,
+    "Treeline Cirque": 0.15,
+    "Big Carpet": 0.14,
+    "High Camp Carpet": 0.13,
+    "Subway": 0.12,
+    "Far East": 0.12,
+    "Sherwood": 0.09,
+    "Roundhouse": 0.08,
+    "Kangaroo": 0.08,
+    "Resort Chair": 0.08,
+    "Red Dog": 0.08,
+    "Broken Arrow": 0.07,
+    "Yellow": 0.07,
+    "Exhibition": 0.06,
+    "First Venture": 0.04,
+    "KT-22": 0.04,
+    "Ahsoka Carpet": 0.04
+   }
+  },
+  "2025-26": {
+   "rule": "day_spd >= 51.9",
+   "learned": {
+    "tp": 1,
+    "fp": 1,
+    "fn": 4,
+    "n": 75,
+    "precision": 0.5,
+    "recall": 0.2,
+    "f1": 0.286,
+    "base_rate": 0.067
+   },
+   "baseline": {
+    "tp": 5,
+    "fp": 69,
+    "fn": 0,
+    "n": 75,
+    "precision": 0.068,
+    "recall": 1.0,
+    "f1": 0.127,
+    "base_rate": 0.067
+   },
+   "lift_sensitivity": {
+    "Emigrant": 0.59,
+    "Base to Base Gondola": 0.59,
+    "Tram": 0.55,
+    "Belmont": 0.43,
+    "Solitude": 0.42,
+    "Headwall": 0.41,
+    "Mountain Meadow": 0.41,
+    "Silverado": 0.37,
+    "Bailey's Beach": 0.36,
+    "Lakeview": 0.33,
+    "Big Blue": 0.32,
+    "Siberia": 0.26,
+    "Summit": 0.24,
+    "Granite Chief": 0.24,
+    "Alpine Bowl": 0.23,
+    "Gold Coast": 0.23,
+    "Scott": 0.21,
+    "Shirley Lake": 0.21,
+    "Wa She Shu": 0.2,
+    "Treeline Cirque": 0.17,
+    "Funitel": 0.16,
+    "Subway": 0.13,
+    "High Camp Carpet": 0.13,
+    "Roundhouse": 0.13,
+    "Yellow": 0.1,
+    "Big Carpet": 0.1,
+    "Sherwood": 0.09,
+    "Far East": 0.08,
+    "Broken Arrow": 0.07,
+    "Kangaroo": 0.07,
+    "Resort Chair": 0.06,
+    "Red Dog": 0.06,
+    "First Venture": 0.04,
+    "Ahsoka Carpet": 0.04,
+    "Exhibition": 0.04,
+    "KT-22": 0.03
+   }
+  }
+ }
+}
