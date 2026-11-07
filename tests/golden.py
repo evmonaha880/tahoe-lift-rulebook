@@ -46,6 +46,13 @@ CASES = [
   [(S, "Tram", None), (H, "Solitude", "wind"), (H, "Bailey's Beach", "wind"), (D, "Wa She Shu", None), (D, "Gold Coast", None)], [(H, "Tram")]),
  ("The Base to Base Gondola is on wind hold. Kangaroo will have a Delayed Opening. #palisadesops", [(H, "Base to Base Gondola", "wind"), (D, "Kangaroo", None)], []),
  ("Hot Wheels and Meadow Chair are now off Wind Hold and open to the public. #alpinelifts", [(R, "Hot Wheels", "wind")], [(H, None)]),
+ ("All lifts at Alpine and Palisades are currently on lightning hold. We are downloading via the Funitel and Tram.", [(H, "ALL", "weather")], []),
+ ("The Funitel and Gold Coast are now open. All other lifts remain on lightning hold. #palisadesops", [(R, "Funitel", None), (H, "ALL_OTHER", "weather")], []),
+ ("All scheduled lifts are delayed this morning with no current estimated opening time. #palisadesops", [(D, "ALL", None)], [(S, None)]),
+ ("Update: TLC to mid station is open.", [(P, "Treeline Cirque", None)], []),
+ ("The Funitel is on maintenance hold and will be delayed to approximately 9:30am. #palisadesops", [(H, "Funitel", "mechanical"), (D, "Funitel", None)], []),
+ ("Exhibition will open a few minutes late and the Tram is on wind hold. #palisadesops", [(D, "Exhibition", None), (H, "Tram", "wind")], []),
+ ("The Funitel is now open to the public offering mountain run only. #palisadesops", [(R, "Funitel", None), (P, "Funitel", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
