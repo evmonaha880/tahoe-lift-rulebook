@@ -390,6 +390,7 @@ def _parse_post(p):
             near = find_lifts(re.sub(r"\bto (?:the )?high camp\b", "", s[max(0, qm.start() - 60): qm.start()], flags=re.I))
             add("P-070", "partial", near[-1:] or find_lifts(s) or last_lifts, "wind" if re.search(r"wind", sl) else None, detail="limited")
         if not find_lifts(s) and re.search(r"(?:the )?mountain (?:will )?remains? closed|(?:palisades(?: tahoe)?|alpine|squaw(?: valley)?)(?: alpine)? (?:is|are) (?:officially )?closed(?: for (?:today|the day))?|we are (?:now )?closed for (?:the )?(?:day|remainder|rest)|(?:will )?not be open for (?:skiing|riding)|all (?:the |\w+ )?lifts are (?:now )?closed", sl):
+            sl = sl.replace("palisades tahoe alpine", "alpine")
             scope = "ALL_PALISADES" if re.search(r"palisades|squaw", sl) and not re.search(r"alpine", sl) else ("ALL_ALPINE" if re.search(r"alpine", sl) and not re.search(r"palisades|squaw", sl) else "ALL")
             add("P-021", "closed_day", [scope], cause_in(s)); continue
         if re.match(r"(?:\w+ )?parking update", sl): add("P-050", "parking", [], None); continue
