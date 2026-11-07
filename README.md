@@ -23,4 +23,4 @@ Work in progress. Data collection scripts first, analysis next. Nothing here cla
 
 ## Re-running
 
-Raw data goes in `data/raw/` (git-ignored). Scripts read API credentials from files under `~/.config/`, never from the repo.
+Raw data goes in `data/raw/` (git-ignored). Scripts read API credentials from files kept outside the repo, never from the repo itself.
