@@ -186,6 +186,9 @@ CASES = [
  ("Our crews are working hard to get lifts open with an icy start to the morning. Delayed lifts at Palisades: Wa She Shu, Red Dog, Bailey’s Beach, Belmont", [(D, "Wa She Shu", None), (D, "Belmont", None)], []),
  ("Wind holds at Alpine: Summit, B2B, Meadow, Scott, Subway, Lakeview. #palisadesops", [(H, "Summit", "wind"), (H, "Base to Base Gondola", "wind")], []),
  ("The Aerial Tram is undergoing scheduled maintenance today.\n\nTo access Mountain Meadow, Bailey's Beach, Belmont, and Silverado, take the Funitel or Squaw One up the mountain to Big Blue or Gold Coast.", [], [(S, "Belmont"), (S, "Silverado")]),
+ ("Alpine Lift Update:\n\nProjected 9am Opening:\nMeadow\nSubway\nRoundhouse\n\nExpect Delays:\nBase to Base Gondola\nSummit\nScott\n#palisadesops", [(S, "Roundhouse", None), (W, "Summit", None), (W, "Scott", None)], [(D, "Summit"), (S, "Summit")]),
+ ("Palisades - est 9am Open: Funitel KT-22 Far East Red Dog * Windy - possible weather impact\n\nDelay:\nB2B\nTram\nBailey\nBelmont", [(S, "Funitel", None), (D, "Tram", None), (D, "Belmont", None)], [(W, "Tram")]),
+ ("Palisades Update: Crews are working on the following lifts. Please expect delays:\nExhibition\nFar East\nFirst Venture\nKT-22", [(W, "Exhibition", None), (W, "KT-22", None)], [(D, "Exhibition")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

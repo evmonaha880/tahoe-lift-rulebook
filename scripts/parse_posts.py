@@ -169,7 +169,8 @@ def fill_causes(t, ev):
     return ev
 
 MARK_RE = re.compile(
-    r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?(?:\s+at\s+(?:alpine|palisades|squaw))?|(?<![\w-])(?<!schedule/on )(?<!schedule/)holds?(?:\s+at\s+\w+)?(?=\s*:)|weather\s+holds?|mechan\.?\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
+    r"(?P<warn>(?:please\s+)?(?:expect(?:ed)?|possible|potential|anticipated)\s+(?:(?:snow\s+safety|weather|wind|operational|lift)\s+)?delays?\s*:)"
+    r"|(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?(?:\s+at\s+(?:alpine|palisades|squaw))?|(?<![\w-])(?<!schedule/on )(?<!schedule/)holds?(?:\s+at\s+\w+)?(?=\s*:)|weather\s+holds?|mechan\.?\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
     r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|scheduled\s+but\s+(?:on\s+)?delay(?:ed)?(?:\s*\([^)]*\))?|operational\s+delay(?:\s*\([^)]*\))?|experiencing\s+(?:\w+\s+)?delays?\s+[^:.]{0,70}following\s+lifts(?=\s*:)|delay(?:ed)?(?:\s+lifts?)?(?:\s+openings?)?(?:\s+at\s+(?:alpine|palisades|squaw))?)\s*[:,-]?)"
     r"|(?P<closed>(?:off[-\s](?:the\s+)?schedule(?:\s+for\s+(?:the\s+day|today))?|(?P<cc>wind)\s+closures?|(?<!and )closed\s+for\s+the\s+day(?=\s*:)|removed(?=\s*:))\s*[:-]?)"
     r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|\d{1,2}\s*(?:am|a)\s+open\s*:|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
@@ -191,14 +192,14 @@ def sectional(t, add):
             _cut = re.split(r"\.\s+(?=[A-Z][^.]*\b(?:is|are|will|has|have|remains?)\b)", seg, maxsplit=1)   # a prose sentence after the list is not part of it
             seg = _cut[0]
             if len(_cut) > 1: _LEFT.append(_cut[1])
-        kind = m.lastgroup if m.lastgroup in ("hold", "delay", "closed", "sched", "open") else next(k for k in ("hold", "delay", "closed", "sched", "open") if m.group(k))
+        kind = m.lastgroup if m.lastgroup in ("hold", "delay", "closed", "sched", "open", "warn") else next(k for k in ("hold", "delay", "closed", "sched", "open", "warn") if m.group(k))
         segs.append((kind, m, seg, find_lifts(seg)))
     withlifts = [x for x in segs if x[3]]
     colon = any(x[1].group(0).rstrip().endswith(":") for x in withlifts)
     if not withlifts or not (len({x[0] for x in withlifts}) >= 2 or colon or any(len(x[3]) >= 2 for x in withlifts)): return False
     if len(segs) == 1 and segs[0][0] == "delay" and not colon and len(segs[0][3]) < 2: return False
     pre = t[:segs[0][1].start()]
-    if segs[0][0] in ("hold", "delay", "closed") and len(find_lifts(pre)) >= 2 and not re.search(r"\bhold|delay|closed|off[- ]schedule|remov|will not|not operate|\bare open\b|now open|spinning", pre, re.I):
+    if segs[0][0] in ("hold", "delay", "closed", "warn") and len(find_lifts(pre)) >= 2 and not re.search(r"\bhold|delay|closed|off[- ]schedule|remov|will not|not operate|\bare open\b|now open|spinning", pre, re.I):
         add("P-001", "scheduled_opening", find_lifts(pre), None, note="roster_before_sections")     # 'At Alpine: 13 lifts on the schedule: A B C  Wind hold: D E'
     for kind, m, seg, lifts in segs:
         if not lifts: continue
@@ -206,6 +207,9 @@ def sectional(t, add):
             pl = find_lifts(pm.group(1))[-1:]
             if pl: add("P-070", "partial", pl, None, detail="download_only" if "download" in pm.group(2).lower() else "restricted")
         if kind == "hold": add("P-011", "hold_start", lifts, (m.group("hc") or m.group("hc2") or "").lower().replace("maintenance", "mechanical").replace("electrical", "mechanical") or None)
+        elif kind == "warn":
+            add("P-012", "warning", lifts, cause_in(m.group(0) + " " + t[max(0, m.start() - 60): m.start()]) or None)
+            if re.search(r"\b\d+ (?:\w+ )?lifts? (?:are )?(?:scheduled|on the schedule)", pre, re.I) and m is segs[0][1]: add("P-001", "scheduled_opening", lifts, None, note="roster")
         elif kind == "delay": add("P-030", "delay", lifts, "patrol" if re.search(r"snow\s+safety", m.group(0), re.I) else None)
         elif kind == "closed": add("P-020", "closed_day", lifts, "wind" if m.group("cc") else None)
         elif kind == "sched": roster_with_sections(seg, add, "P-001"); add("P-001", "scheduled_opening", lifts, None, note="roster")
