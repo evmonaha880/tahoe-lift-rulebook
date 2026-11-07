@@ -39,13 +39,15 @@
     "Olympic Lady",
     "First Venture",
     "Kaya Carpet",
-    "SnoVentures"
+    "SnoVentures",
+    "Palisades Carpets"
    ],
    "notes": {
     "Olympic Lady": "LOWER. Listed open beside KT-22, Exhibition, Red Dog and Resort Chair while all upper lifts are on wind hold (2022-23, 2025-26). It does hold in very strong wind but is named apart from the upper group.",
     "First Venture": "Opens with the lower lifts (operators' posts).",
     "Kaya Carpet": "'The carpets' open with the lower lifts; carpet membership is inferred from that phrase.",
-    "SnoVentures": "Same as Kaya Carpet."
+    "SnoVentures": "Same as Kaya Carpet.",
+    "Palisades Carpets": "Generic 'the carpets' / 'Carpet' on a Palisades-side post (ski school and beginner carpets). Resolved by context in the parser. Which individual carpets (Kaya, SnoVentures, Boomer, Ahsoka) is not stated."
    }
   },
   "UNGROUPED": [
@@ -71,9 +73,11 @@
    "Treeline Cirque",
    "Roundhouse",
    "Sherwood",
-   "Big Carpet"
+   "Big Carpet",
+   "Alpine Carpets"
   ],
-  "ALL_ALPINE": "'all aerial lifts at Alpine' / 'all lifts at Alpine' is a site-wide scope, handled separately by the parser."
+  "ALL_ALPINE": "'all aerial lifts at Alpine' / 'all lifts at Alpine' is a site-wide scope, handled separately by the parser.",
+  "note_carpets": "'Alpine Carpets' = bare 'Carpet' / 'the carpets' on an Alpine-side post (Big Carpet and Little Carpet are named separately when the post names them)."
  },
  "meadow_vs_mountain_meadow": {
   "Mountain Meadow": "High Camp, Palisades side, 3-seat fixed, 850 m. Upper group.",

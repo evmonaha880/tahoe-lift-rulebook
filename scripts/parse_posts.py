@@ -26,7 +26,7 @@ LIFTS = {
     "Bailey's Beach": r"bailey[’']?s(?: beach)?",
     "Belmont": r"belmont|blm(?:o|n)?nt",
     "Mountain Meadow": r"(?:(?:mountain|mtn)\.? ?(?:meadows?|mdw|mdow)|meadow)(?! road)",
-    "High Camp Carpet": r"(?<!to )high camp(?: carpet)?",
+    "High Camp Carpet": r"(?<!to )high camp(?: carpet)?|(?:hc|camp|high) carpet",
     "Gold Coast": r"gold coast",
     "Lakeview": r"lakeview",
     "Yellow": r"yellow(?: chair)?",
@@ -51,6 +51,7 @@ LIFTS = {
     "Olympic Lady": r"olympic lady|oly\.? lady",
     "Sherwood Express": r"sherwood express",
     "Boomer": r"boomer(?: magic)?(?: carpet)?",
+    "Carpets": r"(?<!\d )(?<!tubing )(?:(?:the|both|all|ski school|snow school|lower|upper|beginner)\s+)?(?:magic )?carpets?\b",   # generic; resolved to Alpine Carpets / Palisades Carpets by context in find_lifts
     "SnoVentures": r"sno-?v(?:entures?)?\+?(?: carpet| area)?(?! tubing)",
 }
 LIFT_RE = re.compile(r"\b(?:" + "|".join(f"(?P<L{i}>{p})" for i, p in enumerate(LIFTS.values())) + r")\b", re.I)
@@ -75,6 +76,12 @@ def find_lifts(span):
     out = []
     for m in LIFT_RE.finditer(span):
         name = LIFT_NAMES[int(m.lastgroup[1:])]
+        if name == "Carpets":
+            side = _alpine_side(span)
+            if side is None:
+                ctx = _CTX["t"]; side = _alpine_side(ctx) if ctx else False
+                if side is None and re.search(r"#alpine|\balpine\b", ctx or "", re.I) and not re.search(r"#palisades|#squaw", ctx or "", re.I): side = True
+            name = "Alpine Carpets" if side else "Palisades Carpets"
         if name == "Mountain Meadow" and not re.search(r"mountain|mtn|mdow", m.group(0), re.I):
             side = _alpine_side(span)
             if side is None:

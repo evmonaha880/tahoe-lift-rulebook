@@ -189,6 +189,9 @@ CASES = [
  ("Alpine Lift Update:\n\nProjected 9am Opening:\nMeadow\nSubway\nRoundhouse\n\nExpect Delays:\nBase to Base Gondola\nSummit\nScott\n#palisadesops", [(S, "Roundhouse", None), (W, "Summit", None), (W, "Scott", None)], [(D, "Summit"), (S, "Summit")]),
  ("Palisades - est 9am Open: Funitel KT-22 Far East Red Dog * Windy - possible weather impact\n\nDelay:\nB2B\nTram\nBailey\nBelmont", [(S, "Funitel", None), (D, "Tram", None), (D, "Belmont", None)], [(W, "Tram")]),
  ("Palisades Update: Crews are working on the following lifts. Please expect delays:\nExhibition\nFar East\nFirst Venture\nKT-22", [(W, "Exhibition", None), (W, "KT-22", None)], [(D, "Exhibition")]),
+ ("Alpine: cloudy, chance of snow. 9 lifts for 9a-4p:\n\nBase to Base Gondola\nSummit\nRoundhouse\nMeadow\nSubway\nCarpet\n\n#palisadesops", [(S, "Alpine Carpets", None), (S, "Summit", None)], [(S, "Palisades Carpets")]),
+ ("Palisades: sun, high of 59. 20 lifts 9a-4p:\n\nBase to base\nTram\nFunitel\nKT\nFirst Venture & Carpet\nHeadwall\nSiberia\n\n#palisadesops", [(S, "Palisades Carpets", None), (S, "First Venture", None)], [(S, "Alpine Carpets")]),
+ ("Palisades Now Open: Tram Funitel KT-22 HC Carpet Big Blue", [(R, "High Camp Carpet", None)], [(R, "Palisades Carpets")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
