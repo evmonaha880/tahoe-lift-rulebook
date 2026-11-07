@@ -155,6 +155,13 @@ CASES = [
  ("The Tram is no longer uploading due to strong winds #squawlifts", [(P, "Tram", "wind")], []),
  ("We are anticipating approximately a 10 minute delay on KT-22 opening this morning. #squawlifts", [(W, "KT-22", None)], [(D, "KT-22")]),
  ("Big Blue has been added to the schedule today and is now open! #palisadesops", [(R, "Big Blue", None)], []),
+ ("Due to reports of lightning in the area, we are taking precautions and closing Granite Chief. #squawlifts", [(C, "Granite Chief", None)], []),
+ ("We have just been updated that Broken Arrow will not operate today. Silverado is still scheduled to open at 9 am. #squawlifts", [(C, "Broken Arrow", None)], [(C, "Silverado")]),
+ ("We have received 10\" of new snow overnight. Due to high winds on the Upper Mountain we are unable to run the Funitel, Aerial Tram and Gold Coast. #squawlifts", [(H, "Funitel", "wind"), (H, "Tram", "wind"), (H, "Gold Coast", "wind")], []),
+ ("Lift maintenance has advised that KT22 has a chair spacing issue and is now delayed. We have placed it on a maintenance hold and will update as soon as we are able to open it. #squawlifts", [(H, "KT-22", "mechanical")], []),
+ ("Add Gold Coast and Siberia to that lift of wind holds. #squawlifts", [(H, "Gold Coast", "wind"), (H, "Siberia", "wind")], []),
+ ("Winds have died down a bit and allowed us to open the following lifts:\n\n- Aerial Tram\n- Bailey's Beach\n- Big Blue\n\n#squawlifts", [(R, "Tram", None), (R, "Big Blue", None)], []),
+ ("We will be attempting to open the following lifts at 9 am at Squaw Valley:\n- Red Dog\n- Squaw Creek\n- Far East\n- First Venture", [(S, "Red Dog", None), (S, "Resort Chair", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
