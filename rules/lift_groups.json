@@ -1,0 +1,114 @@
+{
+ "_about": "Which lifts the operators mean by 'upper mountain' / 'lower mountain'. Data, not code: not yet read by the parser. Source: data/raw/lifts/palisades_lifts_2026-11-07.md (last section), read from the operators' own posts 2018-19 to 2025-26; where AI tools disagreed, the posts won. Names are the parser's canonical lift names.",
+ "palisades": {
+  "UPPER_MOUNTAIN": {
+   "lifts": [
+    "Tram",
+    "Funitel",
+    "Wa She Shu",
+    "Siberia",
+    "Headwall",
+    "Emigrant",
+    "Granite Chief",
+    "Gold Coast",
+    "Shirley Lake",
+    "Big Blue",
+    "Solitude",
+    "Silverado",
+    "Mountain Meadow",
+    "Bailey's Beach",
+    "Belmont",
+    "High Camp Carpet",
+    "Base to Base Gondola",
+    "Broken Arrow"
+   ],
+   "notes": {
+    "Funitel": "Sometimes runs alone while the rest of upper is held ('Funitel for Mountain Run only'). An exception, not a different group.",
+    "Base to Base Gondola": "Held together with the upper lifts in 2024-25; the file lists it as upper but this is the thinnest evidence of the group.",
+    "Broken Arrow": "MODERATE confidence. Held in the same wind-hold list as Bailey's Beach, Mountain Meadow, Belmont and others (2018-19); a 2022-23 post lists it on patrol hold beside 'all other upper mountain lifts'. An AI answer said lower-to-mid; the posts do not support that.",
+    "Gold Coast": "Parser has one 'Gold Coast' lift. The resort lists Gold Coast Express (6HSD, 935 m) and the Funitel (Gold Coast Funitel) separately. Which one a post means is unchecked."
+   }
+  },
+  "LOWER_MOUNTAIN": {
+   "lifts": [
+    "KT-22",
+    "Exhibition",
+    "Far East",
+    "Red Dog",
+    "Resort Chair",
+    "Olympic Lady",
+    "First Venture",
+    "Kaya Carpet",
+    "SnoVentures"
+   ],
+   "notes": {
+    "Olympic Lady": "LOWER. Listed open beside KT-22, Exhibition, Red Dog and Resort Chair while all upper lifts are on wind hold (2022-23, 2025-26). It does hold in very strong wind but is named apart from the upper group.",
+    "First Venture": "Opens with the lower lifts (operators' posts).",
+    "Kaya Carpet": "'The carpets' open with the lower lifts; carpet membership is inferred from that phrase.",
+    "SnoVentures": "Same as Kaya Carpet."
+   }
+  },
+  "UNGROUPED": [
+   "Ahsoka Carpet",
+   "Little Carpet"
+  ]
+ },
+ "alpine": {
+  "_note": "Operators rarely say 'upper mountain' at Alpine; they name lifts. Evidence is thin. No upper/lower split is claimed. Lifts below are the ones the file names.",
+  "named_together": [
+   "Summit",
+   "Scott",
+   "Alpine Bowl"
+  ],
+  "named_separately_not_upper": [
+   "Yellow",
+   "Kangaroo"
+  ],
+  "also_alpine": [
+   "Lakeview",
+   "Alpine Meadow",
+   "Subway",
+   "Treeline Cirque",
+   "Roundhouse",
+   "Sherwood",
+   "Big Carpet"
+  ],
+  "ALL_ALPINE": "'all aerial lifts at Alpine' / 'all lifts at Alpine' is a site-wide scope, handled separately by the parser."
+ },
+ "meadow_vs_mountain_meadow": {
+  "Mountain Meadow": "High Camp, Palisades side, 3-seat fixed, 850 m. Upper group.",
+  "Alpine Meadow": "The file's 'Meadow': Alpine, Scott/Lakeview area next to Subway, 2-seat fixed, 366 m. NOT in the Palisades groups.",
+  "parser_status": "SEPARATED (scripts/parse_posts.py, find_lifts). A bare 'Meadow' is Alpine Meadow when its own span names Alpine-only lifts (or says Alpine), else when the whole post does and names no Palisades-only lift; 'Mountain/Mtn Meadow' is always Mountain Meadow. Bare 'Meadow' in a post with no Alpine signal stays Mountain Meadow."
+ },
+ "not_in_the_2026_lifts_file": {
+  "legacy_names_in_posts": [
+   "Squaw One",
+   "Squaw Creek",
+   "Hot Wheels",
+   "Tucker Carpet"
+  ],
+  "in_file_not_in_parser": [
+   "Shaka",
+   "Wylee",
+   "Boomer",
+   "The Pulley"
+  ],
+  "note": "Legacy names appear in 2018-2021 posts (Squaw Valley era). The four beginner lifts have 0 posts except 'boomer' (5, meaning unchecked)."
+ },
+ "likely_renames_UNVERIFIED": {
+  "_note": "Read off the event counts by winter (a name vanishes the winter another appears). Not applied anywhere: per-lift analysis keeps the names as posted. Verify before merging.",
+  "Squaw Creek -> Wa She Shu": "Squaw Creek posts run 2018-19 to 2020-21; Wa She Shu first appears 2021-22.",
+  "Squaw One -> Resort Chair": "Squaw One posts run 2018-19 to 2020-21; Resort Chair first appears 2021-22.",
+  "Tucker Carpet -> Kaya Carpet": "Tucker 2018-19 to 2019-20; Kaya from 2020-21. Weakest of the three.",
+  "Hot Wheels": "2018-19 only; no successor seen."
+ },
+ "first_seen_by_winter": {
+  "Treeline Cirque": "2019-20",
+  "Wa She Shu": "2021-22",
+  "Resort Chair": "2021-22",
+  "High Camp Carpet": "2021-22",
+  "Base to Base Gondola": "2022-23",
+  "Ahsoka Carpet": "2023-24",
+  "note": "Emigrant has no events in 2021-22 and Silverado none in 2019-20 and 2025-26."
+ }
+}

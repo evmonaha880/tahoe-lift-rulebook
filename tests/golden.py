@@ -107,6 +107,10 @@ CASES = [
  ("At Alpine we expect the following this morning with all other scheduled lifts on a weather impact delay: -Treeline -Roundhouse -Meadow -Yellow -Kangaroo -Subway -The carpets #palisadesops", [(D, "ALL_OTHER", None)], [(D, "Roundhouse"), (D, "Treeline Cirque")]),
  ("For Palisades, the plan is to have the following lifts: -KT-22 -Exhibition -Resort Chair. All other lifts remain on standby due to weather.", [(H, "ALL_OTHER", None)], [(H, "KT-22")]),
  ("Gold Coast and Shirley are on wind hold. All other lifts that were on a wind hold at Palisades are now off the schedule. #palisadesops", [(H, "Gold Coast", "wind"), (H, "Shirley Lake", "wind")], [(H, "ALL_OTHER")]),
+ ("Treeline Cirque, Meadow and Big Carpet are all now open. #palisadesopen", [(R, "Treeline Cirque", None), (R, "Alpine Meadow", None), (R, "Big Carpet", None)], [(R, "Mountain Meadow")]),
+ ("Tram, Funitel, Gold Coast and Meadow are now open. #palisadesops", [(R, "Mountain Meadow", None)], [(R, "Alpine Meadow")]),
+ ("8 lifts are scheduled for Alpine for 9am: Roundhouse, Treeline Cirque, Scott, Meadow, Subway, Big Carpet #alpineops", [(S, "Alpine Meadow", None)], [(S, "Mountain Meadow")]),
+ ("Mtn Meadow and the Tram are now on wind hold. Meadow at Alpine is open.", [(H, "Mountain Meadow", "wind")], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

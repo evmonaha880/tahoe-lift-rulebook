@@ -57,10 +57,31 @@ LIFTS = {
 LIFT_RE = re.compile(r"\b(?:" + "|".join(f"(?P<L{i}>{p})" for i, p in enumerate(LIFTS.values())) + r")\b", re.I)
 LIFT_NAMES = list(LIFTS.keys())
 
+# Alpine's "Meadow" (366 m, beside Subway) and Palisades' "Mountain Meadow" (High Camp, 850 m) are two lifts (rules/lift_groups.json).
+# A bare "Meadow" is Alpine's when its own span, or failing that the whole post, names Alpine lifts and no Palisades-only lift.
+ALPINE_ONLY = {"Alpine Bowl", "Big Carpet", "Kangaroo", "Roundhouse", "Summit", "Yellow", "Lakeview", "Scott", "Subway", "Treeline Cirque", "Sherwood", "Sherwood Express", "Little Carpet"}
+PALISADES_ONLY = {"Tram", "Funitel", "KT-22", "Red Dog", "Resort Chair", "Wa She Shu", "Siberia", "Headwall", "Emigrant", "Silverado", "Solitude", "Granite Chief", "Big Blue",
+                  "Shirley Lake", "Bailey's Beach", "Belmont", "High Camp Carpet", "Gold Coast", "Far East", "Exhibition", "Squaw One", "Squaw Creek", "Broken Arrow", "Olympic Lady", "First Venture"}
+_CTX = {"t": ""}
+def _raw_hits(text):
+    return [(LIFT_NAMES[int(m.lastgroup[1:])], m.group(0)) for m in LIFT_RE.finditer(text)]
+def _alpine_side(span):
+    hits = {n for n, _ in _raw_hits(span)}
+    if hits & ALPINE_ONLY and not hits & PALISADES_ONLY: return True
+    if hits & PALISADES_ONLY and not hits & ALPINE_ONLY: return False
+    if re.search(r"\balpine\b(?! meadows? road)", span, re.I) and not re.search(r"\b(?:palisades|squaw)\b", span, re.I): return True
+    return None
+
 def find_lifts(span):
     out = []
     for m in LIFT_RE.finditer(span):
         name = LIFT_NAMES[int(m.lastgroup[1:])]
+        if name == "Mountain Meadow" and not re.search(r"mountain|mtn|mdow", m.group(0), re.I):
+            side = _alpine_side(span)
+            if side is None:
+                ctx = _CTX["t"]; side = _alpine_side(ctx) if ctx else False
+                if side is None and re.search(r"#alpine|\balpine\b", ctx or "", re.I) and not re.search(r"#palisades|#squaw", ctx or "", re.I): side = True
+            if side: name = "Alpine Meadow"
         if name not in out: out.append(name)
     return out
 
@@ -189,6 +210,7 @@ def group_scopes(s):
     return out
 
 def parse_post(p):
+    _CTX["t"] = " ".join(p["text"].replace("&amp;", "&").split())
     ev = fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
     seen, out = set(), []
     for e in ev:   # the same fact can be reached by two rules; keep one
