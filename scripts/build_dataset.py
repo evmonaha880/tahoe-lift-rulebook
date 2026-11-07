@@ -64,6 +64,13 @@ def feats(W, date, S):
             "fnt_day_gust": agg(6, 16, "gust", max, ["Funitel Top"]),
             "temp_base": agg(6, 10, "temp", lambda v: sum(v) / len(v), ["Roundhouse Btm"]),
             **snow_feats(S, date), "avy": AV.get(date)}
+# Group scopes ("all upper mountain lifts are on wind hold") are credited to each real lift in the group, from rules/lift_groups.json.
+_LG = json.load(open(os.path.join(R, "..", "rules", "lift_groups.json")))
+_P, _A = _LG["palisades"], _LG["alpine"]
+_UP, _LO = set(_P["UPPER_MOUNTAIN"]["lifts"]), set(_P["LOWER_MOUNTAIN"]["lifts"])
+GROUPS = {"UPPER_MOUNTAIN": _UP, "LOWER_MOUNTAIN": _LO,
+          "ALL_PALISADES": _UP | _LO | set(_P["UNGROUPED"]) | set(_LG["not_in_the_2026_lifts_file"]["legacy_names_in_posts"]),
+          "ALL_ALPINE": set(_A["named_together"]) | set(_A["named_separately_not_upper"]) | set(_A["also_alpine"])}
 rows = []
 for Y in map(int, sys.argv[1:]):
     W = f"{Y}-{str(Y+1)[2:]}"; weather = load_weather(Y); SN = snotel(Y)
@@ -76,11 +83,10 @@ for Y in map(int, sys.argv[1:]):
         sched = {e["lift"] for e in es if e["event_type"] == "scheduled_opening" and e["lift"] and e["lift"] != "ALL"}
         lifts = set(sched) | {e["lift"] for e in es if e["lift"] and e["lift"] not in ("ALL", "ALL_OTHER", "ALL_ALPINE", "ALL_PALISADES", "UPPER_MOUNTAIN", "LOWER_MOUNTAIN") and e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "reopen")}
         if any(e["lift"] == "ALL_OTHER" for e in es): lifts = set(lifts) | {"(all other lifts)"}
-        if any(e["lift"] in ("ALL_ALPINE", "ALL_PALISADES", "UPPER_MOUNTAIN", "LOWER_MOUNTAIN") for e in es): lifts = set(lifts) | {"(group scope)"}
         if not lifts: continue
         f = feats(weather, date, SN)
         for L in sorted(lifts):
-            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL" or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (L == "(group scope)" and e["lift"] in ("ALL_ALPINE", "ALL_PALISADES", "UPPER_MOUNTAIN", "LOWER_MOUNTAIN")))]
+            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL" or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
             row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),

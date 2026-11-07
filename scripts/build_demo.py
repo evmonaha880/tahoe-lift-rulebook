@@ -21,6 +21,12 @@ lf, bf = mean([x[4]["f1"] for x in dl]), mean([x[5]["f1"] for x in dl])
 ts = [(w, res["two_stage"][w]) for w in WINTERS if w in res["two_stage"]]
 tf, tb = mean([v["learned"]["f1"] for _, v in ts]), mean([v["baseline"]["f1"] for _, v in ts])
 tw = sum(v["learned"]["f1"] > v["baseline"]["f1"] for _, v in ts)
+ll = [(w, res["lift_level"][w]) for w in WINTERS if w in res["lift_level"]]
+lf2, lb2 = mean([v["learned"]["f1"] for _, v in ll]), mean([v["baseline"]["f1"] for _, v in ll])
+lw = sum(v["learned"]["f1"] > v["baseline"]["f1"] for _, v in ll)
+pr = lambda x: x["tp"] / (x["tp"] + x["fp"]) if x["tp"] + x["fp"] else 0.0
+rc = lambda x: x["tp"] / (x["tp"] + x["fn"]) if x["tp"] + x["fn"] else 0.0
+ll_rows = "".join(f"<tr><td>{w}</td><td class=g>{v['learned']['f1']:.2f}</td><td>{pr(v['learned']):.2f}</td><td>{rc(v['learned']):.2f}</td><td class=b>{v['baseline']['f1']:.2f}</td><td>{pr(v['baseline']):.2f}</td></tr>" for w, v in ll)
 
 # ---- replay days: one hit, one false alarm, both from a winter the day rule never saw
 REPLAY = [("2023-12-12", "A miss: the rule fired and nothing held"), ("2024-01-06", "A hit: the rule fired and 17 of 22 lifts held")]
@@ -80,7 +86,7 @@ li.held{{background:color-mix(in srgb,var(--bad) 22%,transparent)}}li.ran{{backg
 
 <div class=big>
 <div class=card><small>Day-level wind rule, held-out winters (mean F1)</small><b>{lf:.2f}</b><small>vs {bf:.2f} for the naive &ldquo;gust &ge; 25&rdquo; rule</small></div>
-<div class=card><small>Per-lift two-stage rule, held-out winters (mean F1)</small><b>{tf:.2f}</b><small>vs {tb:.2f} naive: a tie, wins {tw} of {len(ts)} winters. Reported as a negative result.</small></div>
+<div class=card><small>Per-lift threshold rules, held-out winters (mean F1)</small><b>{lf2:.2f}</b><small>vs {lb2:.2f} for the naive rule; better in {lw} of {len(ll)} winters</small></div>
 <div class=card><small>Evidence base</small><b>{len(WINTERS)} winters</b><small>{sum(x[1] for x in dl):,} days with lift posts, {len(book)} lifts with rules</small></div>
 </div>
 
@@ -93,8 +99,12 @@ li.held{{background:color-mix(in srgb,var(--bad) 22%,transparent)}}li.ran{{backg
 <table><tr><th>Held-out winter</th><th>Days</th><th>Hold rate</th><th>Rule fitted on the other 7</th><th>F1</th><th>Precision</th><th>Recall</th><th>Baseline F1</th><th>Baseline precision</th></tr>{dl_rows}</table>
 <p class=sm>The baseline never misses a hold (recall 1.00) because it fires on nearly every windy day; its precision is 0.23 to 0.57. The learned threshold lands near 60 in every fold, so the rule is stable across winters, which is the evidence it is not noise.</p>
 
-<h2>Per lift: which chair holds? This part did not beat the naive rule</h2>
-<p>Stage one is the day-level wind rule. Stage two keeps a lift only if it held at least a third of the time when that rule fired in the training winters. Scored on every scheduled lift-day of the held-out winter. It wins in {tw} of {len(ts)} winters and loses in the rest, so we do not claim it.</p>
+<h2>Per lift: which chair holds?</h2>
+<p>Each lift gets its own gust threshold, fitted on seven winters and scored on the eighth, over every scheduled lift-day. A post like &ldquo;all upper mountain lifts are on wind hold&rdquo; is credited to each upper-mountain lift (the grouping is in rules/lift_groups.json, read from the operators' own posts).</p>
+<table><tr><th>Held-out winter</th><th>Per-lift rules F1</th><th>Precision</th><th>Recall</th><th>Naive (gust &ge; 25) F1</th><th>Naive precision</th></tr>{ll_rows}</table>
+<p class=sm>2020-21 has no entry, and 2019-20 and 2025-26 have at most one held lift-day in the scored set, so those scores mean nothing either way. We show them rather than drop them.</p>
+<h3>A variant that did not help</h3>
+<p>Two-stage: the day-level rule first, then keep a lift only if it held a third of the time when that rule fired. It averages F1 {tf:.2f} against {tb:.2f} for the naive rule, and wins {tw} of {len(ts)} winters, so we do not claim it.</p>
 <table><tr><th>Held-out winter</th><th>Lift-days</th><th>Wind rule used</th><th>Two-stage F1</th><th>Baseline F1</th></tr>{ts_rows}</table>
 
 <h2>The recovered rulebook (top lifts by scheduled days)</h2>
@@ -109,7 +119,7 @@ li.held{{background:color-mix(in srgb,var(--bad) 22%,transparent)}}li.ran{{backg
 <li><b>Snow safety and avalanche control:</b> a two-feature rule (new snow and snowpack depth) beat &ldquo;always say hold&rdquo; in only 3 of 8 held-out winters. Patrol decisions are not in the weather data.</li>
 <li><b>Mechanical holds:</b> no weather feature predicts them, as expected. They stay in an &ldquo;unexplained&rdquo; bucket, labelled as such.</li>
 <li><b>Lightning, ice, rain:</b> too few days (about 50) for a stable rule.</li>
-<li><b>Per-lift prediction:</b> averages the same F1 as the naive rule and is far below the day-level wind rule. Knowing a windy day is easy; knowing which chair stops is not, from these features. The per-lift thresholds in the table below are descriptive (hold rate above vs below), not a validated predictor.</li>
+<li><b>Two-stage per-lift prediction:</b> no better than the naive rule. The simpler per-lift threshold rules above do better, once group posts such as &ldquo;all upper mountain lifts&rdquo; are credited to each lift.</li>
 </ul>
 
 <h2>Limits we know about</h2>
