@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 # ---- lift vocabulary (canonical name -> regex alias). Lift->mountain mapping is NOT done here (modeling decision later).
 LIFTS = {
-    "Base to Base Gondola": r"(?:the )?base to base(?: gondola)?|b2b(?: gondola)?|gondola",
+    "Base to Base Gondola": r"(?:the )?base (?:to|2) base(?: gondola)?|base-to-base(?: gondola)?|b ?2 ?b(?: gondola)?|gondola",
     "Tram": r"(?:the )?tram",
     "Funitel": r"(?:the )?funi(?:tel)?",
     "KT-22": r"kt-?22|\bkt\b",
@@ -118,7 +118,7 @@ RULES = [
 ]
 RID = {r[0]: r for r in RULES}
 
-HEDGE_RE = re.compile(r"\bexpect(?:ing|ed)?\b[^.!?]{0,30}\bdelays?\b|\b(?:may|might|could)\b[^.!?]{0,40}\b(?:delays?|delayed|(?:go|be put|be placed) on (?:a |an )?(?:\w+ )?hold)\b|\b(?:possible|potential(?:ly)?|likely|anticipat\w*)\s+(?:\w+ ){0,2}(?:delays?|holds?)\b|\blikely to go on\b|\bprepared for (?:\w+ )?delays?\b|\banticipat\w+ (?:some )?delays?\b")
+HEDGE_RE = re.compile(r"\bexpect(?:ing|ed)?\b[^.!?]{0,30}\bdelays?\b|\b(?:may|might|could)\b[^.!?]{0,40}\b(?:delays?|delayed|(?:go|be put|be placed) on (?:a |an )?(?:\w+ )?hold)\b|\b(?:possible|potential(?:ly)?|likely|anticipat\w*)\s+(?:\w+ ){0,2}(?:delays?|holds?)\b|\bdelays?\s+(?:are\s+|is\s+)?(?:expected|likely|possible|anticipated)\b(?!\s*\))|\blikely to go on\b|\bprepared for (?:\w+ )?delays?\b|\banticipat\w+ (?:some )?delays?\b")
 def split_sentences(t):
     t = re.sub(r"\s*#\w+\s*", ". ", t)
     parts = [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"“]|$)|\n+", t) if s.strip()]

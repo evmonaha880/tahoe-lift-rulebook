@@ -192,6 +192,8 @@ CASES = [
  ("Alpine: cloudy, chance of snow. 9 lifts for 9a-4p:\n\nBase to Base Gondola\nSummit\nRoundhouse\nMeadow\nSubway\nCarpet\n\n#palisadesops", [(S, "Alpine Carpets", None), (S, "Summit", None)], [(S, "Palisades Carpets")]),
  ("Palisades: sun, high of 59. 20 lifts 9a-4p:\n\nBase to base\nTram\nFunitel\nKT\nFirst Venture & Carpet\nHeadwall\nSiberia\n\n#palisadesops", [(S, "Palisades Carpets", None), (S, "First Venture", None)], [(S, "Alpine Carpets")]),
  ("Palisades Now Open: Tram Funitel KT-22 HC Carpet Big Blue", [(R, "High Camp Carpet", None)], [(R, "Palisades Carpets")]),
+ ("We received 12 inches of snow in the last 24 hours! Operational delays are expected due to heavy snowfall and high winds.", [(W, None, "wind")], [(D, None)]),
+ ("Palisades Open at 9am:\nFunitel\nKT\nRed Dog\n\nWind Hold:\nBase 2 Base – Both sides\nTram\nBailey's", [(H, "Base to Base Gondola", "wind"), (H, "Tram", "wind")], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
