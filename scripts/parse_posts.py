@@ -172,7 +172,7 @@ MARK_RE = re.compile(
     r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?|(?<![\w-])(?<!schedule/on )(?<!schedule/)holds?(?=\s*:)|weather\s+holds?|mechan\.?\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
     r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|scheduled\s+but\s+(?:on\s+)?delay(?:ed)?(?:\s*\([^)]*\))?|operational\s+delay(?:\s*\([^)]*\))?|experiencing\s+(?:\w+\s+)?delays?\s+[^:.]{0,70}following\s+lifts(?=\s*:)|delay(?:ed)?(?:\s+lift)?(?:\s+openings?)?)\s*[:,-]?)"
     r"|(?P<closed>(?:off[-\s](?:the\s+)?schedule(?:\s+for\s+(?:the\s+day|today))?|(?P<cc>wind)\s+closures?|(?<!and )closed\s+for\s+the\s+day(?=\s*:)|removed(?=\s*:))\s*[:-]?)"
-    r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
+    r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|\d{1,2}\s*(?:am|a)\s+open\s*:|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
     r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:|all\s+open\s+now\s*:)", re.I)
 
 def sectional(t, add):
@@ -348,10 +348,18 @@ def _parse_post(p):
         if re.search(r"continues? to download|will continue to download", sl):
             dl = find_lifts(re.sub(r"from high camp", "", s, flags=re.I)) or (prev_lifts if len(prev_lifts) == 1 else [])
             if dl: add("P-070", "partial", dl, None, detail="download_only")   # not terminal: the same sentence may carry the hold
+        if re.search(r"\b(?:is|are) scheduled to (?:spin|open)\b", sl) and find_lifts(s) and not re.search(r"hold|delay|tomorrow", sl):
+            add("P-001", "scheduled_opening", find_lifts(s.split(" and the ")[0]) or find_lifts(s), None)
+            if not re.search(r"sightseeing|sched\. for", sl): continue
+        if re.search(r"(?:sched\.|scheduled) for sightseeing", sl) and (find_lifts(s) or prev_lifts):
+            ll = find_lifts(s) or prev_lifts[-1:]
+            add("P-001", "scheduled_opening", ll, None); add("P-070", "partial", ll, None, detail="sightseeing"); continue
+        if re.search(r"will only be download", sl) and (find_lifts(s) or prev_lifts):
+            add("P-070", "partial", find_lifts(s) or (prev_lifts if len(prev_lifts) == 1 else []), cause_in(s), detail="download_only"); continue
         if re.match(r"(?:wind|mechanical|patrol) hold on\b", sl) and find_lifts(s):
             add("P-010", "hold_start", find_lifts(s), sl.split()[0]); continue
         if re.search(r"\b(?:adding|added)\b.{0,60}\bto the (?:squaw |palisades |alpine )?schedule", sl) and find_lifts(s) and not re.search(r"hold|back|\bopen\b|\bspin", sl):
-            add("P-001", "scheduled_opening", find_lifts(s), None); continue
+            add("P-001", "scheduled_opening", find_lifts(re.split(r"\band (?:moving|moved|sending)\b|\bas a result\b", s, flags=re.I)[0]), None); continue
         if re.search(r"now clear and open|now opened to the public|no longer (?:be )?uploading", sl) and find_lifts(s):
             if "uploading" in sl: add("P-070", "partial", find_lifts(s), cause_in(s), detail="no_upload")
             else: add("P-040", "reopen", find_lifts(s), None)
@@ -381,7 +389,7 @@ def _parse_post(p):
         if qm and (find_lifts(s) or last_lifts) and not re.search(r"\bnot open\b", sl):
             near = find_lifts(re.sub(r"\bto (?:the )?high camp\b", "", s[max(0, qm.start() - 60): qm.start()], flags=re.I))
             add("P-070", "partial", near[-1:] or find_lifts(s) or last_lifts, "wind" if re.search(r"wind", sl) else None, detail="limited")
-        if not find_lifts(s) and re.search(r"(?:the )?mountain (?:will )?remains? closed|we are (?:now )?closed for (?:the )?(?:day|remainder|rest)|(?:will )?not be open for (?:skiing|riding)|all (?:the |\w+ )?lifts are (?:now )?closed", sl):
+        if not find_lifts(s) and re.search(r"(?:the )?mountain (?:will )?remains? closed|(?:palisades(?: tahoe)?|alpine|squaw(?: valley)?)(?: alpine)? (?:is|are) (?:officially )?closed(?: for (?:today|the day))?|we are (?:now )?closed for (?:the )?(?:day|remainder|rest)|(?:will )?not be open for (?:skiing|riding)|all (?:the |\w+ )?lifts are (?:now )?closed", sl):
             scope = "ALL_PALISADES" if re.search(r"palisades|squaw", sl) and not re.search(r"alpine", sl) else ("ALL_ALPINE" if re.search(r"alpine", sl) and not re.search(r"palisades|squaw", sl) else "ALL")
             add("P-021", "closed_day", [scope], cause_in(s)); continue
         if re.match(r"(?:\w+ )?parking update", sl): add("P-050", "parking", [], None); continue
