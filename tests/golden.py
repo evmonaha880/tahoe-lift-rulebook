@@ -137,6 +137,18 @@ CASES = [
  ("The following lifts are now open at Squaw:\n\n-Red Dog\n-Squaw Creek\n-First Venture\n-Ski School Carpets\n\nFar East will spin around 9:30, while KT remains on Wind Hold. #squawlifts", [(R, "Red Dog", None), (R, "Resort Chair", None), (H, "KT-22", "wind")], [(R, "KT-22"), (R, "Far East")]),
  ("The following lifts are now open:\n\n- Aerial Tram\n- Big Blue\n- Shirley Lake\n- Mountain Meadow\n- Bailey's Beach\n\nGold Coast is currently on Patrol Hold as they complete snow safety. #squawlifts", [(R, "Big Blue", None), (H, "Gold Coast", "patrol")], [(R, "Gold Coast")]),
  ("The following lifts at Squaw Valley will begin the day on Wind Hold:\n\n- Emigrant\n- Headwall\n\nBoth Solitude and Granite Chief will have delayed openings as the snow has created chair clearance issues. #squawlifts", [(H, "Emigrant", "wind"), (D, "Solitude", None)], [(H, "Solitude")]),
+ ("Operations Update: The mountain will remain closed today due to lightning, which is forecast to continue for the rest of the day. #palisadesops", [(C, "ALL", "weather")], [(R, None)]),
+ ("Operations Update: Season Extended through May 30th!! Read all about it here: https://t.co/2uA00dVXK5", [], [(R, None), (C, None)]),
+ ("All Palisades lifts are closed for the day. Head to Alpine for Roundhouse, Meadow & the Big Carpet. #palisadesops", [(C, "ALL_PALISADES", None)], []),
+ ("Gusts of 100+mph will impact lift operations. Scheduled for 9am at Palisades are the Funitel, KT-22, Exhibition, Red Dog, Far East, Resort Chair and SnoVentures. #palisadesops", [(S, "Funitel", None), (S, "KT-22", None), (S, "SnoVentures", None)], []),
+ ("These are all open at Alpine!\n•Summit\n•Roundhouse\n•Treeline Cirque\n•Scott #alpineops", [(R, "Summit", None), (R, "Roundhouse", None), (R, "Scott", None)], [(O, "x")]),
+ ("To start out the morning we have added Wa She Shu to the Wind Hold list. #palisadesops", [(H, "Wa She Shu", "wind")], []),
+ ("Wa She Shu is back on the schedule for 9am. #palisadesops", [(S, "Wa She Shu", None)], []),
+ ("Far East Express will be closed for today. #palisadesops", [(C, "Far East", None)], []),
+ ("Far East will be about fifteen minutes late. Looking at 9:15am for opening. #palisadesops", [(D, "Far East", None)], []),
+ ("The Funitel is now open! Note: Mountain Run access only. #palisadesops", [(P, "Funitel", None)], []),
+ ("Parking Update: The Alpine lots are filling up quickly. The lots at the Village at Palisades Tahoe are about half full. #palisadesops", [("parking", None, None)], [(O, None)]),
+ ("Good news! Treeline Cirque is off wind hold and back on the schedule. #alpinelifts", [(R, "Treeline Cirque", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
