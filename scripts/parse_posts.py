@@ -149,7 +149,7 @@ MARK_RE = re.compile(
     r"(?P<hold>(?:(?P<hc>wind|mechanical|patrol|maintenance|electrical)\s+holds?|hold\s*/\s*delay(?:ed)?|(?:will\s+)?(?:begin|start)\s+the\s+day\s+on\s+(?:a\s+)?(?:(?P<hc2>wind|mechanical|patrol)\s+)?hold)\s*[:-]?)"
     r"|(?P<delay>(?:(?:are|is)\s+on\s+delay|likely\s+(?:snow\s+safety\s+)?delays\s+for|delay(?:ed)?(?:\s+openings?)?)\s*[:,-]?)"
     r"|(?P<closed>(?:off(?:\s+the)?\s+schedule(?:\s+for\s+the\s+day)?|(?P<cc>wind)\s+closures?)\s*[:-]?)"
-    r"|(?P<sched>(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
+    r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
     r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:)", re.I)
 
 def sectional(t, add):

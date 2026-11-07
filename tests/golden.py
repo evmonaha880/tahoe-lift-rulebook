@@ -99,6 +99,8 @@ CASES = [
  ("SnoVentures Carpet is closed for the remainder of the day. #squawlifts", [(C, "SnoVentures", None)], []),
  ("Siberia and Headwall lifts at Squaw and Summit, Scott, and ABC lifts at Alpine are now on Lightning Hold. #squawlifts #alpinelifts", [(H, "Alpine Bowl", None)], []),
  ("Now open at Squaw Valley: | • Tram | • Funitel | • 1st Venture | • Blmont | • Bg Blue | • Shirley Lke", [(R, "Belmont", None), (R, "Big Blue", None), (R, "First Venture", None)], []),
+ ("Alpine Lift Update: Estimated 9am Open: Base to Base Gondola Treeline Cirque - Top Roundhouse Sherwood Summit Yellow Scott Subway Lakeview Kangaroo Big Carpet Meadow #palisadesops", [(S, "Roundhouse", None), (S, "Summit", None), (S, "Base to Base Gondola", None)], [(R, None)]),
+ ("Palisades Lift Update: Est 9am Open: Base to Base Funitel Tram KT-22 Oly Lady Red Dog Far East Resort Exhib. Shirley Granite Solitude Delay: Headwall", [(S, "Funitel", None), (S, "Exhibition", None), (D, "Headwall", None)], [(R, None)]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
