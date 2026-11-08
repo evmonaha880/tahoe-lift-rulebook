@@ -4,7 +4,7 @@ The posts are the evidence for *what happened*. Getting them right is the most c
 
 ## Per-winter loop
 1. **Pull** one winter's posts (raw JSON, stored locally, never committed). Query: originals only (`from:<ops account> -is:retweet`); size the effect of excluding replies before deciding about replies.
-2. **Discover** the winter's templates: read the whole winter at once (long-context model) and list recurring message shapes.
+2. **Discover** the winter's templates by reading the posts and the residual queue (posts that match no rule). No whole-winter long-context read was run.
 3. **Parse** with deterministic rules into typed events (below). Each event records the rule that produced it.
 4. **Verify** (next section).
 5. **Update the ledger**, then re-run earlier winters to confirm no regression.
@@ -46,4 +46,11 @@ One row per rule. Rules may apply to some winters only.
 | status | proposed, active, winter-specific, retired |
 | notes | Why it exists, quirks, what it replaced |
 
-The ledger is stored as data (`rules/`, to be created) so the later per-mountain adapters can reuse the method. This ledger is itself archaeology: recovered rules, each tagged with its evidence.
+The ledger is stored as data (`rules/ledger_<winter>.json`) so the later per-mountain adapters can reuse the method. This ledger is itself archaeology: recovered rules, each tagged with its evidence.
+
+## Final numbers (2026-11-07)
+- **Coverage:** 7,044 posts, 23,912 events, 150 posts (2.1%) match no rule. 176 regression tests (`tests/golden.py`), all passing.
+- **Hand check (the parser grading itself is not enough):** 15 random held-out posts per winter, drawn before any fixing, graded once by one reader: two samples of 120. A post counts as right only if every event is right. Pooled over both samples about 90% (84% and 93% for the same old parser on the two samples, so plus or minus 5 points). The held-out split was never used to write rules; an error seen there was fixed only if the same pattern also appeared in the training posts.
+- **Independent blind readers:** Subquadratic (all 7,044 posts) and Meta Muse (7,040; 4 calls failed on a length limit) labeled each post for seven classes without seeing the parser. Agreement over all posts and classes: parser and Subquadratic 93.1%, parser and Muse 97.2%, the two readers 94.6%. The readers have no "warning" class, so hedged posts ("expect delays") disagree with them by design. Agreement is not truth.
+- **Judgement calls recorded:** hedged wording is a warning, not a hold or delay; Squaw One is Wa She Shu and Squaw Creek is Resort Chair (confirmed from public sources); Alpine's Meadow and Mountain Meadow are separate lifts; "upper mountain" follows the operators' own lists (`rules/lift_groups.json`).
+- **Known weaknesses:** mixed-cause sentences, "all open except holds on: list", rosters with no header in some winters, and posts that give only a count of scheduled lifts.
