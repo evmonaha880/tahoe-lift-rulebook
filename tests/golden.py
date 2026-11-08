@@ -236,6 +236,19 @@ CASES = [
  ("Emigrant will run today instead of Granite Chief.", [(S, "Emigrant", None), (C, "Granite Chief", None)], []),
  ("At Alpine we have 12 lifts on the schedule--all lifts except for ABC. It'll be sunny all day.", [(S, "ALL_ALPINE", None), (C, "Alpine Bowl", None)], []),
  ("Siberia will start on a Wind Hold.  Exhibition has been added to the schedule and will have a delayed opening.", [(H, "Siberia", "wind"), (D, "Exhibition", None)], [(S, "Exhibition")]),
+ # ---- remainder pass from the fresh-sample check (held-out posts: not blind)
+ ("Headwall and Emigrant are both open! #Squawlifts", [(R, "Headwall", None), (R, "Emigrant", None)], []),
+ ("20 lifts are scheduled for 9am at Palisades.\n-Tram, Funitel, KT, Red Dod, Far East, Resort, Wa She Shu\n-Headwall, Siberia, Gold Coast", [(S, "Red Dog", None), (S, "Wa She Shu", None)], []),
+ ("Wa She She is now open. #palisadesops", [(R, "Wa She Shu", None)], []),
+ ("It's Cushing Crossing Day! 10 lifts at Palisades: Funi, Tram, KT, Sibo, Gold Coast, Big Blue", [(S, "Siberia", None)], []),
+ ("Today: 8 chairs and carpets at Squaw Valley, 5 chairs and carpets at Alpine Meadows, 50+ trails. Open 9am-4pm", [(S, None, None)], [(S, "Palisades Carpets")]),
+ ("At Alpine, the following lifts are on wind hold: Meadow, Scott, Lakeview. Sherwood is on mechanical hold.", [(H, "Scott", "wind"), (H, "Sherwood", "mechanical")], []),
+ ("Sorry to report, but KT is having some mechanical issues. It is closed for today and will start tomorrow on mechanical hold while crews get it back up and running.", [(C, "KT-22", "mechanical")], [(R, None)]),
+ ("Due to lightning, all chairlifts are closed for the remainder of the day. The Funitel will be running downloads back to The Village.", [(C, "ALL", "weather"), (P, "Funitel", None)], [(S, "Funitel")]),
+ ("At Alpine, we plan on spinning these lifts at 9am:\n\n- Roundhouse\n- Hot Wheels\n- Meadows\n\nSummit, Sherwood will start on Wind Hold this morning.", [(S, "Roundhouse", None), (S, "Alpine Meadow", None), (H, "Summit", "wind")], [(R, "Roundhouse")]),
+ ("28\" of new snow. Our ops teams are facing several challenges this morning including electrical issues on the Funitel and Wa She Shu & re-starting avalanche mitigation.", [(H, "Funitel", "mechanical"), (H, "Wa She Shu", "mechanical")], []),
+ ("Funitel and Gold Coast are the remaining lifts open. #palisadesops", [(R, "Funitel", None), (C, "ALL_OTHER", None)], []),
+ ("The following lifts at Alpine Meadows are now closed and off schedule for the remainder of the day:\n\n- Summit\n- Sherwood\n- Yellow", [(C, "Summit", None), (C, "Sherwood", None)], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

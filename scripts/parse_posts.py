@@ -12,22 +12,22 @@ LIFTS = {
     "Tram": r"(?:the )?tram",
     "Funitel": r"(?:the )?funi(?:tel)?",
     "KT-22": r"kt-?22|\bkt\b",
-    "Red Dog": r"red dog(?! side)",
+    "Red Dog": r"red do[dg](?! side)|reddog",
     "Resort Chair": r"resort(?: chair)?(?! side)|squaw (?:creek|cr)\b",
-    "Wa She Shu": r"wa ?she ?shu|squaw (?:one|1)(?: express)?",
-    "Siberia": r"siberia",
+    "Wa She Shu": r"wa ?she ?(?:shu|she)|squaw (?:one|1)(?: express)?",
+    "Siberia": r"siberia|sibo",
     "Headwall": r"headwall",
     "Emigrant": r"emigrant",
     "Silverado": r"silverado",
-    "Solitude": r"solitude",
+    "Solitude": r"solitude|sol(?=\s*(?:$|[,&.\n-]))",
     "Granite Chief": r"granite(?: chief)?",
     "Big Blue": r"(?:big|bg|b\.?) blue",
     "Shirley Lake": r"shirley(?: lake)?",
     "Bailey's Beach": r"bailey[’']?s(?: beach)?",
     "Belmont": r"belmont|blm(?:o|n)?nt",
-    "Mountain Meadow": r"(?:(?:mountain|mtn)\.? ?(?:meadows?|mdw|mdow)|meadow)(?! road)",
+    "Mountain Meadow": r"(?:(?:mountain|mtn)\.? ?(?:meadows?|mdw|mdow)|meadow|(?<=[-•,&] )meadows)(?! road)",
     "High Camp Carpet": r"(?<!to )high camp(?: carpet)?|(?:hc|camp|high) carpet",
-    "Gold Coast": r"gold coast",
+    "Gold Coast": r"gold coast|gld coast|gol?d coast",
     "Lakeview": r"lakeview",
     "Yellow": r"yellow(?: chair)?",
     "Exhibition": r"exhi(?:b(?:ition)?)?",
@@ -51,7 +51,7 @@ LIFTS = {
     "Olympic Lady": r"olympic lady|oly\.? lady",
     "Sherwood Express": r"sherwood express",
     "Boomer": r"boomer(?: magic)?(?: carpet)?",
-    "Carpets": r"(?<!\d )(?<!tubing )(?:(?:the|both|all|ski school|snow school|lower|upper|beginner)\s+)?(?:magic )?carpets?\b",   # generic; resolved to Alpine Carpets / Palisades Carpets by context in find_lifts
+    "Carpets": r"(?<!\d )(?<!tubing )(?<!chairs and )(?<!chairs & )(?<!lifts and )(?<!lifts & )(?:(?:the|both|all|ski school|snow school|lower|upper|beginner)\s+)?(?:magic )?carpets?\b",   # generic; resolved to Alpine Carpets / Palisades Carpets by context in find_lifts
     "SnoVentures": r"sno-?v(?:entures?)?\+?(?: carpet| area)?(?! tubing)",
 }
 LIFT_RE = re.compile(r"\b(?:" + "|".join(f"(?P<L{i}>{p})" for i, p in enumerate(LIFTS.values())) + r")\b", re.I)
@@ -229,7 +229,7 @@ GRP_RE = re.compile(r"\b(?:all (?:of our )?(?:the )?(?:scheduled )?(?:(?:aerial|
 # ---- P-022 whole-resort / whole-side closure ("Palisades Tahoe is CLOSED today", "ALL LIFTS CLOSED TODAY", "will not have any lift operations").
 # Emitted only when the post names no individual lift, so it never competes with lift-level rules. Scope: ALL_PALISADES, ALL_ALPINE or ALL (both sides).
 _WC_EXCL = re.compile(r"\broad\b|\brd\b|\bmountain run\b|\b(?:upper|lower)[- ]mountain\b|\bparking\b|\blots?\b|\btubing\b|\bhighway\b|\bhwy\b|\bi-80\b|\bshuttles?\b|terrain park|\bpark\b|\bvillage\b|\bshops?\b|\brentals?\b|\btickets?\b|\bhotel\b|\bbackcountry\b|\bsummer\b|uphill", re.I)
-_WC_ALL = re.compile(r"\ball (?:lifts|lift operations|lift ops|operations|lifts and terrain)\b[^.!?]{0,75}?\b(?:closed|not operat|suspended|closing)", re.I)
+_WC_ALL = re.compile(r"\ball (?:lifts|chair ?lifts|chairs|lift operations|lift ops|operations|lifts and terrain)\b[^.!?]{0,75}?\b(?:closed|not operat|suspended|closing)", re.I)
 _EXC = re.compile(r"\b(?:except(?: for)?|with the exception of|other than)\b", re.I)
 _WC_NOSKI = re.compile(r"\bno\s+(?:skiing|riding|lift service)(?: and (?:skiing|riding))?\b[^.!?]{0,25}\b(?:today|tomorrow)\b", re.I)
 _DAYS = ["mon", "tues", "wednes", "thurs", "fri", "satur", "sun"]
@@ -367,6 +367,43 @@ def fix_patterns(p, ev, text, dt):
             for l in near[-1:]:
                 out = [e for e in out if not (e["event_type"] in ("reopen", "scheduled_opening") and e["lift"] == l) and not (e["event_type"] == "partial" and e["lift"] == l)]
                 add("P-070", "partial", l, None, detail="sightseeing")
+    sents = split_sentences(text)
+    for i, sent in enumerate(sents):
+        m = re.search(r"^(.*?)\b(?:is|are) both open\b", sent, re.I)                                              # 'Headwall and Emigrant are both open!'
+        if m:
+            for l in find_lifts(m.group(1)): add("P-040", "reopen", l)
+        m = re.search(r"^(.*?)\b(?:is|are) (?:now )?on (?:an? )?(wind|mechanical|patrol|maintenance) hold\b", sent, re.I)   # a hold stated in a second sentence after a list
+        if m and not re.search(r"following lifts", sent, re.I):
+            subj = re.split(r"[:•]|\s-\s", m.group(1))[-1]                                                       # the words just before 'is on ... hold', not a whole list above it
+            sl = [] if re.search(r"\ball\b|\bother\b|\bopen\b|\bscheduled\b", subj, re.I) else find_lifts(subj)
+            if not re.search(r"\bis\b", sent[m.end(1):m.end(1) + 6], re.I) and len(sl) > 4: sl = []
+            for l in (sl[-1:] if re.search(r"\bis\b", sent[m.end(1):m.end(1) + 6], re.I) else sl):
+                if not any(e["event_type"] == "hold_start" and e["lift"] == l for e in out + added): add("P-010", "hold_start", l, "mechanical" if m.group(2).lower() == "maintenance" else m.group(2).lower())
+        m = re.search(r"\b(?:electrical|mechanical|technical|power)\s+(?:issues?|problems?|trouble|difficulties|challenges)\s+(?:on|with|at)\s+(?:the\s+)?([^.!?\n]+)", sent, re.I)   # 'electrical issues on the Funitel and Wa She Shu'
+        if m:
+            for l in find_lifts(m.group(1)):
+                if not any(e["event_type"] == "hold_start" and e["lift"] == l for e in out + added): add("P-010", "hold_start", l, "mechanical")
+        if i > 0 and re.search(r"^(?:it|they) (?:is|are) closed for (?:today|the day|the remainder)", sent, re.I):  # 'KT is having mechanical issues. It is closed for today'
+            pl = find_lifts(sents[i - 1])
+            for l in pl[-1:]: add("P-020", "closed_day", l, cause_in(sents[i - 1] + " " + sent))
+            if pl: out = [e for e in out if not (e["event_type"] == "reopen" and e["lift"] is None)]
+        m = re.search(r"^(.*?)\b(?:are|is) the remaining (?:lifts?|chairs?)(?: that are| still)? open", sent, re.I)   # 'Funitel and Gold Coast are the remaining lifts open'
+        if m and not re.search(r"\bhold\b|\bdelay|patrol", text, re.I):
+            ol = find_lifts(m.group(1))
+            for l in ol: add("P-040", "reopen", l)
+            if ol: add("P-013", "closed_day", "ALL_OTHER", None, **{"except": ol})
+        m = re.search(r"([^.!?\n]*?)\b(?:will be|is|are)\s+(?:running|operating|doing)\s+(?:downloads?|download only)|([^.!?\n]*?)\bwill (?:run|operate)\s+downloads?\s+only", sent, re.I)   # 'The Funitel will be running downloads'
+        if m:
+            for l in find_lifts(m.group(1) or m.group(2) or "")[-1:]:
+                out = [e for e in out if not (e["event_type"] in ("scheduled_opening", "reopen") and e["lift"] == l)]; add("P-070", "partial", l, None, detail="download_only")
+    if re.search(r"\bwe plan (?:on|to) (?:spin(?:ning)?|run(?:ning)?|operat(?:e|ing)|open(?:ing)?)\b", text, re.I) and not re.search(r"\bnow open|reopen|are open|is open", text, re.I):   # a morning plan, not a reopening
+        for e in out:
+            if e["event_type"] == "reopen": e["event_type"] = "scheduled_opening"; e["parse_rule_id"] = "P-001p"
+    if re.search(r"\b\d+\s+(?:chairs?|lifts?)\s+(?:and|&)\s+carpets", text, re.I):                          # '8 chairs and carpets at Squaw Valley': a count, not lifts
+        out = [e for e in out if e["lift"] not in ("Palisades Carpets", "Alpine Carpets", "Carpets")]
+        if not any(e["event_type"] == "scheduled_opening" for e in out + added): add("P-001", "scheduled_opening", None, None, note="count_only")
+    for typ in ("closed_day", "hold_start", "reopen", "delay", "partial"):                                       # a list header must not leave a lift-less event beside the per-lift events
+        if any(e["event_type"] == typ and e["lift"] for e in out + added): out = [e for e in out if not (e["event_type"] == typ and e["lift"] is None)]
     for m in re.finditer(r"(wind|mechanical|patrol)\s+hold\s*:", text, re.I):                                     # '+ALL other upper mtn lifts' at the end of a hold list
         mm = re.search(r"\+?\s*all other (upper|lower)\s*(?:mtn|mountain)\s*lifts?", text[m.end():], re.I)
         if mm: add("P-014e", "hold_start", grp(mm.group(1)), m.group(1).lower(), **{"except": sched})
