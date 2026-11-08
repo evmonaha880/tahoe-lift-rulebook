@@ -6,7 +6,7 @@ const dec=s=>{const t=document.createElement('textarea');t.innerHTML=String(s);r
 const esc=s=>dec(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const GATES=['Tram','Funitel','Base to Base Gondola'];
 const UPPER=M.groups.upper, LOWER=M.groups.lower, ALPINE=M.groups.alpine;   // from rules/lift_groups.json
-const TIERS=[['gate','The gates',GATES],['up','Upper mountain',UPPER],['low','Lower mountain',LOWER],['alp','Alpine Meadows',ALPINE]];
+const TIERS=[['gate','The gateways',GATES],['up','Upper mountain',UPPER],['low','Lower mountain',LOWER],['alp','Alpine Meadows',ALPINE]];
 const FL={day_gust:['gusts over the day','mph'],early_gust:['early-morning gusts','mph'],day_spd:['sustained wind over the day','mph'],early_spd:['early-morning wind','mph'],swe24:['snow water in 24 hours','in'],avy:['avalanche danger','of 5'],temp_base:['base temperature','F'],swe6:['snow water in 6 hours','in'],prec24s:['precipitation in 24 hours','in'],fnt_day_gust:['gusts at the Funitel top (partly estimated)','mph'],new_snow24:['new snow in 24 hours (Alpine base depth)','in']};
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const dlabel=d=>{const p=d.split('-');return MON[+p[1]-1]+' '+(+p[2])+', '+p[0]};
@@ -87,7 +87,7 @@ function drawCenter(){
     banner='<b>'+dlabel(S.date)+'.</b> Operators held <b>'+H+'</b> of '+live.length+' scheduled lifts. The book caught <b>'+C+'</b> and wrongly called a hold on <b>'+FA+'</b> that ran. One '+LINE[S.winter]+' mph wind line caught <b>'+lC+'</b> and wrongly called <b>'+lFA+'</b>. A 25 mph rule caught <b>'+nC+'</b> and wrongly called <b>'+nFA+'</b>.'+legend;
   } else {
     const n=sc.rows.filter(r=>r.o&&r.o.p>=.5).length, gate=sc.rows.filter(r=>GATES.includes(r.L)&&r.o&&r.o.p>=.5).length;
-    const ar=(M.arch||[]).find(a=>a.id===S.arch); banner=(ar?'<b>Possible 2026-27 day: '+esc(ar.name)+'.</b> ':'')+'<b>'+n+'</b> of '+sc.rows.length+' lifts likely to hold.'+(gate?' <span style="color:var(--hold)">A gate lift is at risk. When a gate holds, about half of the upper mountain ('+Math.round(M.facts.up_when_gate_held*100)+'% of lift-days) holds with it.</span>':' The gates look clear.')+'<div class="legend2"><b>Odds</b> = how often that lift held on past days at or past its line. Fitted on all eight winters, not held out.</div>';
+    const ar=(M.arch||[]).find(a=>a.id===S.arch); banner=(ar?'<b>Possible 2026-27 day: '+esc(ar.name)+'.</b> ':'')+'<b>'+n+'</b> of '+sc.rows.length+' lifts likely to hold.'+(gate?' <span style="color:var(--hold)">A gateway lift is at risk. When a gateway holds, about half of the upper mountain ('+Math.round(M.facts.up_when_gate_held*100)+'% of lift-days) holds with it.</span>':' The gateways look clear.')+'<div class="legend2"><b>Odds</b> = how often that lift held on past days at or past its line. Fitted on all eight winters, not held out.</div>';
   }
   let h='<div class="banner">'+banner+'</div>';
   const known=new Set();
@@ -144,7 +144,7 @@ $('pill').textContent='rules built '+M.built+' · '+M.lifts.length+' lifts · '+
   $('h_posts').textContent=M.facts.posts_total.toLocaleString(); $('h_read').textContent='read the posts ('+M.facts.posts_all3.toLocaleString()+' read by all three)'; $('h_wint').textContent=M.winters.length; $('h_line').textContent=Math.round((lo+hi)/2);
   $('g1').textContent='Found in all '+M.winters.length+' winters, each time without peeking at that winter, between '+lo.toFixed(1)+' and '+hi.toFixed(1)+' mph. Each lift then has its own line, '+lineBits()+'. Where operators named wind, the crest gusts that day were sixty or more '+Math.round(M.facts.wind_named_holds_on_60*100)+'% of the time.';
   const F=M.facts, pc=x=>Math.round(x*100)+'%', td=dayBy('2023-03-15'), tdh=td?Object.values(td.act).filter(a=>a[0]).length:null;
-  $('g2').textContent='Everything on the upper mountain hangs from the Tram and the Funitel. When a gate lift holds, '+pc(F.up_when_gate_held)+' of upper-mountain lift-days hold with it; when no gate holds, '+pc(F.up_when_no_gate_held)+'.';
+  $('g2').textContent='Everything on the upper mountain hangs from the Tram and the Funitel. When a gateway lift holds, '+pc(F.up_when_gate_held)+' of upper-mountain lift-days hold with it; when no gateway holds, '+pc(F.up_when_no_gate_held)+'.';
   $('g3').textContent='KT-22, Exhibition, Red Dog and Resort Chair still run '+pc(1-F.windy_hold_rate.lower)+' of the time on days with gusts of sixty or more. When they do stop, wind is named on '+pc(F.wind_named_share_lower)+' of their holds, against '+pc(F.wind_named_share_upper)+' on the high lifts.'+lowerBits();
   $('g4').textContent='A calm morning in 2023: '+(tdh!=null?tdh:'several')+' lifts held, gusts only '+(td?Math.round(td.x.day_gust):22)+' mph. This page is torn out. Overall '+pc(F.holds_on_days_below_60)+' of lift holds come on days under the sixty line, and '+pc(F.holds_no_cause)+' come with no cause given.';
   document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>{ const t=b.dataset.goto; document.querySelector('#nav [data-v='+t+']').click(); }); })();

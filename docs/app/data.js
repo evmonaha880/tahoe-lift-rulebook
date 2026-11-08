@@ -106,7 +106,7 @@ window.DATA = {
       actual:    { "Base to Base": "delay", "Tram": "delay", "Funitel": "delay", "Siberia": "delay", "Gold Coast": "delay", "Big Blue": "delay", "Granite Chief": "delay", "Mountain Meadow": "delay", "Bailey's Beach": "delay", "Red Dog": "spin", "Resort Chair": "spin", "First Venture": "spin" },
       sutras: [],
       torn: true,
-      tornNote: "Winds were light and no sutra fires, yet the gate lifts opened late and no cause was given. This is a missing page, and we label it that way.",
+      tornNote: "Winds were light and no sutra fires, yet the gateway lifts opened late and no cause was given. This is a missing page, and we label it that way.",
       posts: [
         { t: "05:41", text: "7\" overnight for a 24 hour snow total of up to 17\" and storm total of 43\". Today's forecast is for sunshine, high of 34 and calm winds." },
         { t: "09:24", text: "Upper Mountain at Palisades expected at 9:30/9:45am." },
@@ -126,7 +126,7 @@ window.DATA = {
       actual:    { "Base to Base": "spin", "Tram": "spin", "Funitel": "spin", "Siberia": "spin", "Gold Coast": "spin", "Big Blue": "spin", "Granite Chief": "spin", "Mountain Meadow": "spin", "Bailey's Beach": "spin", "Red Dog": "spin", "Resort Chair": "spin", "First Venture": "spin" },
       sutras: [],
       torn: false,
-      posts: [{ t: "", text: "No hold was recorded for the gate lifts that day." }]
+      posts: [{ t: "", text: "No hold was recorded for the gateway lifts that day." }]
     }
   ],
   readers: {
