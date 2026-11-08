@@ -15,6 +15,7 @@ cur = {"events": f"{ev:,}", "posts": posts, "tests": str(tests), "unmatched_post
        "scheduled_lift_days": f"{sum(r['scheduled'] == 'True' for r in rows):,}",
        "f1_single_line": f"{bl['lift_level']['pooled']['best_single_wind_line']['f1']:.2f}", "f1_per_lift": f"{bl['lift_level']['pooled']['per_lift_any_pass']['f1']:.2f}",
        "morning_f1": f"{bl['day_level_morning']['pooled']['f1']:.2f}", "full_day_f1": f"{bl['day_level_morning']['full_day_f1']:.2f}",
+       "validation_acc": f"{json.load(open('results/validation_results.json'))['majority']['acc']*100:.1f}%",
        "named_share": f"{round(bl['coverage']['named_share'] * 100)}%"}
 bad = 0
 for key, files in reg["quoted"].items():
