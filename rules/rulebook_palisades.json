@@ -50,9 +50,9 @@
   "n_above": 173,
   "hold_rate_below": 0.186,
   "n_below": 274,
-  "observed_wind_stated_days": 127,
+  "observed_wind_stated_days": 128,
   "observed_held_days": 190,
-  "unstated_cause_days": 84,
+  "unstated_cause_days": 83,
   "loo": {}
  },
  {
@@ -218,9 +218,9 @@
   "n_above": 109,
   "hold_rate_below": 0.122,
   "n_below": 245,
-  "observed_wind_stated_days": 81,
+  "observed_wind_stated_days": 82,
   "observed_held_days": 123,
-  "unstated_cause_days": 61,
+  "unstated_cause_days": 60,
   "loo": {}
  },
  {
@@ -318,7 +318,7 @@
   "n_below": 168,
   "observed_wind_stated_days": 86,
   "observed_held_days": 131,
-  "unstated_cause_days": 56,
+  "unstated_cause_days": 55,
   "loo": {}
  },
  {
@@ -412,10 +412,10 @@
   "scheduled_days": 220,
   "hold_rate_above": 0.636,
   "n_above": 77,
-  "hold_rate_below": 0.182,
+  "hold_rate_below": 0.175,
   "n_below": 143,
-  "observed_wind_stated_days": 21,
-  "observed_held_days": 75,
+  "observed_wind_stated_days": 20,
+  "observed_held_days": 74,
   "unstated_cause_days": 42,
   "loo": {}
  },
@@ -438,13 +438,13 @@
   "rule": "avy >= 3.0",
   "tag": "inferred",
   "scheduled_days": 209,
-  "hold_rate_above": 0.596,
+  "hold_rate_above": 0.585,
   "n_above": 94,
-  "hold_rate_below": 0.183,
+  "hold_rate_below": 0.174,
   "n_below": 109,
-  "observed_wind_stated_days": 25,
-  "observed_held_days": 82,
-  "unstated_cause_days": 44,
+  "observed_wind_stated_days": 24,
+  "observed_held_days": 80,
+  "unstated_cause_days": 43,
   "loo": {}
  },
  {

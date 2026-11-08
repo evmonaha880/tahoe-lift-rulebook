@@ -185,24 +185,31 @@ MARK_RE = re.compile(
     r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|\d{1,2}\s*(?:am|a)\s+open\s*:|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
     r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:|all\s+open\s+now\s*:|(?:lifts\s+)?(?:have\s+)?re-?opened\s*:)", re.I)
 
+_ADDED = []  # lifts a list section's trailing sentence says were added to the schedule
 _LEFT = []   # prose that followed a list inside sectional(); parsed again by the caller
 def sectional(t, add):
     """Status posts built from labelled lift lists ('Wind Hold: A B C  Delayed: D  Open: E'). Each list becomes events of its kind.
     Returns True if it handled the post. Rule ids P-011 hold, P-030 delay, P-020 closed, P-001 scheduled, P-002 open-now."""
     ms = list(MARK_RE.finditer(t))
     if not ms: return False
-    segs = []
+    segs = []; _ADDED.clear()
     for i, m in enumerate(ms):
         seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else len(t)]
         if not m.group(0).rstrip().endswith(":"):
             seg = re.split(r"[.!?](?:\s|$)", seg, maxsplit=1)[0]          # no colon: only the same sentence can be this marker's list
             if not (re.match(r"\s*-", seg) or LIFT_RE.match(seg.lstrip())): seg = ""
         if m.group(0).rstrip().endswith(":") and m.lastgroup != "sched":
-            _cut = re.split(r"\.\s+(?=[A-Z][^.]*\b(?:is|are|will|has|have|remains?)\b)", seg, maxsplit=1)   # a prose sentence after the list is not part of it
+            _cut = re.split(r"(?:\.\s+|\n\s*\n)(?=[A-Z][^.\n]*\b(?:is|are|will|has|have|been|remains?)\b)", seg, maxsplit=1)   # a prose sentence after the list is not part of it
             seg = _cut[0]
             if len(_cut) > 1: _LEFT.append(_cut[1])
         kind = m.lastgroup if m.lastgroup in ("hold", "delay", "closed", "sched", "open", "warn") else next(k for k in ("hold", "delay", "closed", "sched", "open", "warn") if m.group(k))
-        segs.append((kind, m, seg, find_lifts(seg)))
+        _added = []
+        _am = re.search(r"\b(?:has|have)\s+been\s+added\s+to\s+the\s+schedule|\b(?:is|are)\s+now\s+on\s+the\s+schedule", seg, re.I) if kind in ("hold", "delay", "closed", "warn") else None
+        if _am:                                                        # 'Silverado  Exhibition has been added to the schedule': that sentence is a roster addition, not part of the list
+            _pre = find_lifts(seg[:_am.start()])
+            if _pre: _added = _pre[-1:]; seg = seg[:_am.start()]
+        _ADDED.extend(_added)
+        segs.append((kind, m, seg, [l for l in find_lifts(seg) if l not in _added]))
     withlifts = [x for x in segs if x[3]]
     colon = any(x[1].group(0).rstrip().endswith(":") for x in withlifts)
     if not withlifts or not (len({x[0] for x in withlifts}) >= 2 or colon or any(len(x[3]) >= 2 for x in withlifts)): return False
@@ -210,6 +217,7 @@ def sectional(t, add):
     pre = t[:segs[0][1].start()]
     if segs[0][0] in ("hold", "delay", "closed", "warn") and len(find_lifts(pre)) >= 2 and not re.search(r"\bhold|delay|closed|off[- ]schedule|remov|will not|not operate|\bare open\b|now open|spinning", pre, re.I):
         add("P-001", "scheduled_opening", find_lifts(pre), None, note="roster_before_sections")     # 'At Alpine: 13 lifts on the schedule: A B C  Wind hold: D E'
+    if _ADDED: add("P-001", "scheduled_opening", list(_ADDED), None, note="added_to_schedule")
     for kind, m, seg, lifts in segs:
         if not lifts: continue
         for pm in re.finditer(r"([\w’' ]{3,30}?)\s*\(([^)]*(?:download|mid-?station|sightseeing)[^)]*)\)", seg, re.I):
@@ -269,7 +277,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.14"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.15"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),

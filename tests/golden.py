@@ -275,6 +275,8 @@ CASES = [
  ("28\" of new snow. Our ops teams are facing several challenges this morning including electrical issues on the Funitel and Wa She Shu & re-starting avalanche mitigation.", [(H, "Funitel", "mechanical"), (H, "Wa She Shu", "mechanical")], []),
  ("Funitel and Gold Coast are the remaining lifts open. #palisadesops", [(R, "Funitel", None), (C, "ALL_OTHER", None)], []),
  ("The following lifts at Alpine Meadows are now closed and off schedule for the remainder of the day:\n\n- Summit\n- Sherwood\n- Yellow", [(C, "Summit", None), (C, "Sherwood", None)], []),
+ ("Due to increasing winds the following lifts will start the day on wind hold:\n\n- Headwall\n- Emigrant\n- Silverado\n\nExhibition has been added to the schedule for today. Check back for updates! #squawlifts", [(H, "Headwall", "wind"), (H, "Silverado", "wind"), (S, "Exhibition", None)], [(H, "Exhibition")]),
+ ("Good Morning,\n\nThe following lifts will begin today on a wind hold:\nAerial Tram\nGranite Chief\nSiberia\nHeadwall\n\nFar East is now on the schedule.\n#palisadesops", [(H, "Tram", "wind"), (H, "Headwall", "wind"), (S, "Far East", None)], [(H, "Far East")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

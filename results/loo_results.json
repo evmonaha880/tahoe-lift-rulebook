@@ -262,14 +262,14 @@
    "learned": {
     "tp": 395,
     "fp": 39,
-    "fn": 203,
+    "fn": 202,
     "f1": 0.766
    },
    "baseline": {
-    "tp": 597,
-    "fp": 99,
+    "tp": 596,
+    "fp": 100,
     "fn": 1,
-    "f1": 0.923
+    "f1": 0.922
    }
   },
   "2019-20": {
@@ -290,22 +290,22 @@
    "learned": {
     "tp": 365,
     "fp": 291,
-    "fn": 109,
-    "f1": 0.646
+    "fn": 108,
+    "f1": 0.647
    },
    "baseline": {
-    "tp": 469,
-    "fp": 1830,
+    "tp": 468,
+    "fp": 1831,
     "fn": 5,
     "f1": 0.338
    }
   },
   "2022-23": {
    "learned": {
-    "tp": 809,
+    "tp": 806,
     "fp": 350,
-    "fn": 651,
-    "f1": 0.618
+    "fn": 654,
+    "f1": 0.616
    },
    "baseline": {
     "tp": 1424,
@@ -317,13 +317,13 @@
   "2023-24": {
    "learned": {
     "tp": 545,
-    "fp": 466,
-    "fn": 196,
-    "f1": 0.622
+    "fp": 461,
+    "fn": 195,
+    "f1": 0.624
    },
    "baseline": {
-    "tp": 736,
-    "fp": 2711,
+    "tp": 735,
+    "fp": 2712,
     "fn": 5,
     "f1": 0.351
    }
@@ -433,22 +433,22 @@
    "learned": {
     "tp": 440,
     "fp": 48,
-    "fn": 200,
+    "fn": 199,
     "n": 766,
     "precision": 0.902,
-    "recall": 0.688,
-    "f1": 0.78,
-    "base_rate": 0.836
+    "recall": 0.689,
+    "f1": 0.781,
+    "base_rate": 0.834
    },
    "baseline": {
-    "tp": 638,
-    "fp": 118,
+    "tp": 637,
+    "fp": 119,
     "fn": 2,
     "n": 766,
-    "precision": 0.844,
+    "precision": 0.843,
     "recall": 0.997,
-    "f1": 0.914,
-    "base_rate": 0.836
+    "f1": 0.913,
+    "base_rate": 0.834
    },
    "lift_sensitivity": {
     "Emigrant": 0.91,
@@ -473,8 +473,8 @@
     "Big Blue": 0.51,
     "Ahsoka Carpet": 0.49,
     "Yellow": 0.49,
-    "Far East": 0.47,
     "Wa She Shu": 0.45,
+    "Far East": 0.45,
     "Exhibition": 0.44,
     "ALL_ON_HOLD": 0.43,
     "Shirley Lake": 0.42,
@@ -543,9 +543,9 @@
     "Lakeview": 0.59,
     "Scott": 0.58,
     "Big Blue": 0.55,
-    "Far East": 0.51,
     "Kangaroo": 0.5,
     "Yellow": 0.5,
+    "Far East": 0.49,
     "Ahsoka Carpet": 0.49,
     "Sherwood": 0.48,
     "Exhibition": 0.47,
@@ -574,18 +574,18 @@
   "2021-22": {
    "rule": "day_gust >= 60.6",
    "learned": {
-    "tp": 363,
-    "fp": 440,
+    "tp": 362,
+    "fp": 441,
     "fn": 119,
     "n": 2432,
-    "precision": 0.452,
+    "precision": 0.451,
     "recall": 0.753,
-    "f1": 0.565,
+    "f1": 0.564,
     "base_rate": 0.198
    },
    "baseline": {
-    "tp": 477,
-    "fp": 1835,
+    "tp": 476,
+    "fp": 1836,
     "fn": 5,
     "n": 2432,
     "precision": 0.206,
@@ -620,10 +620,10 @@
     "Sherwood": 0.51,
     "Gold Coast": 0.51,
     "Wa She Shu": 0.49,
-    "Far East": 0.49,
     "Kangaroo": 0.49,
     "Funitel": 0.49,
     "Ahsoka Carpet": 0.49,
+    "Far East": 0.48,
     "Exhibition": 0.45,
     "Roundhouse": 0.44,
     "ALL_ON_HOLD": 0.43,
@@ -687,8 +687,8 @@
     "Hot Wheels": 0.59,
     "Siberia": 0.59,
     "High Camp Carpet": 0.57,
-    "Far East": 0.52,
     "Yellow": 0.51,
+    "Far East": 0.5,
     "Kangaroo": 0.5,
     "Ahsoka Carpet": 0.49,
     "Sherwood": 0.49,
@@ -717,23 +717,23 @@
   "2023-24": {
    "rule": "day_gust >= 61.8",
    "learned": {
-    "tp": 603,
-    "fp": 772,
+    "tp": 602,
+    "fp": 773,
     "fn": 154,
     "n": 3729,
-    "precision": 0.439,
-    "recall": 0.797,
-    "f1": 0.566,
+    "precision": 0.438,
+    "recall": 0.796,
+    "f1": 0.565,
     "base_rate": 0.203
    },
    "baseline": {
-    "tp": 752,
-    "fp": 2732,
+    "tp": 751,
+    "fp": 2733,
     "fn": 5,
     "n": 3729,
     "precision": 0.216,
     "recall": 0.993,
-    "f1": 0.355,
+    "f1": 0.354,
     "base_rate": 0.203
    },
    "lift_sensitivity": {
@@ -762,8 +762,8 @@
     "Sherwood": 0.54,
     "Kangaroo": 0.52,
     "Wa She Shu": 0.51,
-    "Far East": 0.49,
     "Shirley Lake": 0.49,
+    "Far East": 0.48,
     "Exhibition": 0.48,
     "Funitel": 0.48,
     "Gold Coast": 0.47,
@@ -830,7 +830,7 @@
     "Lakeview": 0.59,
     "Scott": 0.57,
     "Big Blue": 0.54,
-    "Far East": 0.51,
+    "Far East": 0.49,
     "Exhibition": 0.49,
     "Ahsoka Carpet": 0.49,
     "Yellow": 0.48,
@@ -903,7 +903,7 @@
     "Scott": 0.58,
     "Big Blue": 0.55,
     "Yellow": 0.5,
-    "Far East": 0.49,
+    "Far East": 0.48,
     "Sherwood": 0.47,
     "Kangaroo": 0.47,
     "Wa She Shu": 0.46,
