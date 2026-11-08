@@ -252,17 +252,22 @@ def fit_funitel():
     return coef
 FNT_COEF = fit_funitel()
 rows = []
+def post_side(text):
+    """'palisades', 'alpine' or None: the side of the mountain a post is about, from its own words (None when it names both or neither)."""
+    t = re.sub(r"#\w+|https?://\S+", " ", (text or "").lower()); a = bool(re.search(r"\balpine\b", t)); p = bool(re.search(r"palisades|squaw|olympic valley", t))
+    return "alpine" if a and not p else "palisades" if p and not a else None
 def other_side_ok(e, L, es):
-    """'All other lifts' covers the side of the mountain the post is about. The side is read from the lifts the post names as exceptions
-    (an Alpine update that lists Alpine lifts must not hold Palisades lifts). Mixed or no exceptions: the whole resort, as before. A lift that is later reopened the same day was held, whatever side the post named."""
-    sides = {SIDE.get(x) for x in e.get("except", []) if SIDE.get(x) in ("palisades", "alpine")}
-    return len(sides) != 1 or SIDE.get(L) in (None, "", "link") or SIDE.get(L) in sides or any(x["lift"] == L and x["event_type"] == "reopen" and x["start"] > e["start"] for x in es)
-
+    """'All other lifts' covers the side of the mountain the post is about ('Alpine update', 'For Palisades'). A post naming neither side, or both,
+    covers the whole resort. A lift that is reopened later the same day was held, whatever side the post named."""
+    side = POSTSIDE.get(e["source_post_id"])
+    return side is None or SIDE.get(L) in (None, "", "link", side) or any(x["lift"] == L and x["event_type"] == "reopen" and x["start"] > e["start"] for x in es)
+POSTSIDE = {}
 for Y in YEARS:
     W = f"{Y}-{str(Y+1)[2:]}"; weather = WEATHER[Y]; SN = snotel(Y); DEPTH = load_depth(Y)
     ev = []
     for sp in ("train", "heldout"):
         for e in json.load(open(os.path.join(R, "derived", f"{W}_{sp}_events.json"))): e["split"] = sp; ev.append(e)
+        for _p in json.load(open(os.path.join(R, "derived", f"{W}_{sp}.json"))): POSTSIDE[_p["id"]] = post_side(_p["text"])
     EFFECTIVE[W] = effective_windows(W, ev); ROSTER = typical_roster(ev); DF, NPOSTS = day_flags(W); RL = reader_labels(W)
     by = collections.defaultdict(list)
     for e in ev: by[e["start"][:10]].append(e)
