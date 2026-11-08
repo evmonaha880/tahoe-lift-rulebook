@@ -261,7 +261,10 @@ for Y in YEARS:
     by = collections.defaultdict(list)
     for e in ev: by[e["start"][:10]].append(e)
     for date, es in sorted(by.items()):
-        sched = {e["lift"] for e in es if e["event_type"] == "scheduled_opening" and e["lift"] and e["lift"] != "ALL"}
+        sched = {e["lift"] for e in es if e["event_type"] == "scheduled_opening" and e["lift"] and e["lift"] not in ("ALL", "ALL_ALPINE", "ALL_PALISADES")}
+        for e in es:                                                  # '12 lifts on the schedule, all lifts except ABC'
+            if e["event_type"] == "scheduled_opening" and e["lift"] in ("ALL_ALPINE", "ALL_PALISADES"):
+                sched |= ROSTER["alpine" if e["lift"] == "ALL_ALPINE" else "palisades"] - set(e.get("except", []))
         lifts = set(sched) | {e["lift"] for e in es if e["lift"] and e["lift"] not in ("ALL", "ALL_OTHER", "ALL_ALPINE", "ALL_PALISADES", "UPPER_MOUNTAIN", "LOWER_MOUNTAIN") and e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "reopen")}
         if any(e["lift"] == "ALL_OTHER" for e in es): lifts = set(lifts) | {"(all other lifts)"}
         # whole-side closures ("Palisades Tahoe is CLOSED today", "all lifts at Alpine are closed"): every lift of that side that normally runs is a row, even when no roster was posted

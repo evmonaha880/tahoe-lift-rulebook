@@ -221,6 +221,21 @@ CASES = [
  ("On the Palisades side all lifts, with the exception of Far East, that were on wind hold are now closed for the day.", [(C, "ALL_ON_HOLD", "wind")], [(H, "Far East"), (C, "ALL")]),
  ("On the Palisades side: All of the lifts that were previously on wind hold are now closed for the day. In addition, tubing has been cancelled for the day.", [(C, "ALL_ON_HOLD", "wind")], [(R, None), (C, "ALL")]),
  ("Alpine parking lot is open. The resort remains closed.", [(C, "ALL", None)], [(C, "ALL_ALPINE")]),
+ # ---- five patterns from the three-model hand check (held-out posts: not blind). 
+ ("Palisades Update: At this time, the entire upper mountain, including Tram and Funitel will start the day on wind hold.  The lower mountain, will remain on anticipated weather impact holds throughout the morning.", [(H, "UPPER_MOUNTAIN", "wind")], []),
+ ("Palisades anticipated 9am opening:\nTram\nExhibition\nFunitel\n\nWind Hold:\nWa She Shu\nBig Blue Express\n+ALL other upper mtn lifts", [(S, "Tram", None), (H, "UPPER_MOUNTAIN", "wind")], []),
+ ("We expect the following at Palisades for 9am. \nBase to Base\nExhibition\nRed Dog\nAll other lifts are delayed due to icing. Standby for Alpine update.", [(D, "ALL_OTHER", "weather")], []),
+ ("Due to increasing winds all upper mountain lifts at Palisades are closed for the day including the Tram. The Base to Base is also closed and Funitel is open for Mountain Run access.", [(C, "UPPER_MOUNTAIN", "wind"), (C, "Base to Base Gondola", None), (P, "Funitel", None)], [(R, "Funitel")]),
+ ("On the Palisades side all lifts, with the exception of Far East, that were on wind hold are now closed for the day.", [(C, "ALL_ON_HOLD", "wind")], [(H, "Far East")]),
+ ("1\" snow overnight at Palisades. Palisades will be OPEN today. REMINDER: Alpine is now CLOSED Friday and Saturday.", [(C, "ALL_ALPINE", None)], []),
+ ("Palisades will be OPEN today. REMINDER: Alpine is now CLOSED Monday and Tuesday.", [(W, "ALL_ALPINE", None)], [(C, "ALL_ALPINE")]),
+ ("Reminder: No skiing and riding today and tomorrow. Lifts resume spinning Friday at Alpine.", [(C, "ALL", None)], []),
+ ("Due to high winds, the following lifts are now closed for the day at Palisades:\n\nBase to Base Gondola\nGold Coast\nFunitel\n\nThe following lifts are still open until 4pm:\n\nRed Dog\nResort Chair", [(C, "Funitel", None), (C, "Gold Coast", None)], [(P, "Funitel"), (P, "Red Dog")]),
+ ("The Aerial Tram will be open for sightseeing only from 10am-4pm today-Sunday. Roller skating and dining at the Terrace & Marketplace will be open at High Camp.", [(P, "Tram", None)], [(S, "High Camp Carpet"), (R, "Tram")]),
+ ("Big Blue is on Patrol hold while responding to injury. The Border Cross next to the half pipe is also closed for the remainder of the day.", [(H, "Big Blue", "patrol")], [(C, "Big Blue")]),
+ ("Emigrant will run today instead of Granite Chief.", [(S, "Emigrant", None), (C, "Granite Chief", None)], []),
+ ("At Alpine we have 12 lifts on the schedule--all lifts except for ABC. It'll be sunny all day.", [(S, "ALL_ALPINE", None), (C, "Alpine Bowl", None)], []),
+ ("Siberia will start on a Wind Hold.  Exhibition has been added to the schedule and will have a delayed opening.", [(H, "Siberia", "wind"), (D, "Exhibition", None)], [(S, "Exhibition")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
