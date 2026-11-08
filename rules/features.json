@@ -509,6 +509,13 @@
    "unit": "0/1",
    "source": "ops posts",
    "note": "a scheduled lift announced as open after 09:45 with no earlier hold, delay or closure post: an implied late opening. Kept apart from `held`; not counted as a hold"
+  },
+  "cause_first": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "wind / patrol / mechanical / weather / unstated",
+   "source": "ops posts",
+   "note": "cause named by the earliest hold, delay or closure event of the lift that day (the first reason it stopped); held_wind etc. are true if ANY event that day named that cause, so a lift held first for avalanche control and later for wind has cause_first=patrol and held_wind=1"
   }
  }
 }

@@ -315,6 +315,7 @@ for Y in YEARS:
                    "closed_all": int(any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine)),
                    "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
                    **closure_conf([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], RL, f),
+                   "cause_first": (lambda hs: (next((e["cause"] for e in hs if e["cause"]), "unstated") if hs else ""))(sorted([e for e in mine if e["event_type"] in ("hold_start", "closed_day", "delay")], key=lambda e: e["start"])),
                    **reopen_cols(mine, es, L),
                    "late_open_implied": int(L in sched and not mine and any(e["lift"] == L and e["event_type"] == "reopen" and e["start"][11:16] >= "09:45" for e in es)),
                    **hour_feats(weather, date, min([e["start"][11:16] for e in mine] or [""])), **local_feats(weather, date, L), **nws_flags(date),

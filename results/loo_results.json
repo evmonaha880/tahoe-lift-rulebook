@@ -288,24 +288,24 @@
   },
   "2021-22": {
    "learned": {
-    "tp": 247,
+    "tp": 248,
     "fp": 202,
     "fn": 130,
-    "f1": 0.598
+    "f1": 0.599
    },
    "baseline": {
-    "tp": 372,
+    "tp": 373,
     "fp": 1830,
     "fn": 5,
-    "f1": 0.288
+    "f1": 0.289
    }
   },
   "2022-23": {
    "learned": {
-    "tp": 561,
-    "fp": 220,
-    "fn": 666,
-    "f1": 0.559
+    "tp": 562,
+    "fp": 224,
+    "fn": 665,
+    "f1": 0.558
    },
    "baseline": {
     "tp": 1193,
@@ -316,10 +316,10 @@
   },
   "2023-24": {
    "learned": {
-    "tp": 437,
-    "fp": 413,
-    "fn": 184,
-    "f1": 0.594
+    "tp": 440,
+    "fp": 397,
+    "fn": 181,
+    "f1": 0.604
    },
    "baseline": {
     "tp": 618,
@@ -330,10 +330,10 @@
   },
   "2024-25": {
    "learned": {
-    "tp": 36,
-    "fp": 42,
-    "fn": 69,
-    "f1": 0.393
+    "tp": 35,
+    "fp": 43,
+    "fn": 70,
+    "f1": 0.383
    },
    "baseline": {
     "tp": 102,
@@ -453,7 +453,7 @@
    "lift_sensitivity": {
     "Emigrant": 0.86,
     "Base to Base Gondola": 0.7,
-    "Silverado": 0.67,
+    "Silverado": 0.68,
     "Olympic Lady": 0.63,
     "Broken Arrow": 0.62,
     "High Camp Carpet": 0.61,
@@ -504,26 +504,26 @@
     "tp": 4,
     "fp": 19,
     "fn": 3,
-    "n": 111,
+    "n": 109,
     "precision": 0.174,
     "recall": 0.571,
     "f1": 0.267,
-    "base_rate": 0.063
+    "base_rate": 0.064
    },
    "baseline": {
     "tp": 7,
-    "fp": 93,
+    "fp": 91,
     "fn": 0,
-    "n": 111,
-    "precision": 0.07,
+    "n": 109,
+    "precision": 0.071,
     "recall": 1.0,
-    "f1": 0.131,
-    "base_rate": 0.063
+    "f1": 0.133,
+    "base_rate": 0.064
    },
    "lift_sensitivity": {
     "Emigrant": 0.87,
     "Base to Base Gondola": 0.7,
-    "Silverado": 0.68,
+    "Silverado": 0.69,
     "Olympic Lady": 0.67,
     "Broken Arrow": 0.67,
     "(all other lifts)": 0.66,
@@ -572,20 +572,20 @@
   "2021-22": {
    "rule": "day_gust >= 60.6",
    "learned": {
-    "tp": 249,
+    "tp": 250,
     "fp": 409,
     "fn": 131,
-    "n": 2330,
-    "precision": 0.378,
-    "recall": 0.655,
-    "f1": 0.48,
+    "n": 2331,
+    "precision": 0.379,
+    "recall": 0.656,
+    "f1": 0.481,
     "base_rate": 0.163
    },
    "baseline": {
-    "tp": 375,
+    "tp": 376,
     "fp": 1835,
     "fn": 5,
-    "n": 2330,
+    "n": 2331,
     "precision": 0.17,
     "recall": 0.987,
     "f1": 0.29,
@@ -602,7 +602,7 @@
     "Tram": 0.62,
     "High Camp Carpet": 0.61,
     "Headwall": 0.6,
-    "Granite Chief": 0.58,
+    "Granite Chief": 0.59,
     "Belmont": 0.58,
     "Solitude": 0.57,
     "Hot Wheels": 0.56,
@@ -664,16 +664,16 @@
    },
    "lift_sensitivity": {
     "Emigrant": 0.8,
-    "Silverado": 0.73,
+    "Silverado": 0.74,
     "Base to Base Gondola": 0.7,
     "Alpine Bowl": 0.65,
     "Tram": 0.63,
     "(all other lifts)": 0.57,
-    "Olympic Lady": 0.56,
     "Hot Wheels": 0.56,
+    "Olympic Lady": 0.56,
     "Mountain Meadow": 0.55,
-    "Big Blue": 0.54,
     "Solitude": 0.54,
+    "Big Blue": 0.54,
     "Belmont": 0.54,
     "Granite Chief": 0.52,
     "Headwall": 0.51,
@@ -736,18 +736,18 @@
    "lift_sensitivity": {
     "Emigrant": 0.91,
     "Base to Base Gondola": 0.73,
+    "Silverado": 0.67,
     "(all other lifts)": 0.66,
-    "Silverado": 0.65,
-    "Olympic Lady": 0.65,
     "Broken Arrow": 0.65,
+    "Olympic Lady": 0.65,
     "High Camp Carpet": 0.61,
     "Tram": 0.61,
     "Bailey's Beach": 0.58,
     "Headwall": 0.58,
     "Hot Wheels": 0.56,
     "Mountain Meadow": 0.56,
+    "Granite Chief": 0.56,
     "Belmont": 0.56,
-    "Granite Chief": 0.55,
     "Summit": 0.55,
     "Solitude": 0.53,
     "Siberia": 0.51,
@@ -786,22 +786,22 @@
    "rule": "day_gust >= 59.9",
    "learned": {
     "tp": 36,
-    "fp": 55,
+    "fp": 54,
     "fn": 89,
-    "n": 551,
-    "precision": 0.396,
+    "n": 550,
+    "precision": 0.4,
     "recall": 0.288,
-    "f1": 0.333,
+    "f1": 0.335,
     "base_rate": 0.227
    },
    "baseline": {
     "tp": 122,
-    "fp": 330,
+    "fp": 329,
     "fn": 3,
-    "n": 551,
-    "precision": 0.27,
+    "n": 550,
+    "precision": 0.271,
     "recall": 0.976,
-    "f1": 0.423,
+    "f1": 0.424,
     "base_rate": 0.227
    },
    "lift_sensitivity": {
@@ -818,14 +818,14 @@
     "Hot Wheels": 0.56,
     "Belmont": 0.55,
     "Granite Chief": 0.54,
-    "Mountain Meadow": 0.54,
+    "Mountain Meadow": 0.53,
     "Solitude": 0.53,
     "Summit": 0.51,
     "Bailey's Beach": 0.5,
     "Siberia": 0.5,
     "Far East": 0.46,
-    "Big Blue": 0.45,
     "Lakeview": 0.45,
+    "Big Blue": 0.45,
     "Exhibition": 0.43,
     "Ahsoka Carpet": 0.42,
     "Scott": 0.42,
@@ -833,7 +833,7 @@
     "SnoVentures": 0.4,
     "Kangaroo": 0.39,
     "Wa She Shu": 0.39,
-    "Shirley Lake": 0.38,
+    "Shirley Lake": 0.37,
     "Gold Coast": 0.36,
     "Funitel": 0.36,
     "Little Carpet": 0.36,
@@ -886,15 +886,15 @@
     "High Camp Carpet": 0.58,
     "Headwall": 0.56,
     "Hot Wheels": 0.56,
-    "Granite Chief": 0.54,
+    "Granite Chief": 0.55,
     "Belmont": 0.54,
-    "Mountain Meadow": 0.54,
+    "Mountain Meadow": 0.53,
     "Solitude": 0.53,
-    "Bailey's Beach": 0.51,
     "Summit": 0.51,
+    "Bailey's Beach": 0.51,
     "Siberia": 0.49,
-    "Big Blue": 0.45,
     "Lakeview": 0.45,
+    "Big Blue": 0.45,
     "Far East": 0.43,
     "(all other lifts)": 0.43,
     "Scott": 0.42,

@@ -28,18 +28,18 @@ Share of in-season days (with at least one expected lift row) that had a whole-m
 
 | Condition | Closure share of days |
 |---|---|
-| All in-season days | 7% (52 of 718) |
-| Crest gust under 60 mph | 4% (18 of 414) |
-| 60 to 100 mph | 4% (9 of 208) |
+| All in-season days | 7% (52 of 720) |
+| Crest gust under 60 mph | 4% (18 of 415) |
+| 60 to 100 mph | 4% (9 of 209) |
 | 100 to 130 mph | 19% (13 of 70) |
 | 130 mph or more | 46% (12 of 26) |
-| Avalanche danger 1 to 2 | 1% (4 of 374) |
-| Avalanche danger 3 | 8% (11 of 135) |
+| Avalanche danger 1 to 2 | 1% (4 of 375) |
+| Avalanche danger 3 | 8% (11 of 136) |
 | Avalanche danger 4 | 41% (22 of 54) |
 | Gust 100+ and danger 3+ | 33% (23 of 70) |
 | Gust 100+ and 8+ hours at 60 | 31% (21 of 67) |
 | Snow water 1.5 in or more in 24 hours | 26% (16 of 61) |
-| Wind under 60 and no storm signal | 4% (14 of 355) |
+| Wind under 60 and no storm signal | 4% (14 of 356) |
 
 18 of the 20 storm closures had at least one of: crest gust of 80 mph or more (15), avalanche danger 3 or higher (17), or snow water of 1.5 in or more (9).
 

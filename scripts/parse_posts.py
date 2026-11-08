@@ -3,7 +3,7 @@ Observed = the post states it. Nothing here infers from weather; that happens la
 usage: python3 -I scripts/parse_posts.py 2023 [train|heldout|all]   -> data/derived/<winter>_<split>_events.json
 Rules ledger is exported to rules/ledger_<winter>.json (data, so other mountains can reuse the method)."""
 import os, re, sys, json, collections
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 # ---- lift vocabulary (canonical name -> regex alias). Lift->mountain mapping is NOT done here (modeling decision later).
@@ -269,7 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.12"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.14"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -501,6 +501,11 @@ def fix_patterns(p, ev, text, dt):
     if _run:
         for e in out + added:
             if e["lift"] == "ALL_OTHER" and e["event_type"] in ("hold_start", "delay", "closed_day") and not e.get("except"): e["except"] = _run
+    # a roster announced for tomorrow ("Upper Mountain is opening tomorrow! NEW lifts added to schedule: ...") is not today's schedule
+    if re.search(r"\btomorrow\b", text, re.I) and re.search(r"opening tomorrow|opens tomorrow|open tomorrow|added to (?:the |tomorrow.s )?schedule|schedule for tomorrow|tomorrow.s (?:schedule|plan|lifts)|will (?:be )?open(?:ing)? tomorrow", text, re.I) and not re.search(r"\btoday\b|\bthis morning\b|\bat 9\s*am\b", text, re.I):
+        _nd = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0).isoformat(timespec="minutes")
+        for e in out + added:
+            if e["event_type"] == "scheduled_opening" and e["lift"]: e["start"] = _nd; e["note"] = "announced_prior_day"      # it belongs to tomorrow's schedule, not today's
     # 'closed for the day, with the exception of X and Y': the exceptions are open, not closed
     for e in list(out + added):
         if e["event_type"] == "closed_day" and (e["lift"] or "").startswith("ALL") and e.get("except"):
