@@ -1,22 +1,19 @@
 (function(){
-const M=window.MODEL, D=window.DATA;
+const M=window.MODEL, D=window.DATA, P=M.proof;      // P: every score on the page, written by the repo pipeline (scripts/build_app_model.py from results/baselines.json)
+D.strata.forEach(s=>Object.assign(s,P.strata[s.winter]));   // per-winter days, wind-hold days, scores and wind lines come from the pipeline, not from this file
 const $=id=>document.getElementById(id);
 const dec=s=>{const t=document.createElement('textarea');t.innerHTML=String(s);return t.value;};
 const esc=s=>dec(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const GATES=['Tram','Funitel','Base to Base Gondola'];
-const UPPER=['Wa She Shu','Siberia','Headwall','Emigrant','Granite Chief','Gold Coast','Shirley Lake','Big Blue','Solitude','Silverado','Mountain Meadow',"Bailey's Beach",'Belmont','High Camp Carpet'];
-const LOWER=['KT-22','Exhibition','Far East','Red Dog','Resort Chair','First Venture','Kaya Carpet','SnoVentures'];
-const ALPINE=['Summit','Scott','Alpine Bowl','Treeline Cirque','Sherwood','Lakeview','Roundhouse','Yellow','Kangaroo','Subway','Alpine Meadow','Big Carpet'];
+const UPPER=M.groups.upper, LOWER=M.groups.lower, ALPINE=M.groups.alpine;   // from rules/lift_groups.json
 const TIERS=[['gate','The gates',GATES],['up','Upper mountain',UPPER],['low','Lower mountain',LOWER],['alp','Alpine Meadows',ALPINE]];
 const FL={day_gust:['gusts over the day','mph'],early_gust:['early-morning gusts','mph'],day_spd:['sustained wind over the day','mph'],early_spd:['early-morning wind','mph'],swe24:['snow water in 24 hours','in'],avy:['avalanche danger','of 5'],temp_base:['base temperature','F'],swe6:['snow water in 6 hours','in'],prec24s:['precipitation in 24 hours','in'],fnt_day_gust:['gusts at the Funitel top','mph']};
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const dlabel=d=>{const p=d.split('-');return MON[+p[1]-1]+' '+(+p[2])+', '+p[0]};
 const dayBy=date=>M.days.find(d=>d.date===date);
 
-/* ---- shared: best single wind line per hidden winter (lift level), learned on the other winters ---- */
-const F1=(tp,fp,fn)=>tp?2*tp/(2*tp+fp+fn):0;
-const ROWS=[];M.days.forEach(d=>Object.entries(d.act).forEach(([l,a])=>{ if(d.x.day_gust!=null) ROWS.push({w:d.winter,g:d.x.day_gust,h:!!a[0]}); }));
-const LINE={};M.winters.forEach(w=>{ const tr=ROWS.filter(r=>r.w!==w); let best=[-1,25]; for(let t=20;t<=130;t+=2){ let tp=0,fp=0,fn=0; tr.forEach(r=>{ if(r.g>=t&&r.h)tp++; else if(r.g>=t)fp++; else if(r.h)fn++; }); const f=F1(tp,fp,fn); if(f>best[0])best=[f,t]; } LINE[w]=best[1]; });
+/* ---- the best single wind line per hidden winter is learned in scripts/baselines.py and read here ---- */
+const LINE={};M.winters.forEach(w=>{ LINE[w]=P.lift[w]&&P.lift[w].wind_line_mph!=null?P.lift[w].wind_line_mph:25; });
 /* ---- engine ---- */
 function odds(rule,x){ if(!rule) return null; const v=x[rule.f]; if(v==null) return null; const fired=v>=rule.t; return {p:fired?rule.above:rule.below,fired,rule}; }
 const NAIVE=x=>x.day_gust!=null&&x.day_gust>=25;
@@ -29,7 +26,7 @@ const PRE=[['Calm day',{day_gust:15,early_gust:10,day_spd:8,early_spd:6,swe24:0,
   ['Today, Nov 7 (resort closed)',{day_gust:12,early_gust:5,day_spd:4,early_spd:2,swe24:0,avy:0}]];
 function setX(o){ Object.assign(S.x,o); }
 function loadArch(a){ setX(a.x); S.arch=a.id; }
-function loadPreset(p){ S.arch=null; const d=p[2]?dayBy(p[2]):null; setX(d?Object.fromEntries(SL.map(s=>[s[0],d.x[s[0]]??S.x[s[0]]])):p[1]); }
+function loadPreset(p){ S.arch=null; const d=p[2]?(dayBy(p[2])||{x:M.feat[p[2]]}):null; setX(d?Object.fromEntries(SL.map(s=>[s[0],d.x[s[0]]??S.x[s[0]]])):p[1]); }
 setX(PRE[0][1]);
 
 /* ---- left: controls ---- */
@@ -155,16 +152,12 @@ function drawDig(){
 }
 /* ---- proof (computed here from held-out rules) ---- */
 function drawProof(){
-  const T=()=>({tp:0,fp:0,fn:0}); const book=T(), q25=T(), single=T();
-  const add=(t,c,h)=>{ if(c&&h)t.tp++; else if(c&&!h)t.fp++; else if(!c&&h)t.fn++; };
-  const line=LINE; const pw={}; M.winters.forEach(w=>pw[w]={book:T(),single:T(),q25:T()});
-  M.days.forEach(d=>{ const L=M.loo[d.winter]||{}; Object.entries(d.act).forEach(([lift,act])=>{ const r=L[lift]; if(!r) return; const v=d.x[r.f]; if(v==null||d.x.day_gust==null) return; const h=!!act[0];
-    const cb=(v>=r.t?r.above:r.below)>=.5, c25=d.x.day_gust>=25, cs=d.x.day_gust>=line[d.winter]; add(book,cb,h); add(q25,c25,h); add(single,cs,h); add(pw[d.winter].book,cb,h); add(pw[d.winter].q25,c25,h); add(pw[d.winter].single,cs,h); }); });
-  const pr=t=>t.tp/(t.tp+t.fp), rc=t=>t.tp/(t.tp+t.fn), f1=t=>2*t.tp/(2*t.tp+t.fp+t.fn), P=x=>Math.round(x*100)+'%';
-  const col=(name,t,hi)=>'<div class="pc'+(hi?' hi':'')+'"><div class="pn">'+name+'</div><div class="pm"><b>'+P(pr(t))+'</b>of its hold calls were right</div><div class="pm"><b>'+P(rc(t))+'</b>of real holds caught</div><div class="pm"><b>'+f1(t).toFixed(2)+'</b>balance score</div></div>';
-  const wins={book:0,single:0,q25:0}; M.winters.forEach(w=>{ const s={book:f1(pw[w].book),single:f1(pw[w].single),q25:f1(pw[w].q25)}; const k=Object.keys(s).reduce((a,b)=>s[a]>=s[b]?a:b); wins[k]++; });
-  const lo=Object.values(line).reduce((a,b)=>Math.min(a,b)), hi2=Object.values(line).reduce((a,b)=>Math.max(a,b));
-  $('proofnums').innerHTML='<div class="pcols">'+col('The book: each lift\'s own rule',book,true)+col('Best single wind line, learned on the other winters ('+lo+' to '+hi2+' mph)',single,false)+col('A 25 mph rule',q25,false)+'</div><div class="cap" style="margin:-10px 0 14px"><b>Honest limit.</b> At the lift level, winter by winter, the best balance score goes to: the 25 mph rule in '+wins.q25+' winters, a single wind line in '+wins.single+', the per-lift rules in '+wins.book+'. A 25 mph rule wins by calling almost every windy lift a hold, which pays off only in winters with many holds. The per-lift rules\' real job is the order in which lifts go, shown on the Mountain screen.</div>';
+  const L=P.lift.pooled, book=L.per_lift_called_at_50pct, single=L.best_single_wind_line, q25=L.mph25, Pc=x=>Math.round(x*100)+'%';
+  const col=(name,t,hi)=>'<div class="pc'+(hi?' hi':'')+'"><div class="pn">'+name+'</div><div class="pm"><b>'+Pc(t.precision)+'</b>of its hold calls were right</div><div class="pm"><b>'+Pc(t.recall)+'</b>of real holds caught</div><div class="pm"><b>'+t.f1.toFixed(2)+'</b>balance score</div></div>';
+  const w=P.lift.winters_won_by_method, win={book:w.per_lift_called_at_50pct||0, any:w.per_lift_any_pass||0, single:w.best_single_wind_line||0, q25:w.mph25||0};
+  const lines=M.winters.map(x=>P.lift[x]&&P.lift[x].wind_line_mph).filter(v=>v!=null), lo=Math.min(...lines), hi2=Math.max(...lines);
+  const A=P.lift_all_named.pooled;
+  $('proofnums').innerHTML='<div class="pcols">'+col('The book: each lift\'s own rule (called at 50% odds)',book,true)+col('Best single wind line, learned on the other winters ('+Math.round(lo)+' to '+Math.round(hi2)+' mph)',single,false)+col('A 25 mph rule',q25,false)+'</div><div class="cap" style="margin:-10px 0 14px"><b>Honest limit.</b> Counted on '+L.n_lift_days.toLocaleString()+' scheduled lift-days, one learned wind line scores about the same as the per-lift rules ('+single.f1.toFixed(2)+' against '+L.per_lift_any_pass.f1.toFixed(2)+' when a lift is called whenever it passes its line). Winter by winter, the best balance score goes to the 25 mph rule in '+win.q25+' winters, a single wind line in '+win.single+', the per-lift rules in '+(win.book+win.any)+' (the 25 mph rule wins only where there are very few scheduled lifts to score). A 25 mph rule wins by calling almost every windy lift a hold, which pays off only in winters with many holds. The per-lift rules\' real job is the order in which lifts go, shown on the Mountain screen. If lifts that appear only because a post named them on hold are added, every method looks better (the book '+Pc(A.per_lift_called_at_50pct.precision)+' right, a 25 mph rule '+Pc(A.mph25.precision)+'); we do not use that count because those lifts are '+'76% holds by construction. All figures: docs/RESULTS.md.</div>';
   (function(){ const ss=D.strata.slice().reverse(), W=1000,H=150,x=v=>40+(W-80)*v/100; const vals=ss.map(s=>s.line), lo=Math.min(...vals), hi=Math.max(...vals);
     let s='<svg viewBox="0 0 '+W+' '+H+'"><line x1="'+x(0)+'" y1="80" x2="'+x(100)+'" y2="80" stroke="#1d1a16" stroke-width="2"/>';
     [0,20,40,60,80,100].forEach(t=>{s+='<line x1="'+x(t)+'" y1="74" x2="'+x(t)+'" y2="86" stroke="#1d1a16"/><text x="'+x(t)+'" y="108" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#4a4338">'+t+' mph</text>';});
@@ -177,7 +170,7 @@ function drawProof(){
   let s='<svg viewBox="0 0 '+W+' '+H+'">'; [0,.2,.4,.6,.8,1].forEach(t=>{s+='<line x1="'+x(t)+'" y1="'+top+'" x2="'+x(t)+'" y2="'+(H-26)+'" stroke="#cdbf9e" stroke-dasharray="4 5"/><text x="'+x(t)+'" y="'+(H-6)+'" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#4a4338">'+t.toFixed(1)+'</text>';});
   rows.forEach((r,i)=>{const y=top+i*rowH+rowH/2; s+='<text x="0" y="'+(y+5)+'" font-family="ui-monospace,Menlo,monospace" font-size="15">'+r.winter+'</text><line x1="'+x(r.baseline)+'" y1="'+y+'" x2="'+x(r.score)+'" y2="'+y+'" stroke="#1d1a16" stroke-width="3"/><circle cx="'+x(r.baseline)+'" cy="'+y+'" r="8" fill="#f3ead6" stroke="#1d1a16" stroke-width="3"/><circle cx="'+x(r.score)+'" cy="'+y+'" r="9" fill="#1d1a16"/><text x="'+(x(r.score)+16)+'" y="'+(y+5)+'" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#b3261e">+'+(r.score-r.baseline).toFixed(2)+'</text>';});
   $('proof').innerHTML='<h3 style="margin-top:8px">Calling the wind-hold days of each hidden winter. Dark dot: the book. Hollow dot: a 25 mph rule.</h3>'+s+'</svg>';
-  $('proofcap').textContent='Balance score is the F1 score: hits and false alarms together, 0 to 1. The numbers above cover '+(book.tp+book.fp+book.fn).toLocaleString()+' flagged or held lift-days across the hidden winters. The book is cautious: it is right far more often when it calls a hold, and it misses about half of real holds, many of which had no weather cause. Those are the missing pages.';
+  $('proofcap').textContent='Balance score is the F1 score: hits and false alarms together, 0 to 1. The lift-level numbers above cover '+L.n_lift_days.toLocaleString()+' scheduled lift-days across the hidden winters. The book is cautious: it is right far more often when it calls a hold, and it misses about '+Pc(1-book.recall)+' of real holds, many of which had no weather cause. Those are the missing pages.';
 }
 /* ---- readers ---- */
 function drawReaders(){const R=D.readers,A=M.agree||D.agree,pct=v=>(v*100).toFixed(1).replace(/\.0$/,'')+'%',X=M.disagree;

@@ -1,19 +1,13 @@
-"""Builds model.js for the app from the repo's lift_days.csv and post files. Read-only on the repo.
-Re-run after the final parser pass:  python3 build_model.py"""
-import csv, json, os, collections, glob, statistics, html, re
+"""Builds docs/app/model.js, the only data the app reads, from the repo pipeline: lift_days.csv, the parsed posts and results/baselines.json.
+Every number the app shows is written here (rules, odds, per-winter scores, reader agreement); the page does no fitting or scoring of its own.
+usage: python3 -I scripts/build_app_model.py   (run after build_dataset.py, recover_rules.py and baselines.py)"""
+import json, os, collections, glob, statistics, html, re, subprocess, sys
 from zoneinfo import ZoneInfo
 from datetime import datetime, timezone
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = next((os.path.abspath(os.path.join(HERE, *([".."]*n))) for n in (1, 2, 3) if os.path.exists(os.path.join(HERE, *([".."]*n), "data", "derived", "lift_days.csv"))), os.path.expanduser("~/tahoe-lift-rulebook"))
-os.chdir(HERE)
-rows = list(csv.DictReader(open(f"{ROOT}/data/derived/lift_days.csv")))
-NUM = ["early_gust","early_spd","day_gust","day_spd","fnt_day_gust","temp_base","swe24","swe6","prec24s","new_snow24","depth","avy"]
-for r in rows:
-    for k in NUM: r[k] = float(r[k]) if r[k] != "" else None
-    for k in ("held","held_wind","held_unstated","held_patrol","held_mech","held_weather"): r[k] = int(r[k])
-    r["scheduled"] = r["scheduled"] == "True"
-FEATS = ["early_gust","day_gust","early_spd","day_spd","avy","temp_base","swe24","swe6","prec24s"]
-WINTERS = sorted({r["winter"] for r in rows})
+sys.path.insert(0, HERE)
+from ruleslib import ROOT, rows, FEATS, WINTERS, f1, fit        # the project's one definition of how rules are fitted
+APP = os.path.join(ROOT, "docs", "app")
 S = [r for r in rows if r["scheduled"]]
 def f1(tp,fp,fn): return 2*tp/(2*tp+fp+fn) if tp else 0.0
 def fit(rs, y, feats):
@@ -30,8 +24,7 @@ def fit(rs, y, feats):
             if best is None or s>best[0]: best=(s,f,t)
     return best
 def rule_for(tr, L):
-    fs = FEATS + (["fnt_day_gust"] if L=="Funitel" else [])
-    b = fit(tr,"held",fs)
+    b = fit(tr,"held",FEATS)
     if not b: return None
     _,f,t = b
     a=[r for r in tr if r[f] is not None and r[f]>=t]; bl=[r for r in tr if r[f] is not None and r[f]<t]
@@ -54,7 +47,7 @@ days={}
 for r in rows:
     k=(r["winter"],r["date"])
     d=days.setdefault(k,dict(date=r["date"],winter=r["winter"],x={f:r[f] for f in FEATS+["fnt_day_gust"]},act={}))
-    if r["scheduled"] or r["held"]:
+    if r["scheduled"]:
         cause="w" if r["held_wind"] else "p" if r["held_patrol"] else "m" if r["held_mech"] else "x" if r["held_weather"] else "u" if r["held_unstated"] else ""
         d["act"][r["lift"]]=[r["held"],cause]
 D=sorted([d for d in days.values() if d["act"]],key=lambda d:d["date"])
@@ -112,6 +105,27 @@ for want in (False,True):  # parser missed first, then parser over-called
 agree=dict(posts=ag["posts"],parser_subq=round(ag["ps"]/ag["n"],3),parser_muse=round(ag["pm"]/ag["n"],3),subq_muse=round(ag["sm"]/ag["n"],3))
 disagree=dict(posts=len(dis_posts),of=ag["posts"],by_class={CLS[k]:v for k,v in by.most_common()},examples=ex)
 med={f:round(statistics.median([r[f] for r in rows if r[f] is not None]),2) for f in FEATS+["fnt_day_gust"]}
-model=dict(lifts=LIFTS,book=book,loo=loo,days=D,posts={d["date"]:posts.get(d["date"],[]) for d in D},medians=med,arch=archetypes,agree=agree,disagree=disagree,winters=WINTERS,built=datetime.now().strftime("%Y-%m-%d %H:%M"))
-open("model.js","w").write("window.MODEL = "+json.dumps(model,separators=(",",":"))+";\n")
-print("lifts",len(LIFTS),"days",len(D),"posts",sum(len(v) for v in posts.values()),"size KB",os.path.getsize("model.js")//1024)
+# ---- every score the page shows, taken from results/baselines.json (written by baselines.py); the page never recomputes them
+BL = json.load(open(os.path.join(ROOT, "results", "baselines.json")))
+wind_days = collections.Counter(); 
+for d in D: pass
+hw = collections.defaultdict(set)
+for r in rows:
+    if r["held_wind"]: hw[r["winter"]].add(r["date"])
+strata = {W: dict(days=BL["day_level"][W]["n_days"], wind_holds=len(hw[W]), score=BL["day_level"][W]["learned"]["f1"], baseline=BL["day_level"][W]["mph25"]["f1"], line=BL["day_level"][W]["line_mph"]) for W in WINTERS}
+proof = dict(strata=strata, day_pooled=BL["day_level"]["pooled"], day_wins=BL["day_level"]["winters_learned_beats_25mph"],
+             lift=BL["lift_level"], lift_all_named=BL["lift_level_all_named"],
+             source="results/baselines.json (scripts/baselines.py): leave-one-winter-out, lift level on scheduled lift-days only")
+try: commit = subprocess.run(["git", "-C", ROOT, "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
+except Exception: commit = ""
+LG = json.load(open(os.path.join(ROOT, "rules", "lift_groups.json")))
+GATES = ("Tram", "Funitel", "Base to Base Gondola")
+al = LG["alpine"]
+groups = dict(upper=[l for l in LG["palisades"]["UPPER_MOUNTAIN"]["lifts"] if l not in GATES],
+              lower=list(LG["palisades"]["LOWER_MOUNTAIN"]["lifts"]),
+              alpine=list(dict.fromkeys(al["named_together"] + al["named_separately_not_upper"] + al["also_alpine"])))
+PRESET_DATES = ("2024-12-15", "2024-12-16")                       # the "Set conditions" starting points read weather straight from the dataset
+feat = {d["date"]: d["x"] for d in days.values() if d["date"] in PRESET_DATES}
+model=dict(feat=feat,groups=groups,proof=proof,commit=commit,lifts=LIFTS,book=book,loo=loo,days=D,posts={d["date"]:posts.get(d["date"],[]) for d in D},medians=med,arch=archetypes,agree=agree,disagree=disagree,winters=WINTERS,built=datetime.now().strftime("%Y-%m-%d %H:%M"))
+open(os.path.join(APP,"model.js"),"w").write("window.MODEL = "+json.dumps(model,separators=(",",":"))+";\n")
+print("lifts",len(LIFTS),"days",len(D),"posts",sum(len(v) for v in posts.values()),"size KB",os.path.getsize(os.path.join(APP,"model.js"))//1024)

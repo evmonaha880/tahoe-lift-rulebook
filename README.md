@@ -41,6 +41,6 @@ Hook photo: r/palisadestahoe.
 
 ## Re-running
 
-In order: `scripts/parse_posts.py <year> <train|heldout>` for each winter, `scripts/build_dataset.py 2018 ... 2025`, `scripts/recover_rules.py`, `scripts/baselines.py`; tests with `python3 -I tests/golden.py`.
+In order: `scripts/parse_posts.py <year> <train|heldout>` for each winter, `scripts/build_dataset.py 2018 ... 2025`, `scripts/recover_rules.py`, `scripts/baselines.py`, then `scripts/build_app_model.py` (writes the app's only data file) and `scripts/check_app_model.py` (fails if the app's numbers differ from the results); tests with `python3 -I tests/golden.py`.
 
 Raw data goes in `data/raw/` (git-ignored). Scripts read API credentials from files kept outside the repo, never from the repo itself.
