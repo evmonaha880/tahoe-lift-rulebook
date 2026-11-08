@@ -1,0 +1,11 @@
+{
+ "_about": "Which weather station is nearest each lift, for the local-wind feature. UNVERIFIED: no lift or station coordinates were used; this is a judgement from the lift names and the station names (Western Weather Group stations: Siberia 8700, Belmont 8000, Funitel Top 7966, KT22 8000, Summit 8643, Roundhouse Top 7880, Scott Top 8120, Treeline Cirque Mid 7555, Sherwood 7115, Yellow Valve House 7640). Lower-mountain Palisades lifts have no usable station (the base station only exists for 2024-26) and are left out.",
+ "stations": {
+  "Tram": "Siberia", "Siberia": "Siberia", "Headwall": "Siberia", "Granite Chief": "Siberia", "Solitude": "Siberia", "Silverado": "Siberia",
+  "Funitel": "Funitel Top", "Gold Coast": "Funitel Top", "Emigrant": "Funitel Top", "Wa She Shu": "Funitel Top", "Shirley Lake": "Funitel Top", "Big Blue": "Funitel Top",
+  "Belmont": "Belmont", "Mountain Meadow": "Belmont", "Bailey's Beach": "Belmont", "High Camp Carpet": "Belmont", "Broken Arrow": "Belmont",
+  "KT-22": "KT",
+  "Summit": "Summit", "Alpine Bowl": "Summit", "Lakeview": "Summit",
+  "Roundhouse": "Roundhouse Top", "Scott": "Scott Top", "Treeline Cirque": "Treeline Cirque", "Sherwood": "Sherwood", "Yellow": "Yellow Valve", "Subway": "Roundhouse Top", "Kangaroo": "Roundhouse Btm"
+ }
+}

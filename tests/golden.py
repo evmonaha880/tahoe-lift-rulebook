@@ -211,6 +211,16 @@ CASES = [
  ("Alpine: 12\" overnight 35\" in 24h. 11 lifts scheduled but please EXPECT DELAYS. Cloudy skies, a high of 26 and NE winds of 20+mph.", [(W, None, None)], [(H, None)]),
  ("Increasing winds this AM will impact operations.  Est. 9am Open: Tram B2B Far East Funitel KT22 Red Dog", [(W, None, "wind")], [(H, None), (C, None)]),
  ("We have received over 2 feet of new snow in the past 24 hours! High winds and heavy snow will affect lift operations today.", [(W, None, None)], [(H, None)]),
+ # ---- scope exceptions, later-day announcements, runs and hiking (exceptions from train posts; the rest informed by the 2026-11-07 held-out hand check, so those cases are not blind)
+ ("All lifts at Alpine with the exception of the Big Carpet are closed for the day.  #alpineops", [(C, "ALL_ALPINE", None)], [(C, "ALL")]),
+ ("Update: All lifts at Alpine, except *Roundhouse* will be closing at 3pm today as Liberty Energy works to restore power to the Alpine Base.", [(C, "ALL_ALPINE", None)], [(C, "ALL")]),
+ ("Palisades Tahoe Alpine is officially closed for today due to lack of power. We are told power is likely to be restored soon so stay tuned.", [(C, "ALL_ALPINE", None)], [(C, "ALL"), (C, "ALL_PALISADES")]),
+ ("OPERATIONS UPDATE: LIFT OPERATIONS CLOSED FOR Tuesday, 3/14/23   High winds, increased avalanche danger and flooding are expected.", [(W, "ALL", None)], [(C, None)]),
+ ("Mountain Run is closed until further notice.  #palisadesops", [], [(C, None), (H, None)]),
+ ("All terrain on KT-22 is now open for hiking access!", [(P, "KT-22", None)], [(R, "KT-22")]),
+ ("On the Palisades side all lifts, with the exception of Far East, that were on wind hold are now closed for the day.", [(C, "ALL_ON_HOLD", "wind")], [(H, "Far East"), (C, "ALL")]),
+ ("On the Palisades side: All of the lifts that were previously on wind hold are now closed for the day. In addition, tubing has been cancelled for the day.", [(C, "ALL_ON_HOLD", "wind")], [(R, None), (C, "ALL")]),
+ ("Alpine parking lot is open. The resort remains closed.", [(C, "ALL", None)], [(C, "ALL_ALPINE")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

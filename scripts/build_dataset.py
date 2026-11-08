@@ -18,7 +18,7 @@ def load_weather(Y):
         for r in csv.DictReader(open(f, encoding="utf-8-sig")):
             try: d = datetime.strptime(r["Date"], "%m/%d/%y"); hh = int(r["Time"]) // 100
             except Exception: continue
-            st = next((k for k in RIDGE + ["Roundhouse Btm"] if k in r["Station"]), None)
+            st = next((k for k in RIDGE + ["Roundhouse Btm", "Treeline Cirque", "Yellow Valve", "Sherwood", "KT"] if k in r["Station"]), None)
             if not st: continue
             b = out[(d.date().isoformat(), hh)][st]
             for k, col in (("gust", "Wind Gust (mph)"), ("spd", "Wind Spd (mph)"), ("temp", "Temp (°F)"), ("snow24", "Snow 24Hr (In)"), ("prec24", "Precip 24Hr (In)")):
@@ -92,6 +92,36 @@ def snow_feats(S, date):
 def feats_agg(W, date, st):
     vals = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
     return max(vals) if vals else None
+NWS = []
+_nf = os.path.join(R, "derived", "nws_alerts.csv")
+if os.path.exists(_nf):
+    for _r in csv.DictReader(open(_nf)):
+        _i = datetime.fromisoformat(_r["issue_utc"].replace("Z", "+00:00")); _e = datetime.fromisoformat(_r["expire_utc"].replace("Z", "+00:00"))
+        if _e <= _i: _e = _i + __import__("datetime").timedelta(hours=12)        # a watch that was upgraded carries an expire time before its issue time
+        NWS.append((_r["phenomena"] + "." + _r["significance"], _i, _e))
+NWS_COLS = {"nws_hw_w": ("HW.W",), "nws_hw_a": ("HW.A",), "nws_wi": ("WI.Y",), "nws_ws_w": ("WS.W",), "nws_ws_a": ("WS.A",), "nws_ww": ("WW.Y",), "nws_bz": ("BZ.W",), "nws_flood": ("FA.A", "FA.W", "FF.A", "FF.W", "FL.W", "FL.A")}
+def nws_flags(date):
+    """National Weather Service alerts for the Greater Lake Tahoe Area zone active at any point between 6am and 4pm Pacific"""
+    from zoneinfo import ZoneInfo
+    a = datetime.strptime(date, "%Y-%m-%d").replace(hour=6, tzinfo=ZoneInfo("America/Los_Angeles")); b = a.replace(hour=16)
+    act = {k for k, i, e in NWS if i <= b and e >= a}
+    out = {c: int(bool(act & set(v))) for c, v in NWS_COLS.items()}
+    out["nws_wind_any"] = int(bool(act & {"HW.W", "HW.A", "WI.Y"})); out["nws_storm_any"] = int(bool(act & {"WS.W", "BZ.W", "WW.Y", "WS.A"}))
+    pre = {k for k, i, e in NWS if i <= a and e >= a}                                   # already in force at 6am: what a morning-of forecast could have known
+    out["nws_pre_wind"] = int(bool(pre & {"HW.W", "HW.A", "WI.Y"})); out["nws_pre_storm"] = int(bool(pre & {"WS.W", "BZ.W", "WW.Y", "WS.A"}))
+    return out
+LIFT_STATION = json.load(open(os.path.join(R, "..", "rules", "lift_stations.json")))["stations"]
+def hour_feats(W, date, t):
+    """wind at Siberia in the hour of the first post about the lift, and the strongest gust in the three hours before it (None without a post time)"""
+    if not t: return {"gust_at_event": "", "gust_prior3h": "", "spd_at_event": ""}
+    h = int(t[:2]); g = lambda hh, k: [x for x in W.get((date, hh), {}).get("Siberia", {}).get(k, [])]
+    now = g(h, "gust"); pri = [x for hh in range(h - 3, h + 1) for x in g(hh, "gust")]; sp = g(h, "spd")
+    return {"gust_at_event": max(now) if now else "", "gust_prior3h": max(pri) if pri else "", "spd_at_event": max(sp) if sp else ""}
+def local_feats(W, date, L):
+    st = LIFT_STATION.get(L)
+    if not st: return {"local_station": "", "local_gust": ""}
+    v = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
+    return {"local_station": st, "local_gust": max(v) if v else ""}
 def hours_over(W, date, st, thr):
     """hours between 6am and 4pm local with a 15-minute gust reading at or above thr at one station (readings / 4); None when the station has no readings"""
     v = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
@@ -253,7 +283,7 @@ for Y in YEARS:
             else: f["fnt_src"] = ""
         else: f["fnt_src"] = "measured"
         for L in sorted(lifts):
-            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL" or (e["lift"] == "ALL_ON_HOLD" and any(x["lift"] == L and x["event_type"] == "hold_start" and x["start"] < e["start"] for x in es)) or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
+            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or (e["lift"] == "ALL" and L not in e.get("except", [])) or (e["lift"] == "ALL_ON_HOLD" and L not in e.get("except", []) and any(x["lift"] == L and x["event_type"] == "hold_start" and x["start"] < e["start"] for x in es)) or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and L not in e.get("except", []) and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
             row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),
@@ -265,6 +295,7 @@ for Y in YEARS:
                    "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
                    **closure_conf([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], RL, f),
                    **reopen_cols(mine, es, L),
+                   **hour_feats(weather, date, min([e["start"][11:16] for e in mine] or [""])), **local_feats(weather, date, L), **nws_flags(date),
                    "n_posts_day": NPOSTS.get(date, 0), "covid_era": covid_era(W, date),
                    **{"day_" + k: DF[date].get(k, 0) for k in list(DAYFLAG) + ["covid"]},
                    "closed_all_time": min([e["start"][11:16] for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")] or [""]),

@@ -228,14 +228,17 @@ def sectional(t, add):
 GRP_RE = re.compile(r"\b(?:all (?:of our )?(?:the )?(?:scheduled )?(?:(?:aerial|chair) )?lifts (?:at|on|in) (?P<site>alpine(?: meadows)?|palisades(?: tahoe)?|squaw(?: valley)?)|all (?:of our )?(?:scheduled )?(?P<ud>upper|lower)[- ]mountain(?: lifts)?(?: (?:at|on) (?:palisades|squaw)(?: valley)?)?|(?P<ud2>upper|lower)[- ]mountain(?: lifts)?(?: (?:at|on) (?:palisades|squaw)(?: valley)?)?)\b", re.I)
 # ---- P-022 whole-resort / whole-side closure ("Palisades Tahoe is CLOSED today", "ALL LIFTS CLOSED TODAY", "will not have any lift operations").
 # Emitted only when the post names no individual lift, so it never competes with lift-level rules. Scope: ALL_PALISADES, ALL_ALPINE or ALL (both sides).
-_WC_EXCL = re.compile(r"\broad\b|\bparking\b|\blots?\b|\btubing\b|\bhighway\b|\bhwy\b|\bi-80\b|\bshuttles?\b|terrain park|\bpark\b|\bvillage\b|\bshops?\b|\brentals?\b|\btickets?\b|\bhotel\b|\bbackcountry\b|\bsummer\b|uphill", re.I)
-_WC_ALL = re.compile(r"\ball (?:lifts|lift operations|lift ops|operations|lifts and terrain)\b[^.!?]{0,40}?\b(?:closed|not operat|suspended)", re.I)
+_WC_EXCL = re.compile(r"\broad\b|\brd\b|\bmountain run\b|\b(?:upper|lower)[- ]mountain\b|\bparking\b|\blots?\b|\btubing\b|\bhighway\b|\bhwy\b|\bi-80\b|\bshuttles?\b|terrain park|\bpark\b|\bvillage\b|\bshops?\b|\brentals?\b|\btickets?\b|\bhotel\b|\bbackcountry\b|\bsummer\b|uphill", re.I)
+_WC_ALL = re.compile(r"\ball (?:lifts|lift operations|lift ops|operations|lifts and terrain)\b[^.!?]{0,75}?\b(?:closed|not operat|suspended|closing)", re.I)
+_EXC = re.compile(r"\b(?:except(?: for)?|with the exception of|other than)\b", re.I)
 _WC_NOOP = re.compile(r"\b(?:will not|won.t|are not|is not|not)\s+(?:be\s+)?(?:have|having|running|operating|open|opening|offer|offering)\b[^.!?]{0,30}?\b(?:any\s+)?lift (?:operations|service)\b|\bno lift (?:operations|service)\b|\blift operations? (?:are |is )?(?:closed|suspended|cancel+ed)\b", re.I)
 _WC_SUBJ = re.compile(r"\b(?:palisades tahoe|squaw valley(?:\s*[|&/]?\s*alpine meadows)?|alpine meadows|squaw alpine|both (?:sides|mountains|resorts|areas)|the resort|our resort|the mountain|palisades|alpine)\b[^.!?]{0,60}?\b(?:is|are|will be|will remain|remains?|has been|have been|is being)\b[^.!?]{0,14}\bclosed\b", re.I)
 _WC_PARTIAL = re.compile(r"\blifts?\b[^.!?]{0,25}\bon (?:an? )?(?:wind |mechanical |patrol )?hold|\blifts? (?:that|which) (?:were|are|was)\b|\b(?:that|which)\b[^.!?]{0,30}\bon (?:an? )?(?:\w+ )?hold", re.I)
-_WC_FUTURE = re.compile(r"\b(?:tomorrow|tonight|on (?:mon|tues|wednes|thurs|fri|satur|sun)day|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.? \d{1,2})\b", re.I)
+_WC_FUTURE = re.compile(r"\b(?:tomorrow|tonight|(?:on|for) (?:mon|tues|wednes|thurs|fri|satur|sun)day|\d{1,2}/\d{1,2}(?:/\d{2,4})?|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.? \d{1,2})\b", re.I)
 def _wc_scope(s):
     sl = s.lower()
+    if re.search(r"\ball (?:\w+ )?lifts (?:at|on) (?:palisades tahoe|palisades|squaw valley|squaw)\b(?!\s*(?:and|&|\|)\s*alpine)", sl) and not re.search(r"\bboth\b|alpine", sl): return "ALL_PALISADES"
+    if re.search(r"palisades tahoe alpine", sl): return "ALL_ALPINE"
     if re.search(r"\bboth\b|palisades tahoe(?! road)|squaw valley\s*[|&/]?\s*alpine|squaw alpine|squaw and alpine|alpine and (?:palisades|squaw)|(?:palisades|squaw) and alpine", sl): return "ALL"
     pal = re.search(r"palisades|squaw|olympic valley", sl); alp = re.search(r"alpine(?! meadows road)", sl)
     if pal and alp: return "ALL"
@@ -244,14 +247,13 @@ def _wc_scope(s):
     return "ALL"
 def whole_closure(t):
     """-> list of (scope, sentence, announced_for_later_day) or []. Applies only to posts that name no individual lift."""
-    probe = re.sub(r"\b(?:alpine meadows|palisades tahoe|palisades|squaw valley|squaw|olympic valley|granite peak)\b|\balpine\b(?!\s+bowl)", " ", t, flags=re.I)
-    if find_lifts(probe): return []
     out = []
     for sent in split_sentences(t):
         if _WC_EXCL.search(sent) or _WC_PARTIAL.search(sent): continue
-        if _WC_ALL.search(sent) or _WC_NOOP.search(sent) or (_WC_SUBJ.search(sent) and re.search(r"\b(?:today|for the day|all day|tomorrow|remainder|rest of the day|for the season)\b|^\W*(?:palisades|squaw|alpine)[^.!?]{0,40}closed", sent, re.I)):
+        if find_lifts(re.sub(r"\b(?:alpine meadows|palisades tahoe|palisades|squaw valley|squaw|olympic valley|granite peak)\b|\balpine\b(?!\s+bowl)|\b(?:the |our )?resort\b(?!\s+chair)", " ", _EXC.split(sent, 1)[0], flags=re.I)): continue      # a sentence that names a lift is a lift-level statement
+        if _WC_ALL.search(sent) or _WC_NOOP.search(sent) or (_WC_SUBJ.search(sent) and re.search(r"\b(?:today|for the day|all day|tomorrow|remainder|rest of the day|for the season)\b|^\W*(?:palisades|squaw|alpine)[^.!?]{0,40}closed", sent, re.I)) or re.search(r"^\W*(?:the\s+)?(?:resort|mountain)\s+(?:remains|is|will remain)\s+closed\b", sent, re.I):
             if re.search(r"\b(?:reopen|re-open|will open|opening at|is open|are open|now open)\b", sent, re.I) and not re.search(r"\bclosed\b", sent, re.I): continue
-            out.append((_wc_scope(sent), sent, bool(_WC_FUTURE.search(sent))))
+            out.append((_wc_scope(sent), sent, bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)))
     return out
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
@@ -312,6 +314,20 @@ def parse_post(p):
     else:
         ev = fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
     ev = ev + hedged_warnings(p, ev, _CTX["t"])
+    SCOPES = ("ALL", "ALL_PALISADES", "ALL_ALPINE", "ALL_ON_HOLD", "UPPER_MOUNTAIN", "LOWER_MOUNTAIN")
+    xs = _EXC.findall(_CTX["t"])
+    if len(xs) == 1:                                                  # 'all lifts at Alpine with the exception of the Big Carpet are closed': the exception rides on the scope event
+        exl = find_lifts(_EXC.split(_CTX["t"], 1)[1].split(".")[0])
+        for e in ev:
+            if e["lift"] in SCOPES and exl and "except" not in e: e["except"] = exl
+    if re.search(r"\bmountain run\b", _CTX["t"], re.I):             # a run, not a lift
+        ev = [e for e in ev if not (e["lift"] is None and e["event_type"] in ("reopen", "closed_day", "hold_start", "partial"))]
+    for sent in split_sentences(_CTX["t"]):                          # hiking access is a limited operation, not a closure or a reopening
+        if re.search(r"\bhik(?:e|ing)\b", sent, re.I):
+            hl = find_lifts(sent)
+            for e in ev:
+                if e["lift"] in hl and e["event_type"] in ("reopen", "closed_day") and re.search(r"hik(?:e|ing)[- ]?(?:only|access)|for hiking|open for hik", sent, re.I): e["event_type"] = "partial"; e["detail"] = "hike_only"
+            if not hl: ev = [e for e in ev if not (e["lift"] is None and e["event_type"] in ("reopen", "closed_day", "hold_start", "partial"))]
     for e in ev:
         if e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "warning"): e["cause_tags"] = cause_tags(_CTX["t"])
     seen, out = set(), []
@@ -335,10 +351,20 @@ def _parse_post(p):
     t = re.sub(r"\b(wind|mechanical|patrol) old\b", r"\1 hold", t, flags=re.I)     # typo seen in 2018-19
     t = re.sub(r"\boff (?:lift )?maintenance\b", "off maintenance hold", t, flags=re.I)
     low = t.lower()
+    for sent in split_sentences(t):
+        if re.search(r"\ball (?:of )?(?:the )?lifts\b[^.!?]{0,60}?\b(?:that|which)\b[^.!?]{0,30}\bon (?:\w+ )?hold\b[^.!?]{0,40}\b(?:closed|closing)\b", sent, re.I):
+            exc = find_lifts(re.split(r"\b(?:that|which)\b", _EXC.split(sent, 1)[1], 1)[0]) if _EXC.search(sent) else []
+            add("P-021", "closed_day", ["ALL_ON_HOLD"], cause_in(sent) or ("wind" if re.search(r"wind", sent, re.I) else None), **({"except": exc} if exc else {}))
+            t = t.replace(sent, " "); low = t.lower()
     wc = whole_closure(t)
     if wc:
-        for sc, sent, fut in wc: add("P-022", "warning" if fut else "closed_day", [sc], cause_in(sent) or cause_in(t), **({"note": "announced for a later day"} if fut else {}))
-        return ev
+        for sc, sent, fut in wc:
+            exc = find_lifts(_EXC.split(sent, 1)[1]) if _EXC.search(sent) else []
+            add("P-022", "warning" if fut else "closed_day", [sc], cause_in(sent) or cause_in(t), **({"note": "announced for a later day"} if fut else {}), **({"except": exc} if exc else {}))
+        rest = t
+        for _sc, sent, _f in wc: rest = rest.replace(sent, " ")
+        if not find_lifts(rest) and not re.search(r"\bhold\b|\bdelay|\bopen\b|\bopening\b", rest, re.I): return ev      # nothing else in the post to read
+        t = " ".join(rest.split()); low = t.lower()
     AO = re.compile(r"all other (?:scheduled )?(?:\w+ )?lifts?\b(?! that)(?:[^.!?]*?\b(?:are|remain)\b)?[^.!?]*?\bon (?:an? )?(?:(wind|mechanical|patrol|maintenance|lightning|weather impact|weather|operational) )?(hold|delay|standby)(?: due to ([^.!?]*))?[.!?]?", re.I)
     am = AO.search(t)
     if am:

@@ -107,8 +107,8 @@ for W in WINTERS:
     if W in L: md.append(f"| {W} | {L[W]['n_lift_days']:,} | " + " | ".join(str(L[W][m]['f1']) for m in names) + " |")
 big = [W for W in WINTERS if W in L and L[W]["n_lift_days"] >= 400]
 md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; the other winters score under 60 lift-days each because most of their posts give a count (\"32 lifts scheduled\") rather than names.", "",
-       "**Where the simple rules win at lift level.**",
-       f"- One learned wind line does as well as the per-lift rules: pooled F1 {L['pooled']['best_single_wind_line']['f1']} against {L['pooled']['per_lift_any_pass']['f1']} (per-lift, any pass) and {L['pooled']['per_lift_called_at_50pct']['f1']} (per-lift at 50% odds). Fitting each lift separately adds essentially nothing in F1.",
+       "**Simple rules against per-lift rules at lift level.**",
+       f"- One learned wind line scores a pooled F1 of {L['pooled']['best_single_wind_line']['f1']}, against {L['pooled']['per_lift_any_pass']['f1']} for per-lift rules (any pass) and {L['pooled']['per_lift_called_at_50pct']['f1']} for per-lift rules at 50% odds: fitting each lift separately adds {L['pooled']['per_lift_any_pass']['f1'] - L['pooled']['best_single_wind_line']['f1']:+.3f} of F1.",
        f"- The 25 mph rule has the highest recall ({L['pooled']['mph25']['recall']}) but very low precision ({L['pooled']['mph25']['precision']}), so its pooled F1 is the lowest ({L['pooled']['mph25']['f1']}). It tops the F1 table in {L['winters_won_by_method'].get('mph25', 0)} of {len([W for W in WINTERS if W in L])} winters, but those are the tiny ones.",
        "- Per-lift rules called at 50% odds have the best precision of the learned methods, at the cost of recall: use them if a false alarm is costlier than a miss.", "",
        "## Lift level, reconciliation: all named lift-days (not the headline)", "",
