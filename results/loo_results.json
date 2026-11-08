@@ -316,10 +316,10 @@
   },
   "2022-23": {
    "learned": {
-    "tp": 294,
+    "tp": 296,
     "fp": 141,
-    "fn": 553,
-    "f1": 0.459
+    "fn": 551,
+    "f1": 0.461
    },
    "baseline": {
     "tp": 824,
@@ -330,10 +330,10 @@
   },
   "2023-24": {
    "learned": {
-    "tp": 281,
-    "fp": 347,
-    "fn": 139,
-    "f1": 0.536
+    "tp": 280,
+    "fp": 346,
+    "fn": 140,
+    "f1": 0.535
    },
    "baseline": {
     "tp": 417,
@@ -576,8 +576,8 @@
     "Alpine Meadow": 0.14,
     "Big Carpet": 0.12,
     "Alpine Carpets": 0.1,
-    "Hot Wheels": 0.06,
     "Little Carpet": 0.06,
+    "Hot Wheels": 0.06,
     "Ahsoka Carpet": 0.03
    }
   },
@@ -716,8 +716,8 @@
     "Alpine Meadow": 0.17,
     "Big Carpet": 0.16,
     "Alpine Carpets": 0.11,
-    "Hot Wheels": 0.06,
     "Little Carpet": 0.06,
+    "Hot Wheels": 0.06,
     "Ahsoka Carpet": 0.03
    }
   },
@@ -783,12 +783,12 @@
     "First Venture": 0.09,
     "Subway": 0.08,
     "Alpine Meadow": 0.07,
-    "Hot Wheels": 0.06,
     "Little Carpet": 0.06,
+    "Hot Wheels": 0.06,
     "Alpine Carpets": 0.05,
     "Big Carpet": 0.04,
-    "Kaya Carpet": 0.03,
-    "Ahsoka Carpet": 0.03
+    "Ahsoka Carpet": 0.03,
+    "Kaya Carpet": 0.03
    }
   },
   "2023-24": {
@@ -856,8 +856,8 @@
     "SnoVentures": 0.16,
     "Alpine Carpets": 0.15,
     "Big Carpet": 0.15,
-    "Hot Wheels": 0.06,
-    "Little Carpet": 0.06
+    "Little Carpet": 0.06,
+    "Hot Wheels": 0.06
    }
   },
   "2024-25": {
@@ -925,8 +925,8 @@
     "Alpine Meadow": 0.14,
     "Big Carpet": 0.12,
     "Alpine Carpets": 0.1,
-    "Hot Wheels": 0.06,
     "Little Carpet": 0.06,
+    "Hot Wheels": 0.06,
     "Ahsoka Carpet": 0.03
    }
   },
@@ -995,8 +995,8 @@
     "Alpine Meadow": 0.14,
     "Big Carpet": 0.13,
     "Alpine Carpets": 0.1,
-    "Hot Wheels": 0.06,
     "Little Carpet": 0.06,
+    "Hot Wheels": 0.06,
     "Ahsoka Carpet": 0.03
    }
   }

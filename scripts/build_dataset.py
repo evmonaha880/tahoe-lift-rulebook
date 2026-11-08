@@ -153,6 +153,8 @@ for Y in YEARS:
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
         f["new_snow24"] = depth_gain(DEPTH, date)                   # Alpine base depth sensor, dropout-filtered
         f["fnt_measured"] = f["fnt_day_gust"]                         # raw station reading (blank when the station was off)
+        _sib = feats_agg(weather, date, "Siberia")
+        if f["fnt_day_gust"] is not None and f["fnt_day_gust"] < 0.5 and _sib is not None and _sib > 20: f["fnt_day_gust"] = None     # 0.0 on a windy day = sensor dropout
         if Y >= 2025: f["fnt_day_gust"] = None                       # 2025-26 readings are a different regime: use the estimate for the whole winter so the series stays comparable
         if f["fnt_day_gust"] is None:
             sib = feats_agg(weather, date, "Siberia"); bel = feats_agg(weather, date, "Belmont")
