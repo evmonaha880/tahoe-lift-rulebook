@@ -1,0 +1,107 @@
+{
+ "_about": "Station coordinates for the weather files we use, from the Synoptic station-metadata API (network 214, Western Weather Group), fetched 2026-11-07. Elevations are the network's metadata; the station names carry their own elevation, which can differ (Summit: name 8643 ft, metadata 8399 ft). Funitel Top and KT-22 stations are in our 15-minute files but are NOT in the Synoptic network, so their coordinates are unknown.",
+ "stations": {
+  "Siberia": {
+   "stid": "SIBSV",
+   "lat": 39.18215,
+   "lon": -120.27191,
+   "elev_ft_metadata": 8700.0,
+   "status": "ACTIVE",
+   "name_in_files": "OV-Siberia 8700'"
+  },
+  "Belmont": {
+   "stid": "BMTSV",
+   "lat": 39.19219,
+   "lon": -120.26377,
+   "elev_ft_metadata": 8000.0,
+   "status": "ACTIVE",
+   "name_in_files": "OV-Belmont 8000'"
+  },
+  "Summit": {
+   "stid": "SUMAM",
+   "lat": 39.14993,
+   "lon": -120.24936,
+   "elev_ft_metadata": 8399.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Summit 8643' (Ward Mt.)"
+  },
+  "Roundhouse Top": {
+   "stid": "RHTAM",
+   "lat": 39.15403,
+   "lon": -120.24226,
+   "elev_ft_metadata": 7880.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Roundhouse Top 7880'"
+  },
+  "Scott Top": {
+   "stid": "SCTAM",
+   "lat": 39.1598,
+   "lon": -120.22764,
+   "elev_ft_metadata": 8120.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Scott Top 8120'"
+  },
+  "Treeline Cirque Mid": {
+   "stid": "TLCAM",
+   "lat": 39.1537,
+   "lon": -120.23409,
+   "elev_ft_metadata": 7555.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Treeline Cirque Mid 7555'"
+  },
+  "Yellow Valve House": {
+   "stid": "YVHAM",
+   "lat": 39.15501,
+   "lon": -120.23942,
+   "elev_ft_metadata": 7640.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Yellow Valve House 7640'"
+  },
+  "Roundhouse Btm": {
+   "stid": "RHBAM",
+   "lat": 39.16307,
+   "lon": -120.23859,
+   "elev_ft_metadata": 6950.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Roundhouse Btm 6950'"
+  },
+  "Scott Btm": {
+   "stid": "SCBAM",
+   "lat": 39.16017,
+   "lon": -120.23542,
+   "elev_ft_metadata": 7075.0,
+   "status": "ACTIVE",
+   "name_in_files": "AM-Scott Btm 7075'"
+  },
+  "Sherwood Btm": {
+   "stid": "SHRAM",
+   "lat": 39.14251,
+   "lon": -120.22942,
+   "elev_ft_metadata": 7115.0,
+   "status": "INACTIVE",
+   "name_in_files": "AM-Sherwood Btm 7115'"
+  },
+  "Base": {
+   "stid": "OVBOW",
+   "lat": 39.19493,
+   "lon": -120.23751,
+   "elev_ft_metadata": 6237.0,
+   "status": "ACTIVE",
+   "name_in_files": "OV-Base 6200"
+  },
+  "Funitel Top": {
+   "stid": null,
+   "lat": null,
+   "lon": null,
+   "elev_ft_metadata": null,
+   "note": "name says 7966 ft; not in Synoptic; coordinates unknown"
+  },
+  "KT": {
+   "stid": null,
+   "lat": null,
+   "lon": null,
+   "elev_ft_metadata": null,
+   "note": "name says 8000 ft; not in Synoptic; coordinates unknown"
+  }
+ }
+}
