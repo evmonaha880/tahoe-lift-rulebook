@@ -55,6 +55,13 @@ md = ["# Inferred causes for holds whose post names none", "",
       f"- Right on {100*acc:.0f}% of named holds, against {100*base:.0f}% for always guessing the most common family. Called with probability 0.6 or more: {100*float((pred == truth)[top >= .6].mean()):.0f}% right, on {100*float((top >= .6).mean()):.0f}% of holds.", "",
       "| Named cause | Holds | Recovered by the model |", "|---|---|---|"]
 for i, f in enumerate(FAM): md.append(f"| {f} | {int((truth == i).sum())} | {100*float((pred[truth == i] == i).mean()):.0f}% |")
+# wind named alone versus with other causes (the single `cause` field keeps only the first family, wind first)
+_T = ("avalanche", "snow", "ice", "visibility", "lightning", "power", "flood", "rain", "grooming")
+def _others(r): return sum(r.get("tag_" + t) == "1" for t in _T) + int(r["held_patrol"] == "1") + int(r["held_mech"] == "1") + int(r["held_weather"] == "1")
+_w = [r for r in H if r["held_wind"] == "1"]; _alone = [r for r in _w if _others(r) == 0]
+md += ["", "## Wind named alone or with other causes", "",
+       f"- {len(_w):,} of the {len(H):,} holds name wind. {len(_alone):,} ({100*len(_alone)/max(len(_w),1):.0f}%) name wind alone; {len(_w)-len(_alone):,} ({100*(len(_w)-len(_alone))/max(len(_w),1):.0f}%) also name another cause (avalanche control, snow, ice, visibility, lightning, power, flooding, rain, grooming, patrol, mechanical or weather).",
+       "- The single `cause` field keeps the first family found (wind first), so wind is credited whenever it is mentioned. Read the wind share as an upper bound; the post-level `cause_tags` hold every cause named.", ""]
 md += ["", "## What the unstated holds look like", "", "| Inferred cause | Unstated holds | Of those, confident (0.6+) |", "|---|---|---|"]
 for i, f in enumerate(FAM): md.append(f"| {f} | {int((best == i).sum())} ({100*float((best == i).mean()):.0f}%) | {int(((best == i) & conf).sum())} |")
 md += ["", f"{int(conf.sum())} of {len(unst):,} unstated holds ({100*float(conf.mean()):.0f}%) get a confident inferred cause; the rest stay unexplained.", "",

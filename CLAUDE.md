@@ -30,7 +30,7 @@ It is **not** the earlier "Tahoe Lift Call" / "Daily Call" / Latitude / Suez wor
 ## Working rules
 - **Stop and ask before:** spending money (X API pulls, paid APIs), publishing anything outside this repo, or changing any rules or instruction file.
 - Credentials live outside the repo. Never put a token, key or personal path in any file here.
-- Raw data stays out of git (`data/raw/` is ignored). X posts must not be redistributed.
+- Raw data stays out of git (`data/raw/` is ignored; it is re-pullable and large). The owner confirmed on 2026-11-07 that posts may be shown and redistributed, so the app can quote them.
 - Label every claim **verified** or **unverified**. Do not state a depth, count or cost as fact unless it was checked.
 - One file per artifact. Revise in place, no `v2` siblings.
 - Commit often with clear messages. Git history is the proof of new work.

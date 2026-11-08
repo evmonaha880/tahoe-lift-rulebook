@@ -106,7 +106,18 @@ md += ["", "Per winter, lift-level F1:", "", "| Held-out winter | Scored lift-da
 for W in WINTERS:
     if W in L: md.append(f"| {W} | {L[W]['n_lift_days']:,} | " + " | ".join(str(L[W][m]['f1']) for m in names) + " |")
 big = [W for W in WINTERS if W in L and L[W]["n_lift_days"] >= 400]
+_sd = collections.defaultdict(list)
+for _r in csv.DictReader(open(os.path.join(ROOT, "data", "derived", "lift_days.csv"))):
+    if _r["side"] in ("palisades", "alpine") and _r["in_season"] == "1" and _r["covid_era"] == "": _sd[(_r["date"], _r["side"])].append(_r)
+_named = {k for k, rs in _sd.items() if any(x["scheduled"] == "True" for x in rs)}
+def _hi(keys):
+    g = [float(x[0]["day_gust"]) for k, x in _sd.items() if k in keys and x[0]["day_gust"] not in ("", None)]; return (sum(v >= 60 for v in g) / len(g)) if g else 0
+out["coverage"] = {"side_days": len(_sd), "named_side_days": len(_named), "named_share": round(len(_named) / max(len(_sd), 1), 3), "gust60_named": round(_hi(_named), 3), "gust60_left_out": round(_hi(set(_sd) - _named), 3)}
+json.dump(out, open(os.path.join(ROOT, "results", "baselines.json"), "w"), indent=1)
+_cov = (f"**Coverage.** Lift-level rules are fitted on the {len(_named):,} of {len(_sd):,} side-days ({100*len(_named)/max(len(_sd),1):.0f}%) whose schedule post names the lifts, mostly 2021-22 to 2023-24. "
+        f"The side-days left out are windier: {100*_hi(set(_sd)-_named):.0f}% have a crest gust of 60 mph or more, against {100*_hi(_named):.0f}% of the named ones. A sensitivity run that infers rosters where a stated lift count allows it (`docs/SENSITIVITY.md`) is data-limited and moves the pooled scores by about 0.01.")
 md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; the other winters score under 60 lift-days each because most of their posts give a count (\"32 lifts scheduled\") rather than names.", "",
+       _cov, "",
        "**Simple rules against per-lift rules at lift level.**",
        f"- One learned wind line scores a pooled F1 of {L['pooled']['best_single_wind_line']['f1']}, against {L['pooled']['per_lift_any_pass']['f1']} for per-lift rules (any pass) and {L['pooled']['per_lift_called_at_50pct']['f1']} for per-lift rules at 50% odds: fitting each lift separately adds {L['pooled']['per_lift_any_pass']['f1'] - L['pooled']['best_single_wind_line']['f1']:+.3f} of F1.",
        f"- The 25 mph rule has the highest recall ({L['pooled']['mph25']['recall']}) but very low precision ({L['pooled']['mph25']['precision']}), so its pooled F1 is the lowest ({L['pooled']['mph25']['f1']}). It tops the F1 table in {L['winters_won_by_method'].get('mph25', 0)} of {len([W for W in WINTERS if W in L])} winters, but those are the tiny ones.",

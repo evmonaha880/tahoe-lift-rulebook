@@ -269,7 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.5"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.7"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -386,6 +386,10 @@ def fallback_events(text, out, add):
                 st, c = _status_of(piece)
                 if st: put(lf2, st, c)
 
+def _side_scope(t):
+    """ALL_PALISADES / ALL_ALPINE when the post names only one side, else ALL"""
+    a = bool(re.search(r"\balpine\b", re.sub(r"#\w+", " ", t), re.I)); pl = bool(re.search(r"palisades|squaw|olympic valley", re.sub(r"#\w+", " ", t), re.I))
+    return "ALL_ALPINE" if a and not pl else "ALL_PALISADES" if pl and not a else "ALL"
 def fix_patterns(p, ev, text, dt):
     base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None, "confidence": 1.0}
     out = list(ev); added = []
@@ -482,8 +486,19 @@ def fix_patterns(p, ev, text, dt):
     for e in out:                                                                                                 # 'all lifts except X that were on hold are now closed': X is not on hold
         if e["lift"] == "ALL_ON_HOLD" and e.get("except"):
             ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "hold_start" and x["lift"] in ex)]
+    if not any((e["lift"] or "").startswith("ALL") for e in out + added if e["event_type"] in ("hold_start", "delay", "closed_day")):
+        for sent in split_sentences(text):
+            sl = sent.lower()
+            if re.search(r"\b(?:may|might|could|expect(?:ed)? to|likely|hoping|if)\b|\bhope", sl): continue
+            if re.search(r"\ball (?:lift )?operations\b[^.!?]{0,70}\b(?:on hold|suspended|halted)\b|\b(?:the )?scheduled lifts (?:are|remain) on (?:\w+ )?hold\b|\ball operations are on hold", sl):
+                add("P-010w", "hold_start", _side_scope(text), cause_in(sent)); break           # 'all operations ... on hold', 'the scheduled lifts are on hold'
+            if re.search(r"\ball (?:scheduled )?lifts\b[^.!?]{0,30}\b(?:will (?:be|have)|are) (?:a )?delayed", sl):
+                add("P-030w", "delay", _side_scope(text), cause_in(sent)); break
     fallback_events(p["text"], out + added, add)                                                          # keeps the line breaks the list sections need
-    return out + added
+    final = out + added
+    for e in final:
+        if e["lift"] is None and e["event_type"] in ("hold_start", "closed_day", "delay", "reopen", "partial"): e["event_type"] = "other"; e["note"] = "no_lift_named"
+    return final
 
 def parse_post(p):
     p = {**p, "text": clean_text(p["text"])}

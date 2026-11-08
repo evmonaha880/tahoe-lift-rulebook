@@ -6,6 +6,9 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("ATTN: Due to lightning in the area all operations at Squaw Valley Alpine Meadows are on hold. Stand by for further notice", [(H, "ALL", "weather")], []),
+ ("Update: Power is still out here. Therefore, the scheduled lifts are on hold with no anticipated time of opening.", [(H, "ALL", None)], []),
+ ("Due to snow safety operations, all scheduled lifts will be delayed this morning. We will update you.", [(D, "ALL", None)], []),
  ("Now Open at Palisades:\n\nTram\nFuni\nExhibition\n\nMechanical Hold:\nKT-22",
   [(R, "Tram", None), (R, "Funitel", None), (R, "Exhibition", None), (H, "KT-22", "mechanical")], [(H, "Tram"), (H, "Exhibition")]),
  ("Alpine Update:\nScott: Open\nTreeline Cirque: mid-station only\nSherwood: Closed", [(C, "Sherwood", None)], [(C, "Scott")]),
