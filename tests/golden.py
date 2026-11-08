@@ -6,6 +6,8 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("The following lifts will spin at 9am at Squaw:\n\n- KT-22\n- Red Dog\n- Resort\n- Carpets\n\nAll other lifts, including the Aerial Tram, are on Hold. We will update as soon as we can spin more lifts!", [(S, "KT-22", None), (H, "ALL_OTHER", None)], []),
+ ("We are experiencing rime ice issues on upper mountain lifts this morning, with the following lifts delayed while we manually clear the ice:\n\n- Big Blue\n- Emigrant\n- Headwall\n\nWe will update you as we get them spinning! #squawlifts", [(D, "Big Blue", None), (D, "Headwall", None)], [(R, "Big Blue"), (R, "Headwall")]),
  ("Here's the scoop for this morning on the Palisades side:\n\nOpen:\n\nBase to Base\n\nDelayed:\nFunitel\nResort\nRed Dog\nExhibition\nFirst Venture\nTram\n\n#palisadesops", [(S, "Funitel", None), (S, "Base to Base Gondola", None), (D, "Funitel", None)], []),
  ("8 lifts on the schedule at Alpine for 9a-4p. Please expect some delays due to snow safety.\n\nBase to Base\nRoundhouse\nSummit\nTreeline Cirque\nMeadow\nYellow\nSubway\nBig Carpet\n\n#palisadesops", [(S, "Roundhouse", None), (W, None, None)], [(D, "Roundhouse"), (D, "Summit"), (D, "Alpine Meadow")]),
  ("At Alpine: Summit, Sherwood, Scott, Lakeview, Kangaroo, and Subway are OFF schedule today. #palisadesops", [(C, "Summit", None), (C, "Subway", None)], [(S, "Summit"), (S, "Subway")]),

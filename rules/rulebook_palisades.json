@@ -10,7 +10,7 @@
   "n_below": 270,
   "observed_wind_stated_days": 43,
   "observed_held_days": 110,
-  "unstated_cause_days": 42,
+  "unstated_cause_days": 41,
   "loo": {}
  },
  {
@@ -48,11 +48,11 @@
   "scheduled_days": 427,
   "hold_rate_above": 0.718,
   "n_above": 39,
-  "hold_rate_below": 0.085,
+  "hold_rate_below": 0.082,
   "n_below": 377,
   "observed_wind_stated_days": 20,
-  "observed_held_days": 65,
-  "unstated_cause_days": 29,
+  "observed_held_days": 64,
+  "unstated_cause_days": 28,
   "loo": {}
  },
  {
@@ -146,11 +146,11 @@
   "scheduled_days": 383,
   "hold_rate_above": 0.743,
   "n_above": 35,
-  "hold_rate_below": 0.103,
+  "hold_rate_below": 0.1,
   "n_below": 340,
   "observed_wind_stated_days": 21,
-  "observed_held_days": 66,
-  "unstated_cause_days": 29,
+  "observed_held_days": 65,
+  "unstated_cause_days": 28,
   "loo": {}
  },
  {
@@ -160,11 +160,11 @@
   "scheduled_days": 374,
   "hold_rate_above": 0.513,
   "n_above": 113,
-  "hold_rate_below": 0.069,
+  "hold_rate_below": 0.065,
   "n_below": 217,
   "observed_wind_stated_days": 21,
-  "observed_held_days": 80,
-  "unstated_cause_days": 40,
+  "observed_held_days": 79,
+  "unstated_cause_days": 39,
   "loo": {}
  },
  {
@@ -300,11 +300,11 @@
   "scheduled_days": 278,
   "hold_rate_above": 0.684,
   "n_above": 38,
-  "hold_rate_below": 0.089,
+  "hold_rate_below": 0.084,
   "n_below": 214,
   "observed_wind_stated_days": 16,
-  "observed_held_days": 50,
-  "unstated_cause_days": 21,
+  "observed_held_days": 49,
+  "unstated_cause_days": 20,
   "loo": {}
  },
  {
@@ -398,11 +398,11 @@
   "scheduled_days": 211,
   "hold_rate_above": 0.538,
   "n_above": 39,
-  "hold_rate_below": 0.087,
+  "hold_rate_below": 0.081,
   "n_below": 172,
   "observed_wind_stated_days": 12,
-  "observed_held_days": 36,
-  "unstated_cause_days": 18,
+  "observed_held_days": 35,
+  "unstated_cause_days": 17,
   "loo": {}
  },
  {
@@ -426,11 +426,11 @@
   "scheduled_days": 194,
   "hold_rate_above": 0.558,
   "n_above": 86,
-  "hold_rate_below": 0.146,
+  "hold_rate_below": 0.136,
   "n_below": 103,
   "observed_wind_stated_days": 19,
-  "observed_held_days": 68,
-  "unstated_cause_days": 38,
+  "observed_held_days": 67,
+  "unstated_cause_days": 37,
   "loo": {}
  },
  {

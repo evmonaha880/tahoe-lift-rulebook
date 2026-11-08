@@ -269,7 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.11"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.12"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -496,6 +496,11 @@ def fix_patterns(p, ev, text, dt):
             if had:
                 out = [x for x in out if x not in had]; added = [x for x in added if x not in had]
                 for l in lifts_off: add("P-020o", "closed_day", l, None)
+    # 'The following lifts will spin at 9am: A, B, C ... All other lifts are on Hold': the listed lifts are the exceptions
+    _run = sorted({e["lift"] for e in out + added if e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL")})
+    if _run:
+        for e in out + added:
+            if e["lift"] == "ALL_OTHER" and e["event_type"] in ("hold_start", "delay", "closed_day") and not e.get("except"): e["except"] = _run
     # 'closed for the day, with the exception of X and Y': the exceptions are open, not closed
     for e in list(out + added):
         if e["event_type"] == "closed_day" and (e["lift"] or "").startswith("ALL") and e.get("except"):
@@ -823,7 +828,7 @@ def _parse_post(p):
             add("P-020", "closed_day", find_lifts(t if "following" in sl else s), "wind" if re.search(r"gusts|wind", sl) else c); continue
         if re.search(r"\b(?:is|are) (?:slightly |a bit )?delayed\b|delayed on the|operational delay|projected to open|looking more like \d|planned to open at \d|slight delay but", sl) and find_lifts(s):
             add("P-030", "delay", find_lifts(s), cause_in(s) or ("weather" if "rime" in sl else None)); continue
-        if re.search(r"(?:now |is |are )?spinning!?|\bis loading\b|(?:is )?now loading\b|we.re loading\b|just opened|=\s*open\b|opened on time|open to the public|now open at|are open\b|\bis open\b|has opened", sl) and find_lifts(s) and not re.search(r"will be|today:|\bnot open|should be|about an hour|mid-?station|open daily|(?:end of|for the|rest of the) season|\bwhen\b|as soon as|\bonce\b", sl):
+        if re.search(r"(?:now |is |are )?spinning!?|\bis loading\b|(?:is )?now loading\b|we.re loading\b|just opened|=\s*open\b|opened on time|open to the public|now open at|are open\b|\bis open\b|has opened", sl) and find_lifts(s) and not re.search(r"\bget(?:ting)? (?:them|it|all of them|those|the rest) (?:all )?spinning|update you|will be|today:|\bnot open|should be|about an hour|mid-?station|open daily|(?:end of|for the|rest of the) season|\bwhen\b|as soon as|\bonce\b", sl):
             add("P-040", "reopen", find_lifts(re.split(r"\b(?:is|are|has)\b|now spinning|spinning", s, maxsplit=1, flags=re.I)[0]) or find_lifts(s), None); continue
         if re.search(r"all (?:the )?lots|lots are now full|parking (?:available|at alpine and)|parking spots|parking reservation", sl):
             add("P-050", "parking", [], None); continue

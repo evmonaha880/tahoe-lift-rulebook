@@ -65,7 +65,7 @@ A hold or closure counts as **reopened** only when a post says the lift (or its 
 |---|---|---|---|
 | under 40 | 598 | 44% | 60 |
 | 40 to 60 | 684 | 46% | 68 |
-| 60 to 80 | 1197 | 37% | 85 |
+| 60 to 80 | 1191 | 37% | 85 |
 | 80 to 100 | 1130 | 23% | 101 |
 | 100 or more | 2099 | 16% | 106 |
 
