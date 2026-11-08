@@ -252,6 +252,12 @@ def fit_funitel():
     return coef
 FNT_COEF = fit_funitel()
 rows = []
+def other_side_ok(e, L, es):
+    """'All other lifts' covers the side of the mountain the post is about. The side is read from the lifts the post names as exceptions
+    (an Alpine update that lists Alpine lifts must not hold Palisades lifts). Mixed or no exceptions: the whole resort, as before. A lift that is later reopened the same day was held, whatever side the post named."""
+    sides = {SIDE.get(x) for x in e.get("except", []) if SIDE.get(x) in ("palisades", "alpine")}
+    return len(sides) != 1 or SIDE.get(L) in (None, "", "link") or SIDE.get(L) in sides or any(x["lift"] == L and x["event_type"] == "reopen" and x["start"] > e["start"] for x in es)
+
 for Y in YEARS:
     W = f"{Y}-{str(Y+1)[2:]}"; weather = WEATHER[Y]; SN = snotel(Y); DEPTH = load_depth(Y)
     ev = []
@@ -286,7 +292,7 @@ for Y in YEARS:
             else: f["fnt_src"] = ""
         else: f["fnt_src"] = "measured"
         for L in sorted(lifts):
-            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or (e["lift"] == "ALL" and L not in e.get("except", [])) or (e["lift"] == "ALL_ON_HOLD" and L not in e.get("except", []) and any(x["lift"] == L and x["event_type"] == "hold_start" and x["start"] < e["start"] for x in es)) or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and L not in e.get("except", []) and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
+            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or (e["lift"] == "ALL" and L not in e.get("except", [])) or (e["lift"] == "ALL_ON_HOLD" and L not in e.get("except", []) and any(x["lift"] == L and x["event_type"] == "hold_start" and x["start"] < e["start"] for x in es)) or (e["lift"] == "ALL_OTHER" and L not in e.get("except", []) and other_side_ok(e, L, es)) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and L not in e.get("except", []) and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
             row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),
