@@ -12,4 +12,5 @@ $PY -I scripts/build_dataset.py 2018 2019 2020 2021 2022 2023 2024 2025 | tail -
 for s in recover_rules baselines infer_causes closure_conditions build_app_model; do $PY -I scripts/$s.py > /dev/null; done
 $PY -I scripts/check_app_model.py | tail -1
 $PY -I scripts/check_data.py | tail -3
+$PY -I scripts/check_numbers.py | tail -3
 $PY -I scripts/manifest.py

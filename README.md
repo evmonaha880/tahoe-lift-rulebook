@@ -52,6 +52,19 @@ Hook photo: r/palisadestahoe.
 
 `scripts/pull_probe*.py`, `scripts/wwg_*.py` are the exploration scripts used to find each source's depth and request format.
 
+## Data architecture
+
+| Layer | Where | Rule |
+|---|---|---|
+| Raw | `data/raw/` (git-ignored; counts and hashes in `docs/RAW_INVENTORY.md`) | Never edited. Posts, 15-minute station files, SNOTEL, avalanche forecasts, NWS alerts |
+| Parsed events | `data/derived/*_events.json` | One row per status event, stamped with `parser_version`. Observed `cause` and post-level `cause_tags` |
+| Lift-day table | `data/derived/lift_days.csv` | One row per lift per local day. Outcomes come only from posts; features only from weather. Every column is described in `rules/features.json` (role, when it is known, unit, source) |
+| Inferred | `data/derived/cause_inferred.csv` | Modelled causes for holds whose post names none. Never mixed into the observed columns |
+| Results | `results/`, `docs/RESULTS.md`, `docs/numbers.json` | Scores are leave-one-winter-out; the quoted numbers are checked against the data |
+| App | `docs/app/model.js` | A pure view of the results; the page recomputes nothing |
+
+How a change is made safe: the parser carries a version and a golden test per behaviour; `scripts/diff_events.py` shows which posts a change touched; `scripts/check_data.py` checks the output (values, order, quality flags, column registry); `scripts/check_numbers.py` finds stale copies of headline numbers; `scripts/run_all.sh` rebuilds everything in about a minute; `scripts/manifest.py` records what produced the build. When a number describes a day (full-day gust) it is labelled as hindsight; only morning (as-of) features are presented as a prediction. A validation sample of 320 held-out posts is frozen in `results/validation_sample_ids.json` and graded once.
+
 ## Re-running
 
 In order: `scripts/parse_posts.py <year> <train|heldout>` for each winter, `scripts/pull_nws.py`, `scripts/build_dataset.py 2018 ... 2025`, `scripts/recover_rules.py`, `scripts/baselines.py`, `scripts/infer_causes.py` and `scripts/closure_conditions.py` (they write docs/CAUSES.md and docs/CLOSURES.md; numpy needed), then `scripts/build_app_model.py` (writes the app's only data file) and `scripts/check_app_model.py` (fails if the app's numbers differ from the results); tests with `python3 -I tests/golden.py`.
