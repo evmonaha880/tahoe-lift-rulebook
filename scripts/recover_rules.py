@@ -10,7 +10,7 @@ for r in rows:
     for k in ("held", "held_wind", "held_unstated", "held_patrol", "held_mech", "held_weather"): r[k] = int(r[k])
     r["scheduled"] = r["scheduled"] == "True"
 WINTERS = sorted({r["winter"] for r in rows})
-FEATS = ["early_gust", "day_gust", "early_spd", "day_spd", "avy", "temp_base", "swe24", "swe6", "prec24s"]
+FEATS = ["early_gust", "day_gust", "early_spd", "day_spd", "fnt_day_gust", "avy", "temp_base", "swe24", "swe6", "prec24s", "new_snow24"]
 def f1(tp, fp, fn): return 2 * tp / (2 * tp + fp + fn) if tp else 0.0
 def score(rs, pred, y):
     tp = sum(1 for r in rs if pred(r) and r[y]); fp = sum(1 for r in rs if pred(r) and not r[y]); fn = sum(1 for r in rs if not pred(r) and r[y])

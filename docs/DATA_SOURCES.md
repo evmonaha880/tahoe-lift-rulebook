@@ -84,7 +84,7 @@ Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, no
 
 - **Consequence:** only three winters with lift posts and stations are El Niño winters (2018-19 weak, 2019-20 weak, 2023-24 strong or moderate depending on the index). All are weaker than the very strong event forecast for 2026-27. The best strong analog, 2015-16, predates the station records; whether the ops account posted lift status that winter is **not checked**. El Niño findings from this data are an extrapolation and must be labelled as such.
 
-## 5. Sierra Avalanche Center: public API, VERIFIED 2026-11-07 (not yet pulled)
+## 5. Sierra Avalanche Center: public API, VERIFIED and PULLED 2026-11-07
 - **Access:** `https://api.avalanche.org/v2/public/products?avalanche_center_id=SAC` returns JSON with no key. One call returned 3,033 products (3 MB). The `date` parameter did not filter, so the whole archive comes back at once. Zone list: `.../products/map-layer/SAC` (one zone: Central Sierra Nevada).
 - **Depth:** 2013-04-09 to 2026-11-07. Counts by type: 2,125 forecasts, 849 weather products, 59 summaries. About 150 products a year in 2014-2019, about 300 a year from 2020 (daily in season).
 - **Fields on a forecast:** danger rating per elevation band (lower, middle, upper) for today and tomorrow, `bottom_line` text, `danger_level_text`, `json_data` (probably avalanche problems; **not yet inspected**), publish and expiry times. `weather_data` was empty on every record.
@@ -101,3 +101,9 @@ Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, no
 
 ## Earlier private work: reference only
 The earlier private Tahoe Lift Call project left lift-day tables and X post pulls (Palisades 2023-24 and some 2025 slices; Heavenly 2023-24 through 2025-26). They are outside this repo. Observed in them: the 2023-24 pull was incomplete (909 of 1,171 posts). Use only as an independent check on the new parser, never as an input.
+
+## 7. Data-quality fixes, 2026-11-07 (audit)
+- **Avalanche danger:** forecasts before 2020 carry only the top-level `danger_rating`, not the per-band list. It equals the max of the bands in all 2,685 products where both exist, so it is used as the fallback. Coverage of lift-days: 2018-19 0 to 79%, 2019-20 0 to 87%, 2020-21 69 to 88%. Days after the center stops forecasting (mid-April) stay blank.
+- **New snow in 24 hours:** the old figure (sum of SNOTEL depth increases) reached 121 inches because of sensor spikes. Replaced by the depth gain at the Alpine Roundhouse base station (15-minute depth, dropout-filtered), 97 to 100% coverage in every winter, correlation 0.55 to 0.87 with the SNOTEL water gain, maximum 36 inches. The old figure is kept as `new_snow24_snotel`.
+- **Funitel-top wind:** the station returns no rows before Apr 2019, Feb to May 2024 and Nov 2025 to Feb 2026 (checked with direct single-station requests against the same source). Where missing, the daily max gust is ESTIMATED as 2.16 + 0.13 x Siberia + 0.72 x Belmont (R2 0.89 on 1,006 measured days, error about 4 mph). The column `fnt_src` says `measured` or `estimated`; the raw reading is kept in `fnt_measured`. 2025-26 readings are a different regime (R2 -0.26 against the earlier fit), so that whole winter uses the estimate.
+- **Known limits:** estimates are not measurements; the Funitel estimate misses about 1 in 5 days at or above 40 mph. SNOTEL timestamps appear to be fixed standard time, which could shift the 9am snow reading by an hour in spring (unverified).

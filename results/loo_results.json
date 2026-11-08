@@ -260,10 +260,10 @@
  "lift_level": {
   "2018-19": {
    "learned": {
-    "tp": 16,
-    "fp": 13,
-    "fn": 12,
-    "f1": 0.561
+    "tp": 15,
+    "fp": 11,
+    "fn": 13,
+    "f1": 0.556
    },
    "baseline": {
     "tp": 28,
@@ -288,10 +288,10 @@
   },
   "2020-21": {
    "learned": {
-    "tp": 1,
-    "fp": 12,
-    "fn": 2,
-    "f1": 0.125
+    "tp": 2,
+    "fp": 13,
+    "fn": 1,
+    "f1": 0.222
    },
    "baseline": {
     "tp": 3,
@@ -302,10 +302,10 @@
   },
   "2021-22": {
    "learned": {
-    "tp": 97,
-    "fp": 209,
-    "fn": 70,
-    "f1": 0.41
+    "tp": 90,
+    "fp": 173,
+    "fn": 77,
+    "f1": 0.419
    },
    "baseline": {
     "tp": 162,
@@ -316,10 +316,10 @@
   },
   "2022-23": {
    "learned": {
-    "tp": 312,
-    "fp": 136,
-    "fn": 535,
-    "f1": 0.482
+    "tp": 294,
+    "fp": 141,
+    "fn": 553,
+    "f1": 0.459
    },
    "baseline": {
     "tp": 824,
@@ -330,10 +330,10 @@
   },
   "2023-24": {
    "learned": {
-    "tp": 270,
-    "fp": 320,
-    "fn": 150,
-    "f1": 0.535
+    "tp": 281,
+    "fp": 347,
+    "fn": 139,
+    "f1": 0.536
    },
    "baseline": {
     "tp": 417,
@@ -344,10 +344,10 @@
   },
   "2024-25": {
    "learned": {
-    "tp": 38,
-    "fp": 40,
-    "fn": 34,
-    "f1": 0.507
+    "tp": 39,
+    "fp": 39,
+    "fn": 33,
+    "f1": 0.52
    },
    "baseline": {
     "tp": 69,
@@ -392,26 +392,26 @@
   "snow safety / avalanche control": {
    "days": 146,
    "folds": {
-    "2018-19": "  n/a (feature missing)",
-    "2019-20": " 0.07 (base 10%)",
-    "2020-21": " 0.19 (base 8%)",
-    "2021-22": " 0.00 (base 5%)",
+    "2018-19": " 0.35 (base 22%)",
+    "2019-20": " 0.15 (base 11%)",
+    "2020-21": " 0.12 (base 8%)",
+    "2021-22": " 0.00 (base 4%)",
     "2022-23": " 0.36 (base 20%)",
     "2023-24": " 0.21 (base 9%)",
-    "2024-25": " 0.29 (base 15%)",
-    "2025-26": " 0.27 (base 21%)"
+    "2024-25": " 0.44 (base 15%)",
+    "2025-26": " 0.25 (base 18%)"
    },
    "best": [
-    "swe24",
-    0.2999999999999998
+    "new_snow24",
+    1.1999999999999886
    ]
   },
   "mechanical": {
    "days": 271,
    "folds": {
-    "2018-19": "  n/a (feature missing)",
-    "2019-20": "  n/a (feature missing)",
-    "2020-21": " 0.51 (base 35%)",
+    "2018-19": " 0.36 (base 22%)",
+    "2019-20": " 0.53 (base 36%)",
+    "2020-21": " 0.54 (base 36%)",
     "2021-22": " 0.35 (base 21%)",
     "2022-23": " 0.58 (base 41%)",
     "2023-24": " 0.41 (base 26%)",
@@ -426,9 +426,9 @@
   "lightning / ice / rain": {
    "days": 62,
    "folds": {
-    "2018-19": "  n/a (feature missing)",
-    "2019-20": "  n/a (feature missing)",
-    "2020-21": " 0.33 (base 5%)",
+    "2018-19": " 0.24 (base 9%)",
+    "2019-20": " 0.29 (base 5%)",
+    "2020-21": " 0.25 (base 5%)",
     "2021-22": " 0.36 (base 3%)",
     "2022-23": " 0.32 (base 8%)",
     "2023-24": " 0.25 (base 1%)",
@@ -576,8 +576,8 @@
     "Alpine Meadow": 0.14,
     "Big Carpet": 0.12,
     "Alpine Carpets": 0.1,
-    "Little Carpet": 0.06,
     "Hot Wheels": 0.06,
+    "Little Carpet": 0.06,
     "Ahsoka Carpet": 0.03
    }
   },
@@ -716,8 +716,8 @@
     "Alpine Meadow": 0.17,
     "Big Carpet": 0.16,
     "Alpine Carpets": 0.11,
-    "Little Carpet": 0.06,
     "Hot Wheels": 0.06,
+    "Little Carpet": 0.06,
     "Ahsoka Carpet": 0.03
    }
   },
@@ -783,8 +783,8 @@
     "First Venture": 0.09,
     "Subway": 0.08,
     "Alpine Meadow": 0.07,
-    "Little Carpet": 0.06,
     "Hot Wheels": 0.06,
+    "Little Carpet": 0.06,
     "Alpine Carpets": 0.05,
     "Big Carpet": 0.04,
     "Kaya Carpet": 0.03,
@@ -856,8 +856,8 @@
     "SnoVentures": 0.16,
     "Alpine Carpets": 0.15,
     "Big Carpet": 0.15,
-    "Little Carpet": 0.06,
-    "Hot Wheels": 0.06
+    "Hot Wheels": 0.06,
+    "Little Carpet": 0.06
    }
   },
   "2024-25": {
@@ -925,8 +925,8 @@
     "Alpine Meadow": 0.14,
     "Big Carpet": 0.12,
     "Alpine Carpets": 0.1,
-    "Little Carpet": 0.06,
     "Hot Wheels": 0.06,
+    "Little Carpet": 0.06,
     "Ahsoka Carpet": 0.03
    }
   },
@@ -995,8 +995,8 @@
     "Alpine Meadow": 0.14,
     "Big Carpet": 0.13,
     "Alpine Carpets": 0.1,
-    "Little Carpet": 0.06,
     "Hot Wheels": 0.06,
+    "Little Carpet": 0.06,
     "Ahsoka Carpet": 0.03
    }
   }
