@@ -231,7 +231,7 @@ _WC_EXCL = re.compile(r"\broad\b|\bparking\b|\blots?\b|\btubing\b|\bhighway\b|\b
 _WC_ALL = re.compile(r"\ball (?:lifts|lift operations|lift ops|operations|lifts and terrain)\b[^.!?]{0,40}?\b(?:closed|not operat|suspended)", re.I)
 _WC_NOOP = re.compile(r"\b(?:will not|won.t|are not|is not|not)\s+(?:be\s+)?(?:have|having|running|operating|open|opening|offer|offering)\b[^.!?]{0,30}?\b(?:any\s+)?lift (?:operations|service)\b|\bno lift (?:operations|service)\b|\blift operations? (?:are |is )?(?:closed|suspended|cancel+ed)\b", re.I)
 _WC_SUBJ = re.compile(r"\b(?:palisades tahoe|squaw valley(?:\s*[|&/]?\s*alpine meadows)?|alpine meadows|squaw alpine|both (?:sides|mountains|resorts|areas)|the resort|our resort|the mountain|palisades|alpine)\b[^.!?]{0,60}?\b(?:is|are|will be|will remain|remains?|has been|have been|is being)\b[^.!?]{0,14}\bclosed\b", re.I)
-_WC_PARTIAL = re.compile(r"\blifts?\b[^.!?]{0,25}\bon (?:an? )?(?:wind |mechanical |patrol )?hold|\blifts? (?:that|which) (?:were|are|was)\b", re.I)
+_WC_PARTIAL = re.compile(r"\blifts?\b[^.!?]{0,25}\bon (?:an? )?(?:wind |mechanical |patrol )?hold|\blifts? (?:that|which) (?:were|are|was)\b|\b(?:that|which)\b[^.!?]{0,30}\bon (?:an? )?(?:\w+ )?hold", re.I)
 _WC_FUTURE = re.compile(r"\b(?:tomorrow|tonight|on (?:mon|tues|wednes|thurs|fri|satur|sun)day|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.? \d{1,2})\b", re.I)
 def _wc_scope(s):
     sl = s.lower()
@@ -607,7 +607,7 @@ def _parse_post(p):
         if am2:
             add("P-021", "delay" if "delayed" in am2.group(0) else "reopen", ["ALL"], None); continue
         # P-021 all lifts closed
-        if re.search(r"all (?:the )?lifts (?:that|which|on (?:an? )?(?:\w+ )?hold)\b.*closed", sl):      # 'All lifts that were on wind hold are now closed': only the lifts already on hold, not every lift
+        if re.search(r"all (?:of )?(?:the )?lifts\b[^.!?]{0,40}?\b(?:that|which|on (?:an? )?(?:\w+ )?hold)\b.*closed", sl):      # 'All lifts that were on wind hold are now closed': only the lifts already on hold, not every lift
             add("P-021", "closed_day", ["ALL_ON_HOLD"], cause_in(s) or ("wind" if "wind hold" in sl else None)); continue
         if re.search(r"all (?:the )?lifts.*(closed|on (?:\w+ )?hold)|all lifts that", sl):
             if re.search(r"on (?:\w+ )?hold", sl) and "closed" not in sl: add("P-021", "hold_start", ["ALL"], cause_in(s) or ("wind" if "wind hold" in sl else None))

@@ -25,9 +25,9 @@ Hook photo: r/palisadestahoe.
 **What the rules show** (leave-one-winter-out; details and every number in [docs/RESULTS.md](docs/RESULTS.md)):
 - A wind line of about 60 mph gusts at the crest predicts which days see a wind hold. It is stable across winters and beats a 25 mph rule in all 8 (day-level F1 0.70 to 0.88 against 0.38 to 0.72).
 - Which lift holds is harder. On expected lift-days (scheduled, plus lifts under a whole-mountain closure), one learned wind line does about as well as separate per-lift rules (pooled F1 0.57 each); the 25 mph rule has high recall and very low precision.
-- **"All lifts closed" is an event, and it is predictable.** 48 whole-mountain closure days are counted from the posts. Closures were rare below 100 mph gusts (4% of days), 21% of days at 100 to 130 mph and 50% at 130 and above. Avalanche danger 4 closed the mountain on 44% of days.
+- **"All lifts closed" is an event, and it is predictable.** 47 whole-mountain closure days are counted from the posts. Closures were rare below 100 mph gusts (under 5% of days), 21% of days at 100 to 130 mph and 50% at 130 and above. Avalanche danger 4 closed the mountain on 44% of days.
 - **Storm days start late.** With wind under 60 mph, 24% of lifts were held or closed on days with 2+ in of new snow, 1+ in of snow water or avalanche danger 3+, against 6% on other days (61 such days).
-- **Hours beat the peak gust.** With a 60 to 100 mph peak, a Tram or Funitel hold came on 18% of days with 2 hours or less at 60 mph or more, and 61% with more than 5 hours. Wind direction adds nothing once duration is counted; south-west storms simply last longer.
+- **Hours beat the peak gust.** With a 60 to 100 mph peak, a Tram or Funitel hold came on 17% of days with 2 hours or less at 60 mph or more, and 61% with more than 5 hours. Wind direction adds nothing once duration is counted; south-west storms simply last longer.
 - When a gateway (Tram or Funitel) holds, 66% of upper-mountain lift-days hold with it, 49% on days without a whole-mountain closure; when neither holds, 7%.
 - Mechanical and lightning holds are only weakly predictable from these weather files.
 

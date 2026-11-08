@@ -205,6 +205,7 @@ CASES = [
  ("All lifts that were on wind hold are now closed for the day.", [(C, "ALL_ON_HOLD", "wind")], [(C, "ALL"), (C, "ALL_PALISADES")]),
  ("Alpine Bowl Chair is now closed for the remainder of the day.", [(C, "Alpine Bowl", None)], [(C, "ALL_ALPINE")]),
  ("Due to forecasted weather conditions, Alpine will be closed on Friday, March 1st. Thank you.", [(W, "ALL_ALPINE", None)], [(C, None)]),
+ ("Due to increasing winds, all lifts that are currently on wind hold are now closed for the day.  The Funitel is also experiencing increased winds.", [(C, "ALL_ON_HOLD", "wind")], [(C, "ALL"), (C, "ALL_PALISADES")]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0
