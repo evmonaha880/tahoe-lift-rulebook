@@ -38,6 +38,24 @@ for f in sorted(glob.glob(os.path.join(D, "*_events.json"))):
         elif winter_of(e["start"]) != W: err(f"{name}: event dated {e['start'][:10]} is outside winter {W}")
         if e["event_type"] in ("hold_start", "closed_day", "delay", "reopen", "partial") and l is None: liftless.append(e["source_post_id"])
         if e["cause"] is None and e.get("cause_source") == "observed": err(f"{name}: observed cause but cause is empty")
+# event-order checks: exact duplicates and implausible hours are errors; repeats and unannounced reopenings are counted for the record
+dupes = 0; weird_hour = 0; reopen_no_status = 0; repeat_hold = 0
+for f in sorted(glob.glob(os.path.join(D, "*_events.json"))):
+    ev = json.load(open(f)); seen = collections.Counter(); byday = collections.defaultdict(list)
+    for e in ev:
+        seen[(e["source_post_id"], e["event_type"], e["lift"], e.get("cause"), tuple(e.get("except", [])), e["parse_rule_id"])] += 1; byday[(e["start"][:10], e["lift"])].append(e)
+        if not 4 <= int(e["start"][11:13]) <= 22: weird_hour += 1
+    dupes += sum(n - 1 for n in seen.values() if n > 1)
+    for (d, l), es in byday.items():
+        es.sort(key=lambda x: x["start"]); state = None
+        for e in es:
+            if e["event_type"] == "reopen" and state is None: reopen_no_status += 1
+            if e["event_type"] == "hold_start" and state == "hold": repeat_hold += 1
+            if e["event_type"] in ("hold_start", "delay", "closed_day"): state = "hold"
+            elif e["event_type"] in ("reopen", "scheduled_opening"): state = "open"
+if dupes: err(f"{dupes} exact duplicate events")
+if weird_hour: err(f"{weird_hour} events dated outside 04:00 to 22:59 local")
+warn(f"event order: {reopen_no_status} reopenings of a lift with no earlier status that day (late opening or roster-only lifts), {repeat_hold} repeated hold announcements with no reopening between")
 if set(versions) - {PARSER_VERSION}: warn(f"events carry parser versions {dict(versions)}; current is {PARSER_VERSION} (re-run parse_posts.py)")
 lim = json.load(open(os.path.join(root, "results", "baseline_metrics.json"))).get("liftless_status_events", 10**9) if os.path.exists(os.path.join(root, "results", "baseline_metrics.json")) else 10**9
 if len(liftless) > lim: err(f"{len(liftless)} status events have no lift (baseline {lim}); the parser matched a pattern but found no lift")
@@ -77,6 +95,12 @@ if os.path.exists(base):
     for k, lab in (("lift_days", "lift-day rows"),):
         now = len(rows)
         if abs(now - b[k]) / b[k] > 0.15: warn(f"{lab}: {now} now vs {b[k]} at baseline (>15% change)")
+_q = os.path.join(D, "weather_qc.csv")
+if os.path.exists(_q):
+    _qr = list(csv.DictReader(open(_q))); _c = collections.Counter(r["flag"] for r in _qr)
+    if sum(int(r["impossible_values"]) for r in _qr): err("weather_qc: impossible values (gust outside 0-250 or temperature outside -45..110 F) in the weather files")
+    warn(f"weather: {len(_qr):,} ridge station-days, {_c['ok']:,} complete, {_c['partial']} partial, {_c['missing']} missing; {sum(int(r['dropout']) for r in _qr)} dropout station-days (blanked in station-specific features)")
+else: warn("weather_qc.csv missing (run scripts/weather_qc.py)")
 print(f"events: {sum(nev.values())} in {len(nev)} winter files | lift-days: {len(rows)} | parser versions: {dict(versions)}")
 for w in warns: print("WARN ", w)
 for e in errors[:40]: print("ERROR", e)

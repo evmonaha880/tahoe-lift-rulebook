@@ -1,19 +1,19 @@
 {
  "events_by_type": {
   "other": 1310,
-  "hold_start": 3487,
-  "scheduled_opening": 11799,
+  "hold_start": 3488,
+  "scheduled_opening": 11798,
   "reopen": 4433,
   "partial": 418,
-  "delay": 911,
-  "closed_day": 1392,
+  "delay": 913,
+  "closed_day": 1390,
   "parking": 249,
   "warning": 446
  },
  "total_events": 24445,
- "lift_days": 15567,
- "held": 5770,
- "git_commit": "2ac396c",
+ "lift_days": 15564,
+ "held": 5787,
+ "git_commit": "46f7c94",
  "liftless_status_events": 0,
- "parser_version": "2026.11.07.7"
+ "parser_version": "2026.11.07.8"
 }

@@ -117,13 +117,20 @@ def hour_feats(W, date, t):
     h = int(t[:2]); g = lambda hh, k: [x for x in W.get((date, hh), {}).get("Siberia", {}).get(k, [])]
     now = g(h, "gust"); pri = [x for hh in range(h - 3, h + 1) for x in g(hh, "gust")]; sp = g(h, "spd")
     return {"gust_at_event": max(now) if now else "", "gust_prior3h": max(pri) if pri else "", "spd_at_event": max(sp) if sp else ""}
+DROPOUT = set()                                                    # (date, station) where the sensor read 0.0 while another ridge station gusted over 20 mph (scripts/weather_qc.py)
+_qc = os.path.join(R, "derived", "weather_qc.csv")
+if os.path.exists(_qc):
+    for _r in csv.DictReader(open(_qc)):
+        if _r["dropout"] == "1": DROPOUT.add((_r["date"], _r["station"]))
 def local_feats(W, date, L):
     st = LIFT_STATION.get(L)
     if not st: return {"local_station": "", "local_gust": ""}
+    if (date, st) in DROPOUT: return {"local_station": st, "local_gust": ""}
     v = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
     return {"local_station": st, "local_gust": max(v) if v else ""}
 def hours_over(W, date, st, thr):
     """hours between 6am and 4pm local with a 15-minute gust reading at or above thr at one station (readings / 4); None when the station has no readings"""
+    if (date, st) in DROPOUT: return None                           # a dropout day would read as 0 hours of strong wind
     v = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
     return round(sum(1 for x in v if x >= thr) / 4, 2) if v else None
 def feats(W, date, S):

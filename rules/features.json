@@ -1,5 +1,5 @@
 {
- "_about": "Every column of data/derived/lift_days.csv: its role, when it is known (as-of), unit, source and interval. scripts/check_data.py fails if a column is missing here. 'full-day hindsight' features describe the day and must not be presented as a morning prediction.",
+ "_about": "Every column of data/derived/lift_days.csv: its role, when it is known (as-of), unit, source and interval. scripts/check_data.py fails if a column is missing here. 'full-day hindsight' features describe the day and must not be presented as a morning prediction. Time convention: weather-file clock is unlabelled by the vendor; see docs/DATA_SOURCES.md section 13.",
  "columns": {
   "winter": {
    "role": "key_or_bookkeeping",
@@ -114,14 +114,16 @@
    "asof": "full-day hindsight",
    "unit": "hours",
    "source": "Siberia station",
-   "interval": "15-minute readings at or above 40 / 60 mph between local 06:00 and 16:00, divided by 4"
+   "interval": "15-minute readings at or above 40 / 60 mph between local 06:00 and 16:00, divided by 4",
+   "note": "blank on a Siberia dropout day"
   },
   "sib_h60": {
    "role": "feature",
    "asof": "full-day hindsight",
    "unit": "hours",
    "source": "Siberia station",
-   "interval": "15-minute readings at or above 40 / 60 mph between local 06:00 and 16:00, divided by 4"
+   "interval": "15-minute readings at or above 40 / 60 mph between local 06:00 and 16:00, divided by 4",
+   "note": "blank on a Siberia dropout day"
   },
   "temp_base": {
    "role": "feature",
@@ -218,7 +220,8 @@
    "asof": "full-day hindsight",
    "unit": "mph",
    "source": "rules/lift_stations.json: the station nearest each lift",
-   "interval": "maximum over local 06:00-16:00"
+   "interval": "maximum over local 06:00-16:00",
+   "note": "blank on a dropout day (sensor read 0.0 while another ridge station gusted over 20 mph; data/derived/weather_qc.csv)"
   },
   "nws_hw_w": {
    "role": "feature",

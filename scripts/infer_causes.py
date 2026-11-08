@@ -39,6 +39,13 @@ for W in WINT:
     P_lo[te] = predict(fit_all(tr), [train_rows[i] for i in te])
 truth = np.array([FAM.index(stated(r)[0]) for r in train_rows]); pred = P_lo.argmax(1); top = P_lo.max(1)
 acc = float((pred == truth).mean()); base = max(collections.Counter(truth).values()) / len(truth)
+# holds whose post names two or more families: they are not used to learn; score whether the model's top family is one of the families named
+multi = [r for r in H if len(stated(r)) >= 2]; m_hit = 0; m_n = 0
+for W in WINT:
+    te = [r for r in multi if r["winter"] == W]; tr = [r for r in train_rows if r["winter"] != W]
+    if not te or len(tr) < 50: continue
+    Pm = predict(fit_all(tr), te)
+    for r, pm in zip(te, Pm): m_n += 1; m_hit += FAM[int(pm.argmax())] in stated(r)
 models = fit_all(train_rows); P_un = predict(models, unst); best = P_un.argmax(1); bp = P_un.max(1)
 out = os.path.join(ROOT, "data", "derived", "cause_inferred.csv")
 with open(out, "w", newline="") as fh:
@@ -62,6 +69,7 @@ _w = [r for r in H if r["held_wind"] == "1"]; _alone = [r for r in _w if _others
 md += ["", "## Wind named alone or with other causes", "",
        f"- {len(_w):,} of the {len(H):,} holds name wind. {len(_alone):,} ({100*len(_alone)/max(len(_w),1):.0f}%) name wind alone; {len(_w)-len(_alone):,} ({100*(len(_w)-len(_alone))/max(len(_w),1):.0f}%) also name another cause (avalanche control, snow, ice, visibility, lightning, power, flooding, rain, grooming, patrol, mechanical or weather).",
        "- The single `cause` field keeps the first family found (wind first), so wind is credited whenever it is mentioned. Read the wind share as an upper bound; the post-level `cause_tags` hold every cause named.", ""]
+md += ["", f"- Holds whose post names two or more families ({len(multi):,}) are left out of the learning. Tested on them the same way, the model's top family is one of the families the post names in {100*m_hit/max(m_n,1):.0f}% of {m_n:,} cases (a guess at random among the four would be about half).", ""]
 md += ["", "## What the unstated holds look like", "", "| Inferred cause | Unstated holds | Of those, confident (0.6+) |", "|---|---|---|"]
 for i, f in enumerate(FAM): md.append(f"| {f} | {int((best == i).sum())} ({100*float((best == i).mean()):.0f}%) | {int(((best == i) & conf).sum())} |")
 md += ["", f"{int(conf.sum())} of {len(unst):,} unstated holds ({100*float(conf.mean()):.0f}%) get a confident inferred cause; the rest stay unexplained.", "",
