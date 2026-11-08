@@ -1,0 +1,1230 @@
+{
+ "_about": "Rules, thresholds and procedures the operators state in their own Operations blog (75 articles read on 2026-11-07, Dec 2017 to Oct 2026; extracted by model readers, quotes up to 25 words). Evidence for hypotheses, not parsed data; nothing here feeds the model.",
+ "rules": [
+  {
+   "date": "2017-02-24",
+   "title": "Winds & Lift Operations at Squaw",
+   "url": "https://blog.palisadestahoe.com/operations/winds-lift-operations-squaw",
+   "statement": "If anemometer reads 120mph, they will not try to move lifts; at 20-50mph they go to the lift, run it and observe",
+   "quote": "If it is reporting 120mph we're not even going to try and move lifts"
+  },
+  {
+   "date": "2017-02-24",
+   "title": "Winds & Lift Operations at Squaw",
+   "url": "https://blog.palisadestahoe.com/operations/winds-lift-operations-squaw",
+   "statement": "Wind speed and direction determine whether a lift can operate (lift/wind vulnerability chart)",
+   "quote": "We use wind direction and intensity to determine whether a lift can operate or not."
+  },
+  {
+   "date": "2017-02-24",
+   "title": "Winds & Lift Operations at Squaw",
+   "url": "https://blog.palisadestahoe.com/operations/winds-lift-operations-squaw",
+   "statement": "Chair swing within manufacturer-approved limit (front-back and side-side) is the basis of the decision to run a chair",
+   "quote": "Majority of the decisions to operate is based on the chair swing."
+  },
+  {
+   "date": "2017-02-24",
+   "title": "Winds & Lift Operations at Squaw",
+   "url": "https://blog.palisadestahoe.com/operations/winds-lift-operations-squaw",
+   "statement": "Gusty winds worsen chair swing; steady moderate winds more predictable, but steady high winds often still prevent safe operation",
+   "quote": "Gusty winds are bad because it pushes and creates more turbulence while increasing chair swing."
+  },
+  {
+   "date": "2017-02-24",
+   "title": "Winds & Lift Operations at Squaw",
+   "url": "https://blog.palisadestahoe.com/operations/winds-lift-operations-squaw",
+   "statement": "NWS forecast is considered; if winds already high and forecast to increase, lift may be closed; if marginal and forecast to decrease, wait and put lift on wind hold",
+   "quote": "we will wait and watch to see if we can open that lift and put it on 'wind hold'"
+  },
+  {
+   "date": "2017-11-27",
+   "title": "Operations Update: Nov 27",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-nov-27",
+   "statement": "Rime removal: crews stop each chair in top and bottom terminals and remove ice from every grip on detachable lifts; all grips must be completely cleared",
+   "quote": "These all need to be completely cleared of ice in order to operate."
+  },
+  {
+   "date": "2017-11-27",
+   "title": "Operations Update: Nov 27",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-nov-27",
+   "statement": "Funitel saw no ice; Aerial Tram ice only at top terminal High Camp (8200 ft)",
+   "quote": "Funitel saw no ice build up and the Aerial Tram only saw ice build up at the top terminal"
+  },
+  {
+   "date": "2019-02-28",
+   "title": "Avalanche Hazard Mitigation at Squaw Alpine",
+   "url": "https://blog.palisadestahoe.com/operations/avalanche-hazard-mitigation-squaw-alpine",
+   "statement": "Patrol teams work up to 49 avalanche mitigation routes on a snow safety day; must wait for daylight; each route 30 min to 2 hours; some routes depend on prior routes; whole program can take a full day or more",
+   "quote": "Patrollers start their work day as early as 5am, they must wait until the sun rises and it's light out"
+  },
+  {
+   "date": "2019-02-28",
+   "title": "Avalanche Hazard Mitigation at Squaw Alpine",
+   "url": "https://blog.palisadestahoe.com/operations/avalanche-hazard-mitigation-squaw-alpine",
+   "statement": "Squaw Valley has 28 mitigation routes in five avalanche complexes; Alpine has 21 routes including Alpine Meadows Road",
+   "quote": "There are 28 avalanche mitigation routes spread out among these five complexes at Squaw Valley."
+  },
+  {
+   "date": "2019-02-28",
+   "title": "Avalanche Hazard Mitigation at Squaw Alpine",
+   "url": "https://blog.palisadestahoe.com/operations/avalanche-hazard-mitigation-squaw-alpine",
+   "statement": "Gazex cannons fired before first routes of the day, and possibly again at end of day to maintain access for grooming crews",
+   "quote": "Gazex cannons are fired before patrol teams start their first routes of the day"
+  },
+  {
+   "date": "2019-02-28",
+   "title": "Avalanche Hazard Mitigation at Squaw Alpine",
+   "url": "https://blog.palisadestahoe.com/operations/avalanche-hazard-mitigation-squaw-alpine",
+   "statement": "No chairlifts at either resort can open after a large storm without avalanche control, including First Venture (needs Poulsen's Gully mitigation) and Subway and Meadow at Alpine",
+   "quote": "neither resort includes lifts that can operate after significant snowfall without first performing avalanche hazard mitigation"
+  },
+  {
+   "date": "2019-02-28",
+   "title": "Avalanche Hazard Mitigation at Squaw Alpine",
+   "url": "https://blog.palisadestahoe.com/operations/avalanche-hazard-mitigation-squaw-alpine",
+   "statement": "Extreme wind combined with high snowfall intensity reduces visibility and hinders mitigation; winds over 100mph described as routine",
+   "quote": "Winds in excess of 100mph are routine, and can be strong enough to knock a patroller over."
+  },
+  {
+   "date": "2019-02-28",
+   "title": "Avalanche Hazard Mitigation at Squaw Alpine",
+   "url": "https://blog.palisadestahoe.com/operations/avalanche-hazard-mitigation-squaw-alpine",
+   "statement": "Alpine uses a 105mm Howitzer about 12 times per season under Forest Service special use permit; Squaw Valley is on private land and not eligible for the artillery program",
+   "quote": "105mm Howitzer (on average 12 times per season)"
+  },
+  {
+   "date": "2021-12-23",
+   "title": "Operations Update: Heavy Snowfall & What to Expect",
+   "url": "https://blog.palisadestahoe.com/operations/operations-blog-thursday-december-23rd-2021",
+   "statement": "Rime ice: every detachable chair has 40 to 80 grips, each banged by hand 5-30 times to break ice",
+   "quote": "Every detachable chair on both mountains has 40 to 80 grips, and each grip has to get banged on 5-30 times by hand"
+  },
+  {
+   "date": "2021-12-23",
+   "title": "Operations Update: Heavy Snowfall & What to Expect",
+   "url": "https://blog.palisadestahoe.com/operations/operations-blog-thursday-december-23rd-2021",
+   "statement": "After 1 inch per hour snowfall, avalanche hazards considered very high",
+   "quote": "after 1\" per hour, the avalanche hazards are considered to be very high"
+  },
+  {
+   "date": "2021-12-23",
+   "title": "Operations Update: Heavy Snowfall & What to Expect",
+   "url": "https://blog.palisadestahoe.com/operations/operations-blog-thursday-december-23rd-2021",
+   "statement": "Chairs bumped overnight where possible; chairs removed from KT-22 line overnight to prevent icing; avalanche control done daily when safe",
+   "quote": "we will be bumping chairs overnight where possible and maintaining avalanche control routes"
+  },
+  {
+   "date": "2021-12-23",
+   "title": "Operations Update: Heavy Snowfall & What to Expect",
+   "url": "https://blog.palisadestahoe.com/operations/operations-blog-thursday-december-23rd-2021",
+   "statement": "Funitel/Tram run if wind slows enough to access upper mountain lifts for avalanche control",
+   "quote": "If we experience a slowdown in wind and can access upper mountain lifts to perform avalanche control, we will run them."
+  },
+  {
+   "date": "2021-12-25",
+   "title": "Operations Update: The Storm Increases in Strength",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-storm-increases-in-strength",
+   "statement": "Alpine ran on auxiliary power to unload guests during outage; kept only two lifts to avoid people stuck if recurrence",
+   "quote": "We were able to run on auxiliary power to get all of our guests off the lift"
+  },
+  {
+   "date": "2021-12-25",
+   "title": "Operations Update: The Storm Increases in Strength",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-storm-increases-in-strength",
+   "statement": "Patrol sweeps and removes KT-22 chairs each night; Patrol accesses top of KT via chairlift instead of groomer",
+   "quote": "Patrol performed a sweep and will be removing chairs, as we have been doing each night."
+  },
+  {
+   "date": "2021-12-25",
+   "title": "Operations Update: The Storm Increases in Strength",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-storm-increases-in-strength",
+   "statement": "Before expanding terrain: full snow safety, dig out lifts, rebuild roads/ramps, mark boundaries; Solitude, Granite Chief, Emigrant, Silverado need boundary markings before opening",
+   "quote": "Lifts such as Solitude, Granite Chief, Emigrant, and Silverado still need boundary markings before they can open."
+  },
+  {
+   "date": "2021-12-25",
+   "title": "Operations Update: The Storm Increases in Strength",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-storm-increases-in-strength",
+   "statement": "Alpine Meadows Road may close intermittently for avalanche control, aim to reopen within 30 minutes",
+   "quote": "While we aim to reopen it within 30 minutes, closure lengths are totally dependent on conditions."
+  },
+  {
+   "date": "2021-12-25",
+   "title": "Operations Update: The Storm Increases in Strength",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-storm-increases-in-strength",
+   "statement": "Only one route up to upper mountain maintained due to low visibility",
+   "quote": "we are maintaining just one route up to the upper mountain due to low visibility"
+  },
+  {
+   "date": "2021-12-26",
+   "title": "Operations Update: Closed Today But Working to Open Tomorrow",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-closed-today-but-working-to-open-tomorrow",
+   "statement": "Patrol performs avalanche control at both mountains and Alpine Meadows Road when safe; low visibility prevents observing results and prevents completing work needed to open",
+   "quote": "These conditions make it nearly impossible for crews to complete work necessary to open the mountain."
+  },
+  {
+   "date": "2021-12-26",
+   "title": "Operations Update: Closed Today But Working to Open Tomorrow",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-closed-today-but-working-to-open-tomorrow",
+   "statement": "Expect to open lower mountain lifts first the next morning after extensive avalanche control and access road rebuilding",
+   "quote": "We expect to be able to open lower mountain lifts in the morning"
+  },
+  {
+   "date": "2021-12-27",
+   "title": "Operations Update: Resort & Road Closures in Major Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-road-closures-in-major-storm",
+   "statement": "Highest restriction level during extreme avalanche conditions: no personnel outside without full avalanche gear and only on strict paths",
+   "quote": "no personnel can even go outside unless they have full avalanche gear \u2013 a probe, a shovel, a beacon, and a radio."
+  },
+  {
+   "date": "2021-12-27",
+   "title": "Operations Update: Resort & Road Closures in Major Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-road-closures-in-major-storm",
+   "statement": "Wa She Shu is in the path of Headwall slide activity; avalanche firing at Headwall could restrict Wa She Shu",
+   "quote": "the lift is in the path of slide activity for Headwall."
+  },
+  {
+   "date": "2021-12-27",
+   "title": "Operations Update: Resort & Road Closures in Major Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-road-closures-in-major-storm",
+   "statement": "Funitel: limited clearance near Tower 4; after snow safety a winch cat clears snow, then Funitel runs at low capacity for teams before public",
+   "quote": "Near Tower 4 of the Funitel, there is limited clearance for cabins to pass through."
+  },
+  {
+   "date": "2021-12-27",
+   "title": "Operations Update: Resort & Road Closures in Major Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-road-closures-in-major-storm",
+   "statement": "Upper mountain Palisades priority order: Gold Coast, Big Blue, Shirley, Mountain Meadow, Bailey's Beach, Siberia (turn on, break ice, check running); Silverado after Granite Chief, Headwall, Emigrant, Solitude",
+   "quote": "We will prioritize opening Granite Chief, Headwall, Emigrant, and Solitude before moving on to Silverado."
+  },
+  {
+   "date": "2021-12-27",
+   "title": "Operations Update: Resort & Road Closures in Major Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-road-closures-in-major-storm",
+   "statement": "Lift shacks and terminals must be dug out before opening; staff access depends on roads open",
+   "quote": "All lift shacks and terminals need to be dug out before we can open."
+  },
+  {
+   "date": "2021-12-27",
+   "title": "Operations Update: Resort & Road Closures in Major Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-road-closures-in-major-storm",
+   "statement": "Lower mountain lifts and Patrol work first; expect delays while Patrol performs snow safety",
+   "quote": "Expect DELAYS tomorrow due to Patrol performing snow safety."
+  },
+  {
+   "date": "2021-12-30",
+   "title": "Operations Update: Some Lifts Still Frozen, Winds Surprised Us Today",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-some-lifts-still-frozen-winds-surprised-us-today",
+   "statement": "Icing must be dealt with before running upper mountain lifts at Alpine and Palisades",
+   "quote": "icing continues to be a factor we must deal with before running upper mountain lifts at Alpine"
+  },
+  {
+   "date": "2021-12-30",
+   "title": "Operations Update: Some Lifts Still Frozen, Winds Surprised Us Today",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-some-lifts-still-frozen-winds-surprised-us-today",
+   "statement": "Opening a lift area requires avalanche control, hill safety markings and rope boundary; Headwall boundary is about half a day's work; slab build-up on backside from wind needs avalanche control",
+   "quote": "When Patrol is ready to put in the boundary for Headwall, that is about half a day's work."
+  },
+  {
+   "date": "2021-12-30",
+   "title": "Operations Update: Some Lifts Still Frozen, Winds Surprised Us Today",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-some-lifts-still-frozen-winds-surprised-us-today",
+   "statement": "Wind direction not forecast to change for three days; wind impacts expected especially for Scott, Summit, Roundhouse",
+   "quote": "Wind impacts are possible, especially for lifts like Scott, Summit, and Roundhouse."
+  },
+  {
+   "date": "2022-01-06",
+   "title": "Operations Blog: Winds Created Rime Ice; Busy Weekend Ahead",
+   "url": "https://blog.palisadestahoe.com/operations/operations-blog-winds-created-rime-ice-busy-weekend-ahead",
+   "statement": "Every piece of ice must be removed from lift grips; any ice remaining means the lift cannot run",
+   "quote": "If any ice whatsoever is still on the grip... the lift cannot run."
+  },
+  {
+   "date": "2022-01-06",
+   "title": "Operations Blog: Winds Created Rime Ice; Busy Weekend Ahead",
+   "url": "https://blog.palisadestahoe.com/operations/operations-blog-winds-created-rime-ice-busy-weekend-ahead",
+   "statement": "Behind-the-scenes work continues during holds: grooming roads, maintaining avalanche control routes, de-icing lifts",
+   "quote": "We are still grooming roads, maintaining avalanche control routes, and de-icing lifts wherever possible."
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "Lift Maintenance Director (Chris Woo) considers 5 factors for wind hold: anemometer readings and physical testing, wind speed and direction, chair swing, wind frequency (gusty vs steady), and forecast. Interview said to be a few years old but process unchanged.",
+   "quote": "This interview with Chris is from a few years ago, but the way we assess for wind hold has not changed."
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "If anemometer reports 120mph lifts are not tried; at 20-50mph they go to the lift, run it and observe",
+   "quote": "If it is reporting 120mph we're not even going to try and move lifts"
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "Decision to run a chair is mostly based on chair swing relative to manufacturer-approved swing front-to-back and side-to-side",
+   "quote": "There is an approved chair swing by the manufacturer"
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "Gusty winds are worse than steady moderate winds; steady high winds still often prevent safe operation",
+   "quote": "Gusty winds are bad because it pushes and creates more turbulence while increasing chair swing."
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "NWS forecast considered: high morning winds with increasing forecast may mean closing a lift; marginal winds with decreasing forecast mean wait and place on wind hold",
+   "quote": "we will wait and watch to see if we can open that lift and put it on wind hold"
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "Lifts scheduled with Anticipated Weather Impact the afternoon before a storm",
+   "quote": "we scheduled the majority of our lifts with Anticipated Weather Impact"
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "Funitel has automatic wind sensor alert that prevents running; a chair hitting a tower triggers automatic shut-down",
+   "quote": "a chair hit a tower, which also triggers an automatic shut-down"
+  },
+  {
+   "date": "2022-04-12",
+   "title": "Operations Update: Deep Dive on Wind Hold & Other Storm Updates",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-deep-dive-on-wind-hold-other-storm-updates",
+   "statement": "Many popular lifts sit directly on the Sierra Crest",
+   "quote": "many of our most popular chairlifts are situated directly on the Sierra Crest"
+  },
+  {
+   "date": "2022-04-16",
+   "title": "Operations Update: Storm Recap & Sunday Events",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-recap-sunday-events",
+   "statement": "Funitel on wind hold signals serious wind (operations team member quote)",
+   "quote": "If the Funitel is on hold, you know the wind is serious."
+  },
+  {
+   "date": "2022-04-16",
+   "title": "Operations Update: Storm Recap & Sunday Events",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-recap-sunday-events",
+   "statement": "Access roads need several feet of snow to build and maintain before lifts reopen",
+   "quote": "We need several feet of snow to build and maintain access roads."
+  },
+  {
+   "date": "2022-04-16",
+   "title": "Operations Update: Storm Recap & Sunday Events",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-recap-sunday-events",
+   "statement": "Alpine almost always closes before Palisades; summer projects scheduled lock in resource shift",
+   "quote": "We almost always close Alpine before Palisades, and this year is no exception."
+  },
+  {
+   "date": "2022-04-20",
+   "title": "OPERATIONS UPDATE: CLOSING DATE EXTENDED TO MAY 15TH",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-closing-date-extended-to-may-15th",
+   "statement": "Heavy snowfall may cause delays Saturday morning while patrollers do avalanche control",
+   "quote": "could be some delays on Saturday morning while our patrollers perform avalanche control."
+  },
+  {
+   "date": "2022-04-20",
+   "title": "OPERATIONS UPDATE: CLOSING DATE EXTENDED TO MAY 15TH",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-closing-date-extended-to-may-15th",
+   "statement": "Reopening a closed lift requires days of prep (ramps, fencing, clearing chairs) plus snowcat access road",
+   "quote": "There are days of prep work for our patrol, maintenance & operator teams"
+  },
+  {
+   "date": "2022-04-22",
+   "title": "Operations Update: Heavy Snowfall, Electrical Issues Likely To Impact Lifts Friday Morning",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-heavy-snowfall-electrical-issues-likely-to-impact-lifts-friday-morning",
+   "statement": "On lightning, all lifts held and all personnel movement stopped (no snowcats, snowmobiles, skiing)",
+   "quote": "We immediately put all lifts on hold and also stopped all movement of personnel around the mountain"
+  },
+  {
+   "date": "2022-04-22",
+   "title": "Operations Update: Heavy Snowfall, Electrical Issues Likely To Impact Lifts Friday Morning",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-heavy-snowfall-electrical-issues-likely-to-impact-lifts-friday-morning",
+   "statement": "Avalanche control must be performed before upper mountain lift terminals can be accessed",
+   "quote": "We were unable to access the top terminal of this lift due to the fact that avalanche control could not be performed."
+  },
+  {
+   "date": "2022-04-29",
+   "title": "Operations Update: Season Extended Again Through May 30th, 2022",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-season-extended-again-through-may-30th-2022",
+   "statement": "Uphill travel such as snowmobiles stopped 9am-4pm to preserve Mountain Run snow; snow harvested from closed areas",
+   "quote": "stopping unnecessary uphill travel (like riding snowmobiles) between 9am and 4pm"
+  },
+  {
+   "date": "2022-05-12",
+   "title": "Operations Update: Warm Temps Return; Granite Chief Closed",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-warm-temps-return-granite-chief-closed",
+   "statement": "Warming temps raise wet slide risk; Ski Patrol assesses conditions through the day; terrain may be called midday if snowmelt accelerates",
+   "quote": "it is possible that we might call some terrain midday."
+  },
+  {
+   "date": "2022-05-12",
+   "title": "Operations Update: Warm Temps Return; Granite Chief Closed",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-warm-temps-return-granite-chief-closed",
+   "statement": "Solitude kept somewhat maintained so it can open if another lift goes down",
+   "quote": "so that we can open it in the event another lift goes down."
+  },
+  {
+   "date": "2022-05-12",
+   "title": "Operations Update: Warm Temps Return; Granite Chief Closed",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-warm-temps-return-granite-chief-closed",
+   "statement": "Real-time terrain closures posted on Mountain Ops Twitter",
+   "quote": "Real-time updates related to last-minute terrain closures can be found on our Mountain Ops Twitter"
+  },
+  {
+   "date": "2022-05-26",
+   "title": "Operations Update: Weather Expected for Closing Weekend",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-weather-expected-for-closing-weekend",
+   "statement": "Scheduled lifts run if possible; safety first",
+   "quote": "We will absolutely run all of our scheduled lifts if we can, but safety is our #1 priority."
+  },
+  {
+   "date": "2022-12-09",
+   "title": "Operations Update: Winds + Huge Snow Totals To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-winds-huge-snow-totals-to-impact-operations",
+   "statement": "Weekend plan focused on lower mountain due to wind forecast; Olympic Lady most likely lower lift to be wind impacted",
+   "quote": "Of the lower mountain lifts, Olympic Lady is the most likely to experience wind impacts."
+  },
+  {
+   "date": "2022-12-09",
+   "title": "Operations Update: Winds + Huge Snow Totals To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-winds-huge-snow-totals-to-impact-operations",
+   "statement": "Avalanche control on Alpine Meadows Road possible Sat and Sun; usually causes short road closure",
+   "quote": "This usually causes a short road closure"
+  },
+  {
+   "date": "2022-12-09",
+   "title": "Operations Update: Winds + Huge Snow Totals To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-winds-huge-snow-totals-to-impact-operations",
+   "statement": "Deep snow safety standards to be implemented the following week",
+   "quote": "will be implementing deep snow safety standards going into next week."
+  },
+  {
+   "date": "2022-12-10",
+   "title": "Operations Update: Today's Wild Storm Recap + Tomorrow's Plan",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-todays-wild-storm-recap-tomorrows-plan",
+   "statement": "Lightning holds required whenever a lightning strike is detected within a 30-mile radius; factors include cell direction and number of strikes",
+   "quote": "Lightning Holds are required whenever a lightning strike is detected within a 30-mile radius of the resort."
+  },
+  {
+   "date": "2022-12-10",
+   "title": "Operations Update: Today's Wild Storm Recap + Tomorrow's Plan",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-todays-wild-storm-recap-tomorrows-plan",
+   "statement": "Patrol work must be complete before groomers go up at Alpine; KT-22 and Tower 16 cleared before upper mountain",
+   "quote": "Tomorrow morning, we have to complete patrol work before we can send machines up."
+  },
+  {
+   "date": "2022-12-26",
+   "title": "Operations Update: Dynamic Weather Week Ahead To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-dynamic-weather-week-ahead-to-impact-operations",
+   "statement": "Olympic Lady cannot run safely during large wind events",
+   "quote": "Olympic Lady cannot run safely during large wind events."
+  },
+  {
+   "date": "2022-12-26",
+   "title": "Operations Update: Dynamic Weather Week Ahead To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-dynamic-weather-week-ahead-to-impact-operations",
+   "statement": "Cabins taken off the Funitel during storms like this; night bump on some lifts (KT-22, Resort Chair), not all chairs can be bumped",
+   "quote": "We'll also take the cabins off of the Funitel during storms like this."
+  },
+  {
+   "date": "2022-12-26",
+   "title": "Operations Update: Dynamic Weather Week Ahead To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-dynamic-weather-week-ahead-to-impact-operations",
+   "statement": "Rime ice can still require manual chipping despite night bump; also at base area lifts",
+   "quote": "lift lines can still freeze and require our Lift Maintenance crews to manually chip the ice off"
+  },
+  {
+   "date": "2022-12-26",
+   "title": "Operations Update: Dynamic Weather Week Ahead To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-dynamic-weather-week-ahead-to-impact-operations",
+   "statement": "Even base area and lower mountain lifts can close in strong gusts",
+   "quote": "even base area and lower mountain lifts can experience closures"
+  },
+  {
+   "date": "2022-12-26",
+   "title": "Operations Update: Dynamic Weather Week Ahead To Impact Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-dynamic-weather-week-ahead-to-impact-operations",
+   "statement": "Lift status via Twitter and app",
+   "quote": "The best way to stay up-to-date with real-time lift and trail information is to follow the Palisades Tahoe Mountain Operations Twitter account"
+  },
+  {
+   "date": "2022-12-28",
+   "title": "Operations Update: Behind-the-Scenes of the Storm + Daily Recap",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-behind-the-scenes-of-the-storm-daily-recap",
+   "statement": "Rime ice definition and de-icing: ice must be manually broken before a lift starts spinning safely",
+   "quote": "All this ice must be manually broken off before the lift can start spinning safely."
+  },
+  {
+   "date": "2022-12-28",
+   "title": "Operations Update: Behind-the-Scenes of the Storm + Daily Recap",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-behind-the-scenes-of-the-storm-daily-recap",
+   "statement": "Rime ice forms when droplets freeze instantly on contact with the lift; expected on upper mountain chairs",
+   "quote": "rime ice (which is ice that forms when droplets freeze instantly upon contact with the lift)"
+  },
+  {
+   "date": "2022-12-28",
+   "title": "Operations Update: Behind-the-Scenes of the Storm + Daily Recap",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-behind-the-scenes-of-the-storm-daily-recap",
+   "statement": "Overnight spinning of lifts to prevent ice buildup: KT-22, Resort Chair, Exhibition, First Ventures spun overnight and opened 9am",
+   "quote": "To try to prevent ice buildup, we spun KT-22, Resort Chair, Exhibition, and First Ventures overnight"
+  },
+  {
+   "date": "2022-12-28",
+   "title": "Operations Update: Behind-the-Scenes of the Storm + Daily Recap",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-behind-the-scenes-of-the-storm-daily-recap",
+   "statement": "Keeping the gondola spinning helps prevent freezing",
+   "quote": "it was difficult to keep the Gondola spinning, which would have helped to prevent freezing."
+  },
+  {
+   "date": "2022-12-28",
+   "title": "Operations Update: Behind-the-Scenes of the Storm + Daily Recap",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-behind-the-scenes-of-the-storm-daily-recap",
+   "statement": "Opening order: most lower mountain lifts at 9am, lifts accessing upper mountain delayed during de-icing",
+   "quote": "any lifts that access the upper mountain would be delayed while we de-iced."
+  },
+  {
+   "date": "2022-12-30",
+   "title": "Operations Update: Expect Delays on Sunday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-expect-delays-on-sunday",
+   "statement": "Rime ice forms when droplets freeze instantly on contact; must be manually broken off each chairlift before it can run",
+   "quote": "We have to manually break all of this ice off of each chairlift before they can run"
+  },
+  {
+   "date": "2022-12-30",
+   "title": "Operations Update: Expect Delays on Sunday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-expect-delays-on-sunday",
+   "statement": "Night bump: lift maintenance spins chairlifts overnight in storm cycles when conditions allow to prevent ice buildup",
+   "quote": "Our Lift Maintenance crews spin chairlifts overnight in storm cycles when conditions allow, doing what is called a night bump."
+  },
+  {
+   "date": "2022-12-30",
+   "title": "Operations Update: Expect Delays on Sunday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-expect-delays-on-sunday",
+   "statement": "If winds high (over 100mph) chairs taken off some lifts like Headwall; lifts like Wa She Shu cannot have chairs removed",
+   "quote": "If the winds are going to be high (like over 100mph high), we take the chairs off of some lifts like Headwall."
+  },
+  {
+   "date": "2022-12-30",
+   "title": "Operations Update: Expect Delays on Sunday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-expect-delays-on-sunday",
+   "statement": "Patrol performs avalanche control throughout storm cycles; grooming machines left at top of KT-22 so Patrol can ride up and snowcat to Headwall",
+   "quote": "Patrol performs avalanche control throughout storm cycles."
+  },
+  {
+   "date": "2022-12-30",
+   "title": "Operations Update: Expect Delays on Sunday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-expect-delays-on-sunday",
+   "statement": "Grooming limited when snow saturated with water to protect snowpack",
+   "quote": "Putting machines on snow that is this saturated with water can be detrimental to our snowpack."
+  },
+  {
+   "date": "2022-12-31",
+   "title": "Operations Update: Major Storm Impacts to Affect Sunday Lift Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-major-storm-impacts-to-affect-sunday-lift-operations",
+   "statement": "Night bump = spinning chairlifts overnight to prevent ice buildup; viability depends on wind and accessibility; Wa She Shu requires operators at both terminals",
+   "quote": "A night bump... is when we spin chairlifts overnight to try to prevent ice buildup."
+  },
+  {
+   "date": "2022-12-31",
+   "title": "Operations Update: Major Storm Impacts to Affect Sunday Lift Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-major-storm-impacts-to-affect-sunday-lift-operations",
+   "statement": "Rain on snow with heavy snowfall requires lots of avalanche mitigation; damaged access roads may affect terrain or lift openings",
+   "quote": "we anticipate that we will need to do a lot of avalanche mitigation."
+  },
+  {
+   "date": "2022-12-31",
+   "title": "Operations Update: Major Storm Impacts to Affect Sunday Lift Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-major-storm-impacts-to-affect-sunday-lift-operations",
+   "statement": "Terrain parks: features pulled before storm; Belmont and Tiegel projected to open Monday",
+   "quote": "Both parks are currently projected to open on Monday, weather and conditions permitting."
+  },
+  {
+   "date": "2023-01-01",
+   "title": "Operations Update: WE'RE BURIED! 32+ Inches of Snow in 24 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-were-buried-32-inches-of-snow-in-24-hours",
+   "statement": "Patrol Hold is a calculated decision based on safety",
+   "quote": "We don't just put things on Patrol Hold for no reason; it is a calculated decision"
+  },
+  {
+   "date": "2023-01-01",
+   "title": "Operations Update: WE'RE BURIED! 32+ Inches of Snow in 24 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-were-buried-32-inches-of-snow-in-24-hours",
+   "statement": "Roundhouse cannot run without line tension",
+   "quote": "If the line has no tension, we cannot run the lift."
+  },
+  {
+   "date": "2023-02-28",
+   "title": "Operations Update: Resort Closed Tuesday After 3+ Feet of Snow in 24 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-closed-tuesday-after-3-5-feet-of-snow-in-24-hours",
+   "statement": "After large storms, lower mountain lifts open first at both mountains",
+   "quote": "We will focus on the lower mountain lifts first at both mountains, as we usually do following a large storm."
+  },
+  {
+   "date": "2023-02-28",
+   "title": "Operations Update: Resort Closed Tuesday After 3+ Feet of Snow in 24 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-closed-tuesday-after-3-5-feet-of-snow-in-24-hours",
+   "statement": "Once road access is restored patrollers are transported to top; full patrol work needed on many main chairlifts",
+   "quote": "Full patrol work will be needed on many of our main chairlifts."
+  },
+  {
+   "date": "2023-02-28",
+   "title": "Operations Update: Resort Closed Tuesday After 3+ Feet of Snow in 24 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-closed-tuesday-after-3-5-feet-of-snow-in-24-hours",
+   "statement": "Likely nothing open at 9am; next-day lift schedule posted after 4pm in app/website",
+   "quote": "It is likely that we will NOT have anything open right at 9am."
+  },
+  {
+   "date": "2023-03-09",
+   "title": "Operations Update: Atmospheric River To Impact Weekend",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-atmospheric-river-to-impact-weekend",
+   "statement": "Light powder scoured by wind is harder for Ski Patrol to trigger planned avalanches; rain or heavy wet snow on top raises avalanche danger so extra precautions and slow openings",
+   "quote": "it can be more difficult for our Ski Patrol teams to trigger planned avalanches"
+  },
+  {
+   "date": "2023-03-09",
+   "title": "Operations Update: Atmospheric River To Impact Weekend",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-atmospheric-river-to-impact-weekend",
+   "statement": "Resort will aim to post an update by 7am on lift expectations",
+   "quote": "We will aim to provide an update by 7am."
+  },
+  {
+   "date": "2023-03-09",
+   "title": "Operations Update: Atmospheric River To Impact Weekend",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-atmospheric-river-to-impact-weekend",
+   "statement": "Stay open as long as safe",
+   "quote": "As long as it is safe to do so, we plan to stay open"
+  },
+  {
+   "date": "2023-03-10",
+   "title": "Operations Update: Resort Closure Friday + Saturday Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-closure-friday-saturday-expectations",
+   "statement": "Rain or heavy wet snow on light powder creates dangerous avalanche conditions; employee movement restricted in Alpine base, patrol did not go up, groomers pulled off early",
+   "quote": "when rain or heavy/wet snow falls on the light-density, powdery snow... it creates dangerous avalanche conditions."
+  },
+  {
+   "date": "2023-03-10",
+   "title": "Operations Update: Resort Closure Friday + Saturday Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-closure-friday-saturday-expectations",
+   "statement": "Iced chairlifts must be chipped by hand before opening, causing delays",
+   "quote": "many of our chairlifts may be iced over and we will have to break the ice off by hand"
+  },
+  {
+   "date": "2023-03-10",
+   "title": "Operations Update: Resort Closure Friday + Saturday Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-resort-closure-friday-saturday-expectations",
+   "statement": "KT-22 more delayed than others: control work and Saddle road not yet done",
+   "quote": "KT-22 is likely to be more delayed than other chairlifts as we have not done control work or put the Saddle road in yet."
+  },
+  {
+   "date": "2023-03-11",
+   "title": "Operations Update: The Never-Ending Storm Cycle + Sunday Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-never-ending-storm-cycle-sunday-expectations",
+   "statement": "Plans depend on what storm has done by early morning; wind may impact upper mountain lifts even after digging out",
+   "quote": "We often do not know what to expect until we arrive in the early morning and see what the storm has done."
+  },
+  {
+   "date": "2023-03-11",
+   "title": "Operations Update: The Never-Ending Storm Cycle + Sunday Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-never-ending-storm-cycle-sunday-expectations",
+   "statement": "Grooming limited to key arteries, lift ramps, crucial runs during storm cycle",
+   "quote": "Our groomed trail offering will be very limited throughout this storm cycle."
+  },
+  {
+   "date": "2023-03-13",
+   "title": "Operations Update: Palisades Tahoe Will Be Closed Tuesday, March 14th",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-palisades-tahoe-will-be-closed-tuesday-march-14th",
+   "statement": "Winds over 100 mph normally not cause for full closure, but compounded weather led to closure",
+   "quote": "Normally, this would not be cause for a full closure, but the compounded effect of the incessant wet or snowy weather"
+  },
+  {
+   "date": "2023-03-13",
+   "title": "Operations Update: Palisades Tahoe Will Be Closed Tuesday, March 14th",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-palisades-tahoe-will-be-closed-tuesday-march-14th",
+   "statement": "Rime ice forms after wet weather; Lift Maintenance must manually break all ice before chair safe to run",
+   "quote": "Our Lift Maintenance teams have to break all of this ice off manually before the chair is safe to run again."
+  },
+  {
+   "date": "2023-03-14",
+   "title": "Operations Update: Wednesday Re-Opening Plans",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-wednesday-re-opening-plans",
+   "statement": "Palisades opening order: lower mountain (Resort Chair, Far East, First Ventures, Red Dog, Exhibition, KT-22), then Funitel with Mountain Run access, then Aerial Tram, Big Blue, Bailey's Beach, Mountain Meadow, Gold Coast, Shirley",
+   "quote": "Palisades will start with the lower mountain only"
+  },
+  {
+   "date": "2023-03-14",
+   "title": "Operations Update: Wednesday Re-Opening Plans",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-wednesday-re-opening-plans",
+   "statement": "Alpine opening order: Subway, Meadow, Treeline Cirque to mid-station, Sherwood, Roundhouse, then expand",
+   "quote": "Alpine will start with Subway, Meadow, Treeline Cirque to the mid-station, Sherwood, and Roundhouse."
+  },
+  {
+   "date": "2023-03-14",
+   "title": "Operations Update: Wednesday Re-Opening Plans",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-wednesday-re-opening-plans",
+   "statement": "Base to Base Gondola runs Palisades side only, Village to KT-22 mid-station",
+   "quote": "The Base to Base Gondola will run on the Palisades side only"
+  },
+  {
+   "date": "2023-03-14",
+   "title": "Operations Update: Wednesday Re-Opening Plans",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-wednesday-re-opening-plans",
+   "statement": "Some lifts delayed; limited groomed terrain, main arteries only",
+   "quote": "Groomed terrain will be limited."
+  },
+  {
+   "date": "2023-03-23",
+   "title": "Operations Update: Season Extended Through 4th of July",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-season-extended-through-4th-of-july",
+   "statement": "Uphill/backcountry travel not permitted at either mountain even when closed",
+   "quote": "Uphill/backcountry travel is NOT permitted at either mountain, even when the resort is closed."
+  },
+  {
+   "date": "2023-05-23",
+   "title": "Operations Update: Palisades Closing Weekend + Alpine Summer Operating Schedule",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-palisades-closing-weekend-alpine-summer-operating-schedule",
+   "statement": "Alpine alternated Scott and Sherwood daily: Sherwood in morning until conditions deteriorate, then Scott",
+   "quote": "Sherwood has been operating in the morning until conditions deteriorate and then we switch to Scott."
+  },
+  {
+   "date": "2023-06-29",
+   "title": "Operations Update: Closing Weekend Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-closing-weekend-expectations",
+   "statement": "Operations may change or be impacted based on snowmelt",
+   "quote": "operations may change or be impacted based upon snowmelt."
+  },
+  {
+   "date": "2024-01-11",
+   "title": "Operations Update: Delayed Openings, No KT-22",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-delayed-openings-no-kt-22",
+   "statement": "Access roads required to get snowcats and snowmobiles up the mountain to spin a lift",
+   "quote": "Access roads are required to get snowcats and snowmobiles up the mountain to spin the lift"
+  },
+  {
+   "date": "2024-01-11",
+   "title": "Operations Update: Delayed Openings, No KT-22",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-delayed-openings-no-kt-22",
+   "statement": "Closure the prior day lengthens snow safety assessment and delays",
+   "quote": "Delays will be more significant than usual."
+  },
+  {
+   "date": "2024-01-12",
+   "title": "Operations Update: Saturday Storm & Sunday Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-saturday-storm-sunday-expectations",
+   "statement": "If upper mountain closes, Far East added to schedule",
+   "quote": "If the upper mountain closes, we will add Far East to the schedule."
+  },
+  {
+   "date": "2024-01-19",
+   "title": "Operations Update: Storm Cycles to Impact Weekend Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-cycles-to-impact-weekend-operations",
+   "statement": "Headwall: chairs must be put back on lift after every storm; roads and ramps built; icing complicates; often at snowline in warm storms (~7,000 ft) with creeks near base terminal; furthest avalanche mitigation route (via KT-22 top and ridge)",
+   "quote": "each chair needs to be put back on the lift after every storm"
+  },
+  {
+   "date": "2024-01-19",
+   "title": "Operations Update: Storm Cycles to Impact Weekend Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-cycles-to-impact-weekend-operations",
+   "statement": "Rime ice: droplets freeze instantly on contact; maintenance and operators must break each chair and haul rope free before lifts spin",
+   "quote": "Rime ice occurs when water droplets freeze instantly upon contact with a surface."
+  },
+  {
+   "date": "2024-01-19",
+   "title": "Operations Update: Storm Cycles to Impact Weekend Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-cycles-to-impact-weekend-operations",
+   "statement": "Snow safety performed Saturday and Sunday mornings",
+   "quote": "perform snow safety on both Saturday and Sunday mornings"
+  },
+  {
+   "date": "2024-01-19",
+   "title": "Operations Update: Storm Cycles to Impact Weekend Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-storm-cycles-to-impact-weekend-operations",
+   "statement": "Chair priorities fluctuate by resources and redundancy; Wa She Shu, Emigrant, Far East, Alpine Bowl Chair, Yellow may be impacted",
+   "quote": "Chairs with potential impacts include Wa She Shu, Emigrant, Far East, Alpine Bowl Chair, and Yellow."
+  },
+  {
+   "date": "2024-02-03",
+   "title": "Operations Update: Lifts To Be Impacted By Storm Sunday & Monday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-lifts-to-be-impacted-by-storm-sunday-monday",
+   "statement": "Delays to openings expected while digging out and performing snow safety/mitigation; teams de-ice lifts, clear chairs, maintain ramps",
+   "quote": "digging out roads, maintaining ramps, de-icing lifts, clearing chairs, and more"
+  },
+  {
+   "date": "2024-02-04",
+   "title": "Operations Update: Delays & Closures Possible Following Intense Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-delays-closures-possible-following-intense-storm",
+   "statement": "Reopening order: lower mountain lifts first on both sides, work upward; no official calls until storm passes and teams get out",
+   "quote": "As always, we will start with lower mountain lifts on both sides and work our way up."
+  },
+  {
+   "date": "2024-02-04",
+   "title": "Operations Update: Delays & Closures Possible Following Intense Storm",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-delays-closures-possible-following-intense-storm",
+   "statement": "After big snowfall, avalanche mitigation continues as conditions allow; unmarked hazards buried, roads lost, ramps covered, essentially starting from scratch",
+   "quote": "we essentially are \"starting from scratch\" after each storm"
+  },
+  {
+   "date": "2024-02-16",
+   "title": "Operations Update: Stifel Palisades Tahoe Cup & Storm Impacts",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-stifel-palisades-tahoe-cup-storm-impacts",
+   "statement": "Ridgeline lifts may be impacted by wind Sunday",
+   "quote": "winds could be an issue for ridgeline lifts."
+  },
+  {
+   "date": "2024-02-16",
+   "title": "Operations Update: Stifel Palisades Tahoe Cup & Storm Impacts",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-stifel-palisades-tahoe-cup-storm-impacts",
+   "statement": "Silverado needs more snow mainly for access road; Saddle not groomed due to low snow",
+   "quote": "Silverado needs more snow. We mainly need snow for the access road."
+  },
+  {
+   "date": "2024-02-28",
+   "title": "Operations Update: The Biggest Storm of the Season is on the Way",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-biggest-storm-of-the-season-is-on-the-way",
+   "statement": "Extensive avalanche control needed; ridgeline lifts (if not all lifts) restarted from scratch; no estimated opening times until storm known",
+   "quote": "We cannot put out estimated opening dates or times until we see what this storm actually does."
+  },
+  {
+   "date": "2024-02-28",
+   "title": "Operations Update: The Biggest Storm of the Season is on the Way",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-the-biggest-storm-of-the-season-is-on-the-way",
+   "statement": "Prior similar storm last year: 92 in between 2/27 and 3/1 and one closure day",
+   "quote": "with 92 inches between 2/27 and 3/1. This resulted in one closure day for the resort."
+  },
+  {
+   "date": "2024-02-29",
+   "title": "Operations Update: Palisades Tahoe Closed Friday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-alpine-closed-friday-palisades-will-attempt-limited-operations",
+   "statement": "In large storm cycles every rope, sign and boundary marking is pulled off the hill, so patrol starts from scratch",
+   "quote": "in large storm cycles like this one, we pull every piece of rope, signage, and boundary marking off the hill."
+  },
+  {
+   "date": "2024-02-29",
+   "title": "Operations Update: Palisades Tahoe Closed Friday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-alpine-closed-friday-palisades-will-attempt-limited-operations",
+   "statement": "Palisades planned attempt: Resort Chair, First Venture, Far East, Red Dog, expected delays; chance of full closure after morning assessment",
+   "quote": "There is also a chance that Palisades will be fully closed once we assess conditions in the morning."
+  },
+  {
+   "date": "2024-02-29",
+   "title": "Operations Update: Palisades Tahoe Closed Friday",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-alpine-closed-friday-palisades-will-attempt-limited-operations",
+   "statement": "Snowcat operators staffed through Sunday to dig out and maintain access roads",
+   "quote": "We have snowcat operators staffed from now until Sunday to dig out and maintain access roads"
+  },
+  {
+   "date": "2024-03-01",
+   "title": "Operations Update: Alpine Closed Saturday; Palisades to Attempt Limited Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-alpine-closed-saturday-palisades-to-attempt-limited-operations",
+   "statement": "Reduced visibility is a factor in whether chairlifts can be spun",
+   "quote": "Reduced visibility also becomes a factor when determining whether or not it is possible to spin chairlifts."
+  },
+  {
+   "date": "2024-03-01",
+   "title": "Operations Update: Alpine Closed Saturday; Palisades to Attempt Limited Operations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-alpine-closed-saturday-palisades-to-attempt-limited-operations",
+   "statement": "Essential personnel on hill doing control work, maintaining access roads, digging out chairlifts; update about 4pm Saturday for Sunday",
+   "quote": "essential personnel on-hill all day, performing control work, maintaining access roads, and digging out chairlifts"
+  },
+  {
+   "date": "2024-03-02",
+   "title": "Operations Update: Aiming for 12pm Opening Tomorrow",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-aiming-for-1030am-opening-tomorrow",
+   "statement": "Sequence: Ski Patrol snow safety first, then grooming, chairlift daily checklist, dig-out",
+   "quote": "Only after Ski Patrol performs snow safety work can we complete grooming tasks, start spinning chairlifts"
+  },
+  {
+   "date": "2024-03-02",
+   "title": "Operations Update: Aiming for 12pm Opening Tomorrow",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-aiming-for-1030am-opening-tomorrow",
+   "statement": "Upper mountain lifts attempted only if Funitel runs",
+   "quote": "if we can get the Funitel running, we will attempt to open upper mountain lifts"
+  },
+  {
+   "date": "2024-03-02",
+   "title": "Operations Update: Aiming for 12pm Opening Tomorrow",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-aiming-for-1030am-opening-tomorrow",
+   "statement": "KT-22 usually more delayed than other lower mountain chairs",
+   "quote": "KT-22 is usually a bit more delayed than the other 4 chairlifts listed here"
+  },
+  {
+   "date": "2024-03-03",
+   "title": "Operations Update: Operating Plan for Monday, March 4th",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-operating-plan-for-monday-march-4th",
+   "statement": "Palisades opens in waves: Resort Chair, First Venture, Far East, Red Dog, KT-22; then Funitel (Mountain Run) if Tower 4 clearance OK; then Big Blue, Shirley Lake, Bailey's Beach, Mountain Meadow, Belmont, Aerial Tram; final wave Siberia and Gold Coast",
+   "quote": "we will plan to get the rest of the mountain open in waves"
+  },
+  {
+   "date": "2024-03-03",
+   "title": "Operations Update: Operating Plan for Monday, March 4th",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-operating-plan-for-monday-march-4th",
+   "statement": "Funitel addition depends on clearance at Tower 4",
+   "quote": "If the clearance on Tower 4 of the Funitel is not an issue, we will then aim to add the Funitel for Mountain Run."
+  },
+  {
+   "date": "2024-03-03",
+   "title": "Operations Update: Operating Plan for Monday, March 4th",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-operating-plan-for-monday-march-4th",
+   "statement": "Predictions are best guesses; goal a few lifts by 9am at both mountains, not guaranteed",
+   "quote": "When we put out predictions for the next day, they are our best guess, not a promise."
+  },
+  {
+   "date": "2024-04-19",
+   "title": "Operations Update: End of April Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-end-of-season-expectations",
+   "statement": "No hard closure dates for most chairlifts; each ends when snow burns out",
+   "quote": "When it burns out, that's when we'll stop skiing it."
+  },
+  {
+   "date": "2024-04-19",
+   "title": "Operations Update: End of April Expectations",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-end-of-season-expectations",
+   "statement": "Headwall could close if road connecting it and KT-22 melts out",
+   "quote": "Headwall also could close around this time if the road connecting it and KT-22 melts out."
+  },
+  {
+   "date": "2025-01-31",
+   "title": "Operations Update: Atmospheric River Edition",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-atmospheric-river-edition",
+   "statement": "In higher wind scenarios ridgeline lifts are primarily affected",
+   "quote": "In higher wind scenarios the ridgeline lifts are the ones primarily affected."
+  },
+  {
+   "date": "2025-01-31",
+   "title": "Operations Update: Atmospheric River Edition",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-atmospheric-river-edition",
+   "statement": "Operations teams open everything they can each morning, adjusting to storm",
+   "quote": "Our operations teams plan on coming in each morning and opening everything they can."
+  },
+  {
+   "date": "2025-02-07",
+   "title": "Operations Update: 52 Inches in February",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-52-inches-in-february",
+   "statement": "De-icing: Lift Maintenance must climb towers and manually remove ice from every sheave and grip; wind drives snow into cracks making ice harder",
+   "quote": "manually remove the ice from every sheave and grip on the chairlift"
+  },
+  {
+   "date": "2025-02-07",
+   "title": "Operations Update: 52 Inches in February",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-52-inches-in-february",
+   "statement": "Plan to run every lift except Silverado on weekend, weather and conditions permitting",
+   "quote": "run every lift across the resort (with the exception of Silverado)"
+  },
+  {
+   "date": "2025-02-07",
+   "title": "Operations Update: 52 Inches in February",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-52-inches-in-february",
+   "statement": "Obey ropes and signage; passes may be pulled and suspended",
+   "quote": "your lift pass may be pulled and suspended."
+  },
+  {
+   "date": "2025-02-14",
+   "title": "Operations Update: Valentine\u2019s Day & 31\u2033 Inches of Powder",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-valentines-day-31-inches-of-powder",
+   "statement": "Alpine will open once power is restored",
+   "quote": "Once the power is restored, Alpine will open."
+  },
+  {
+   "date": "2025-02-14",
+   "title": "Operations Update: Valentine\u2019s Day & 31\u2033 Inches of Powder",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-valentines-day-31-inches-of-powder",
+   "statement": "New snowfall requires digging out chairlifts and ramps, grooming, and snow safety mitigation; high winds and low visibility make it harder",
+   "quote": "it takes time for our mountain operations teams to dig out chairlifts and ramps, groom runs, and perform snow safety mitigation."
+  },
+  {
+   "date": "2025-02-14",
+   "title": "Operations Update: Valentine\u2019s Day & 31\u2033 Inches of Powder",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-valentines-day-31-inches-of-powder",
+   "statement": "Next-day forecast lifts updated at 5:30 pm in app and website",
+   "quote": "you can check our app or the Palisades Tahoe website at 5:30 p.m. when we update our projections for operations."
+  },
+  {
+   "date": "2025-02-14",
+   "title": "Operations Update: Valentine\u2019s Day & 31\u2033 Inches of Powder",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-valentines-day-31-inches-of-powder",
+   "statement": "Silverado opening requires enough snow to build the Oregon Trail to bottom of lift",
+   "quote": "we need enough snow to build the Oregon Trail to the bottom of the lift"
+  },
+  {
+   "date": "2025-03-07",
+   "title": "Operations Update: Miracle March, is that you?",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-miracle-march-is-that-you",
+   "statement": "Lift status published on app and Lift + Grooming Status page at 5:30 p.m. the previous day with anticipated lift offerings",
+   "quote": "We update both of these sources at 5:30 p.m. the previous day with the anticipated lift offerings."
+  },
+  {
+   "date": "2025-03-07",
+   "title": "Operations Update: Miracle March, is that you?",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-miracle-march-is-that-you",
+   "statement": "Large storm systems bring high winds and low visibility that can make opening challenging",
+   "quote": "These large storm systems are often accompanied by high winds and low visibility"
+  },
+  {
+   "date": "2025-03-14",
+   "title": "Operations Update: Snorkels Required",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-snorkels-required",
+   "statement": "Lift status for next day posted 5:30 p.m. the previous day on app and Lift + Grooming Status page",
+   "quote": "We update both of these sources at 5:30 p.m. the previous day with the anticipated lift offerings."
+  },
+  {
+   "date": "2025-03-28",
+   "title": "Operations Update: Snow Way Winter's Over",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-snow-way-winters-over",
+   "statement": "Lift schedule published 5:30 p.m. the previous day on app and Lift + Grooming Status page",
+   "quote": "We update both of these sources at 5:30 p.m. the previous day with the anticipated lift offerings."
+  },
+  {
+   "date": "2025-03-28",
+   "title": "Operations Update: Snow Way Winter's Over",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-snow-way-winters-over",
+   "statement": "Gusty conditions could affect lift operations in storm cycle",
+   "quote": "There will be some gusty conditions with this storm cycle that could affect lift operations."
+  },
+  {
+   "date": "2025-04-04",
+   "title": "Operations Update: 44\" Inches? It's Go Time!",
+   "url": "https://blog.palisadestahoe.com/operations/operations-update-44-inches-its-go-time",
+   "statement": "Terrain opening/closing rotated to protect corn snow; freeze-thaw operations",
+   "quote": "To protect our corn, we often have to rotate when we open and close terrain"
+  },
+  {
+   "date": "2025-12-17",
+   "title": "Operations Update: Terrain, Weather and Holiday Activities",
+   "url": "https://blog.palisadestahoe.com/operations/12-17-25-operations-update-terrain-weather-and-holiday-activities",
+   "statement": "Ridgetop winds may increase and impact lift operations",
+   "quote": "Ridgetop winds may increase at times and could impact lift operations."
+  },
+  {
+   "date": "2025-12-17",
+   "title": "Operations Update: Terrain, Weather and Holiday Activities",
+   "url": "https://blog.palisadestahoe.com/operations/12-17-25-operations-update-terrain-weather-and-holiday-activities",
+   "statement": "Openings subject to weather, snowpack development and operational readiness",
+   "quote": "All openings remain subject to weather, snowpack development, and operational readiness."
+  },
+  {
+   "date": "2025-12-29",
+   "title": "Operations Update: Adding KT, Scott, and Resort Chair for Tuesday",
+   "url": "https://blog.palisadestahoe.com/operations/dec-25-operations-update",
+   "statement": "Terrain expansion depends on conditions and avalanche mitigation work",
+   "quote": "Crews are continuing to expand terrain as conditions and avalanche mitigation work allow."
+  },
+  {
+   "date": "2025-12-29",
+   "title": "Operations Update: Adding KT, Scott, and Resort Chair for Tuesday",
+   "url": "https://blog.palisadestahoe.com/operations/dec-25-operations-update",
+   "statement": "Additional openings depend on snowpack development, avalanche mitigation and operational readiness",
+   "quote": "snowpack development, avalanche mitigation work, and operational readiness align."
+  },
+  {
+   "date": "2026-01-23",
+   "title": "Operations Update: Sunshine and Ski California Safety Weekend",
+   "url": "https://blog.palisadestahoe.com/operations/jan-23-operations-update",
+   "statement": "Patrol-managed closures may remain for select terrain as conditions and coverage evolve",
+   "quote": "Patrol-managed closures may remain in place for select terrain as conditions and coverage continue to evolve"
+  },
+  {
+   "date": "2026-01-30",
+   "title": "Operations Update: Great Conditions Continue Across the Mountain",
+   "url": "https://blog.palisadestahoe.com/operations/jan-30-operations-update",
+   "statement": "Limited grooming for snow preservation during dry period; no grooming on KT, Headwall, Granite Chief",
+   "quote": "there will be no grooming on KT, Headwall, or Granite Chief as crews focus on snow preservation"
+  },
+  {
+   "date": "2026-02-13",
+   "title": "Operations Update: Winter\u2019s Return",
+   "url": "https://blog.palisadestahoe.com/operations/feb-13-operations-update",
+   "statement": "Access routes (East Face Road, Saddle Road) must be reset by grooming before avalanche mitigation on that terrain",
+   "quote": "These will need to be reset by grooming in order to gain access to and perform avalanche mitigation work on this terrain."
+  },
+  {
+   "date": "2026-02-13",
+   "title": "Operations Update: Winter\u2019s Return",
+   "url": "https://blog.palisadestahoe.com/operations/feb-13-operations-update",
+   "statement": "Storm days bring wind holds, delayed lift openings, staggered terrain access during avalanche mitigation and recovery",
+   "quote": "including wind holds, delayed lift openings, and staggered terrain access"
+  },
+  {
+   "date": "2026-02-13",
+   "title": "Operations Update: Winter\u2019s Return",
+   "url": "https://blog.palisadestahoe.com/operations/feb-13-operations-update",
+   "statement": "Closures in place for avalanche control work, hidden obstacles, storm recovery; rope lines must be respected",
+   "quote": "Closures are in place for avalanche control work, hidden obstacles, and storm recovery operations."
+  },
+  {
+   "date": "2026-02-16",
+   "title": "Storm Cycle Update: What to Expect as the Storm Continues",
+   "url": "https://blog.palisadestahoe.com/operations/feb-16-operations-update",
+   "statement": "Anticipated Weather Impact (AWI) status: many lifts may begin day in AWI, openings dependent on wind, visibility, snowfall intensity and avalanche control progress",
+   "quote": "Many lifts may begin the day in Anticipated Weather Impact (AWI) status"
+  },
+  {
+   "date": "2026-02-16",
+   "title": "Storm Cycle Update: What to Expect as the Storm Continues",
+   "url": "https://blog.palisadestahoe.com/operations/feb-16-operations-update",
+   "statement": "KT East scenario: operations focused on lower-mountain lifts east of KT-22 (KT-22, Red Dog, Resort Chair, Far East, SnoVentures, Olympic Lady, Exhibition) when upper mountain not feasible due to wind/visibility",
+   "quote": "Today will follow a KT East scenario, with operations focused on lower mountain lifts east of KT-22."
+  },
+  {
+   "date": "2026-02-16",
+   "title": "Storm Cycle Update: What to Expect as the Storm Continues",
+   "url": "https://blog.palisadestahoe.com/operations/feb-16-operations-update",
+   "statement": "Delayed, phased openings and temporary holds expected; terrain may close any time for control work",
+   "quote": "Guests should expect delayed and phased lift openings."
+  },
+  {
+   "date": "2026-02-16",
+   "title": "Storm Cycle Update: What to Expect as the Storm Continues",
+   "url": "https://blog.palisadestahoe.com/operations/feb-16-operations-update",
+   "statement": "New snow not adhesive to existing surface, unstable snowpack requires extensive snow safety work",
+   "quote": "This new layer of snow is not super adhesive to the pre-storm existing snow surface"
+  },
+  {
+   "date": "2026-02-17",
+   "title": "Storm Cycle Update: Working Through the Storm, Towards Better Conditions",
+   "url": "https://blog.palisadestahoe.com/operations/feb-17-operations-update",
+   "statement": "Nearly entire mountain on travel restrictions overnight so snowcats could not establish access routes; Patrol must do snow safety before snowcats cleared to travel",
+   "quote": "Nearly the entire mountain was on travel restrictions last night, meaning snowcats could not establish and maintain our access routes."
+  },
+  {
+   "date": "2026-02-17",
+   "title": "Storm Cycle Update: Working Through the Storm, Towards Better Conditions",
+   "url": "https://blog.palisadestahoe.com/operations/feb-17-operations-update",
+   "statement": "Lifts on Anticipated Weather Impact (AWI) targeted to open about 11am; phased and delayed openings",
+   "quote": "Delayed and phased openings are likely."
+  },
+  {
+   "date": "2026-02-17",
+   "title": "Storm Cycle Update: Working Through the Storm, Towards Better Conditions",
+   "url": "https://blog.palisadestahoe.com/operations/feb-17-operations-update",
+   "statement": "Terrain may close any time for control work; respect rope lines; temporary holds remain possible after lifts open",
+   "quote": "Terrain may close at any time for control work"
+  },
+  {
+   "date": "2026-02-17",
+   "title": "Storm Cycle Update: Working Through the Storm, Towards Better Conditions",
+   "url": "https://blog.palisadestahoe.com/operations/feb-17-operations-update",
+   "statement": "Avalanche danger considerable as new snow loads onto poorly bonded surface; extensive mitigation",
+   "quote": "Avalanche danger remains considerable as new snow continues to load onto an existing surface that is not strongly bonded"
+  },
+  {
+   "date": "2026-02-17",
+   "title": "Storm Cycle Update: Working Through the Storm, Towards Better Conditions",
+   "url": "https://blog.palisadestahoe.com/operations/feb-17-operations-update",
+   "statement": "Alpine Meadows Road control work scheduled for afternoon with ridgeline mitigation",
+   "quote": "Alpine Meadows Road control work is scheduled this afternoon"
+  },
+  {
+   "date": "2026-02-18",
+   "title": "Storm Cycle Update: Deep Snow, Slow Starts, Speed of Safety",
+   "url": "https://blog.palisadestahoe.com/operations/feb-18-operations-update",
+   "statement": "Primary goal lower mountain lifts at 9am, then move up; upper mountain access slow; full avalanche mitigation after more than a foot overnight",
+   "quote": "Our primary goal will be for lower mountain lifts at 9am, this may be delayed."
+  },
+  {
+   "date": "2026-02-18",
+   "title": "Storm Cycle Update: Deep Snow, Slow Starts, Speed of Safety",
+   "url": "https://blog.palisadestahoe.com/operations/feb-18-operations-update",
+   "statement": "Operations anticipated focused on lower-mountain terrain; terrain closures, delayed openings, intermittent lift holds expected",
+   "quote": "Terrain closures, delayed openings, and intermittent lift holds should be expected"
+  },
+  {
+   "date": "2026-02-18",
+   "title": "Storm Cycle Update: Deep Snow, Slow Starts, Speed of Safety",
+   "url": "https://blog.palisadestahoe.com/operations/feb-18-operations-update",
+   "statement": "Tentative modified upper-mountain plan: Funitel, Gold Coast Express, Big Blue Express, Shirley Lake Express; Alpine Summit Express, Scott, Lakeview; conditional",
+   "quote": "A tentative, modified upper-mountain plan is being evaluated for tomorrow."
+  },
+  {
+   "date": "2026-02-19",
+   "title": "Storm Cycle Update: Full Re-establish and Recovery Mode",
+   "url": "https://blog.palisadestahoe.com/operations/feb-19-operations-update",
+   "statement": "Full avalanche mitigation program before terrain and lifts evaluated for opening; slow, phased start",
+   "quote": "Crews will be showing up before dawn for a full avalanche mitigation program before terrain and lifts are evaluated for opening."
+  },
+  {
+   "date": "2026-02-19",
+   "title": "Storm Cycle Update: Full Re-establish and Recovery Mode",
+   "url": "https://blog.palisadestahoe.com/operations/feb-19-operations-update",
+   "statement": "Opening does not follow immediately from reduced snowfall; delayed or phased openings expected",
+   "quote": "delayed or phased openings should be expected."
+  },
+  {
+   "date": "2026-02-20",
+   "title": "Operations Update: 115 Inches in 120 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/feb-20-operations-update",
+   "statement": "Terrain may close at any time for avalanche mitigation; closed terrain is closed",
+   "quote": "Avalanche mitigation work is ongoing, and terrain may close at any time."
+  },
+  {
+   "date": "2026-02-20",
+   "title": "Operations Update: 115 Inches in 120 Hours",
+   "url": "https://blog.palisadestahoe.com/operations/feb-20-operations-update",
+   "statement": "Expect phased openings and delays; upper mountain access weather-dependent",
+   "quote": "Terrain may open in phases"
+  },
+  {
+   "date": "2026-03-03",
+   "title": "Moving at the Speed of Safety: Navigating the February Super Storm",
+   "url": "https://blog.palisadestahoe.com/operations/moving-at-the-speed-of-safety",
+   "statement": "Snow or ice built up in a lift terminal can cause chairs to stack up and damage the lift if the lift is run",
+   "quote": "when snow or ice builds up in a terminal, and you try to run the lift, it can cause chairs to stack up"
+  },
+  {
+   "date": "2026-03-03",
+   "title": "Moving at the Speed of Safety: Navigating the February Super Storm",
+   "url": "https://blog.palisadestahoe.com/operations/moving-at-the-speed-of-safety",
+   "statement": "Procedure to clear upper terminals: patroller/groomer rides up, lift stops before chair enters top terminal, rider unloads and clears terminal, chair is run in reverse back to bottom",
+   "quote": "the lift would stop before the chair entered the top terminal. The rider unloaded"
+  },
+  {
+   "date": "2026-03-03",
+   "title": "Moving at the Speed of Safety: Navigating the February Super Storm",
+   "url": "https://blog.palisadestahoe.com/operations/moving-at-the-speed-of-safety",
+   "statement": "Patrol needs snowcat-maintained access routes between lifts, facilities and shops to complete avalanche mitigation work",
+   "quote": "Patrol needs these routes, and access to these areas, in order to complete avalanche mitigation work."
+  },
+  {
+   "date": "2026-03-03",
+   "title": "Moving at the Speed of Safety: Navigating the February Super Storm",
+   "url": "https://blog.palisadestahoe.com/operations/moving-at-the-speed-of-safety",
+   "statement": "Access/rescue capability, not only snow safety, can be the determining factor for keeping terrain closed",
+   "quote": "These access limitations became the determining factor."
+  },
+  {
+   "date": "2026-03-03",
+   "title": "Moving at the Speed of Safety: Navigating the February Super Storm",
+   "url": "https://blog.palisadestahoe.com/operations/moving-at-the-speed-of-safety",
+   "statement": "Avalanche control work and road maintenance done in storm windows so lift maintenance can reach lifts ahead of reopening",
+   "quote": "identified windows in the storm where we were able to perform avalanche control work and maintain access roads"
+  },
+  {
+   "date": "2026-03-03",
+   "title": "Moving at the Speed of Safety: Navigating the February Super Storm",
+   "url": "https://blog.palisadestahoe.com/operations/moving-at-the-speed-of-safety",
+   "statement": "Delayed or phased openings expected after storm; terrain expansion gradual as conditions allow",
+   "quote": "Delayed or phased openings were expected, and 17 lifts were operating by mid-day."
+  },
+  {
+   "date": "2026-10-28",
+   "title": "The Aerial Tram Has a New Look",
+   "url": "https://blog.palisadestahoe.com/operations/aerial-tram-maintenance-2026",
+   "statement": "Carriages overhauled every 6 years; haul ropes replaced every 15-20 years per manufacturer; tram has diesel hydrostatic evacuation drive",
+   "quote": "Every 6 years the Aerial Tram's carriages are taken off the track rope cables, taken apart, cleaned"
+  },
+  {
+   "date": "2026-10-28",
+   "title": "The Aerial Tram Has a New Look",
+   "url": "https://blog.palisadestahoe.com/operations/aerial-tram-maintenance-2026",
+   "statement": "Tram tested by state inspectors before opening",
+   "quote": "before it is tested by state inspectors"
+  }
+ ]
+}

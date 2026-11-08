@@ -63,9 +63,9 @@ A hold or closure counts as **reopened** only when a post says the lift (or its 
 
 | Crest gust | Hold or closure lift-days | Reopening posted | Median minutes to the posted reopening |
 |---|---|---|---|
-| under 40 | 468 | 35% | 50 |
-| 40 to 60 | 523 | 38% | 68 |
-| 60 to 80 | 962 | 29% | 83 |
+| under 40 | 471 | 35% | 50 |
+| 40 to 60 | 525 | 39% | 68 |
+| 60 to 80 | 963 | 29% | 83 |
 | 80 to 100 | 1024 | 18% | 95 |
 | 100 or more | 2028 | 14% | 108 |
 

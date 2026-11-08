@@ -45,15 +45,15 @@
    },
    "alpine": {
     "open": null,
-    "close": null,
-    "status": "unconfirmed"
+    "close": "2022-04-17",
+    "status": "Palisades blog 2022-04-16: Sunday April 17, 2022 is the last day of operations for Alpine (closing early for summer projects)"
    }
   },
   "2022-23": {
    "palisades": {
     "open": null,
     "close": "2023-05-29",
-    "status": "early opening, exact date unconfirmed"
+    "status": "resort blog 2023-05-23: final day Monday 5/29/2023, hours 8am-2pm; early opening, exact date unconfirmed"
    },
    "alpine": {
     "open": null,
@@ -69,8 +69,8 @@
    },
    "alpine": {
     "open": null,
-    "close": null,
-    "status": "unconfirmed"
+    "close": "2024-04-28",
+    "status": "Palisades blog 2024-04-19: Alpine Closing Day Sunday April 28, 2024; Base to Base Gondola closes after April 28"
    }
   },
   "2024-25": {
@@ -88,8 +88,8 @@
   "2025-26": {
    "palisades": {
     "open": "2025-12-05",
-    "close": "2026-05-24",
-    "status": "resort blog lists 2025-12-06; limited terrain at first, warm November"
+    "close": "2026-05-25",
+    "status": "resort blog 2026-05-22: closing weekend May 23-25, 2026; resort blog 2025-12-06 lists first limited opening 2025-12-06"
    },
    "alpine": {
     "open": "2025-12-27",

@@ -187,20 +187,20 @@
    "wind_line_mph": 85.0,
    "hold_rate": null,
    "per_lift_called_at_50pct": {
-    "tp": 79,
+    "tp": 77,
     "fp": 17,
-    "fn": 84,
-    "precision": 0.823,
-    "recall": 0.485,
-    "f1": 0.61
+    "fn": 86,
+    "precision": 0.819,
+    "recall": 0.472,
+    "f1": 0.599
    },
    "per_lift_any_pass": {
-    "tp": 97,
+    "tp": 95,
     "fp": 20,
-    "fn": 66,
-    "precision": 0.829,
-    "recall": 0.595,
-    "f1": 0.693
+    "fn": 68,
+    "precision": 0.826,
+    "recall": 0.583,
+    "f1": 0.683
    },
    "best_single_wind_line": {
     "tp": 111,
@@ -263,71 +263,71 @@
    "per_lift_called_at_50pct": {
     "tp": 242,
     "fp": 159,
-    "fn": 120,
+    "fn": 121,
     "precision": 0.603,
-    "recall": 0.669,
+    "recall": 0.667,
     "f1": 0.634
    },
    "per_lift_any_pass": {
     "tp": 248,
     "fp": 173,
-    "fn": 114,
+    "fn": 115,
     "precision": 0.589,
-    "recall": 0.685,
+    "recall": 0.683,
     "f1": 0.633
    },
    "best_single_wind_line": {
     "tp": 274,
     "fp": 326,
-    "fn": 88,
+    "fn": 89,
     "precision": 0.457,
-    "recall": 0.757,
-    "f1": 0.57
+    "recall": 0.755,
+    "f1": 0.569
    },
    "mph25": {
-    "tp": 357,
-    "fp": 1820,
+    "tp": 358,
+    "fp": 1819,
     "fn": 5,
     "precision": 0.164,
     "recall": 0.986,
-    "f1": 0.281
+    "f1": 0.282
    }
   },
   "2022-23": {
-   "n_lift_days": 4016,
+   "n_lift_days": 4009,
    "wind_line_mph": 96.9,
    "hold_rate": null,
    "per_lift_called_at_50pct": {
-    "tp": 503,
+    "tp": 498,
     "fp": 188,
-    "fn": 647,
-    "precision": 0.728,
-    "recall": 0.437,
-    "f1": 0.546
+    "fn": 645,
+    "precision": 0.726,
+    "recall": 0.436,
+    "f1": 0.545
    },
    "per_lift_any_pass": {
-    "tp": 503,
+    "tp": 498,
     "fp": 188,
-    "fn": 647,
-    "precision": 0.728,
-    "recall": 0.437,
-    "f1": 0.546
+    "fn": 645,
+    "precision": 0.726,
+    "recall": 0.436,
+    "f1": 0.545
    },
    "best_single_wind_line": {
-    "tp": 441,
+    "tp": 437,
     "fp": 139,
-    "fn": 709,
-    "precision": 0.76,
-    "recall": 0.383,
-    "f1": 0.51
+    "fn": 706,
+    "precision": 0.759,
+    "recall": 0.382,
+    "f1": 0.508
    },
    "mph25": {
-    "tp": 1116,
+    "tp": 1109,
     "fp": 2786,
     "fn": 34,
-    "precision": 0.286,
+    "precision": 0.285,
     "recall": 0.97,
-    "f1": 0.442
+    "f1": 0.44
    }
   },
   "2023-24": {
@@ -335,20 +335,20 @@
    "wind_line_mph": 77.0,
    "hold_rate": null,
    "per_lift_called_at_50pct": {
-    "tp": 390,
-    "fp": 320,
-    "fn": 174,
-    "precision": 0.549,
-    "recall": 0.691,
-    "f1": 0.612
+    "tp": 388,
+    "fp": 322,
+    "fn": 176,
+    "precision": 0.546,
+    "recall": 0.688,
+    "f1": 0.609
    },
    "per_lift_any_pass": {
-    "tp": 406,
-    "fp": 373,
-    "fn": 158,
-    "precision": 0.521,
-    "recall": 0.72,
-    "f1": 0.605
+    "tp": 404,
+    "fp": 375,
+    "fn": 160,
+    "precision": 0.519,
+    "recall": 0.716,
+    "f1": 0.602
    },
    "best_single_wind_line": {
     "tp": 419,
@@ -442,38 +442,38 @@
    }
   },
   "pooled": {
-   "n_lift_days": 10593,
+   "n_lift_days": 10586,
    "per_lift_called_at_50pct": {
-    "tp": 1250,
-    "fp": 727,
-    "fn": 1094,
-    "precision": 0.632,
-    "recall": 0.533,
-    "f1": 0.579
+    "tp": 1241,
+    "fp": 729,
+    "fn": 1097,
+    "precision": 0.63,
+    "recall": 0.531,
+    "f1": 0.576
    },
    "per_lift_any_pass": {
-    "tp": 1291,
-    "fp": 799,
-    "fn": 1053,
-    "precision": 0.618,
-    "recall": 0.551,
-    "f1": 0.582
+    "tp": 1282,
+    "fp": 801,
+    "fn": 1056,
+    "precision": 0.615,
+    "recall": 0.548,
+    "f1": 0.58
    },
    "best_single_wind_line": {
-    "tp": 1285,
+    "tp": 1281,
     "fp": 1063,
-    "fn": 1059,
+    "fn": 1057,
     "precision": 0.547,
     "recall": 0.548,
-    "f1": 0.548
+    "f1": 0.547
    },
    "mph25": {
-    "tp": 2299,
-    "fp": 7717,
+    "tp": 2293,
+    "fp": 7716,
     "fn": 45,
-    "precision": 0.23,
+    "precision": 0.229,
     "recall": 0.981,
-    "f1": 0.372
+    "f1": 0.371
    }
   },
   "winters_won_by_method": {
@@ -577,36 +577,36 @@
    "wind_line_mph": 62.8,
    "hold_rate": null,
    "per_lift_called_at_50pct": {
-    "tp": 278,
-    "fp": 131,
-    "fn": 147,
+    "tp": 282,
+    "fp": 133,
+    "fn": 146,
     "precision": 0.68,
-    "recall": 0.654,
-    "f1": 0.667
+    "recall": 0.659,
+    "f1": 0.669
    },
    "per_lift_any_pass": {
-    "tp": 288,
-    "fp": 154,
-    "fn": 137,
+    "tp": 292,
+    "fp": 156,
+    "fn": 136,
     "precision": 0.652,
-    "recall": 0.678,
-    "f1": 0.664
+    "recall": 0.682,
+    "f1": 0.667
    },
    "best_single_wind_line": {
     "tp": 322,
     "fp": 184,
-    "fn": 103,
+    "fn": 106,
     "precision": 0.636,
-    "recall": 0.758,
-    "f1": 0.692
+    "recall": 0.752,
+    "f1": 0.69
    },
    "mph25": {
-    "tp": 423,
-    "fp": 389,
+    "tp": 426,
+    "fp": 386,
     "fn": 2,
-    "precision": 0.521,
+    "precision": 0.525,
     "recall": 0.995,
-    "f1": 0.684
+    "f1": 0.687
    }
   },
   "2021-22": {
@@ -614,36 +614,36 @@
    "wind_line_mph": 60.6,
    "hold_rate": null,
    "per_lift_called_at_50pct": {
-    "tp": 432,
-    "fp": 441,
+    "tp": 433,
+    "fp": 440,
     "fn": 142,
-    "precision": 0.495,
+    "precision": 0.496,
     "recall": 0.753,
-    "f1": 0.597
+    "f1": 0.598
    },
    "per_lift_any_pass": {
-    "tp": 458,
-    "fp": 494,
+    "tp": 459,
+    "fp": 493,
     "fn": 116,
-    "precision": 0.481,
+    "precision": 0.482,
     "recall": 0.798,
-    "f1": 0.6
+    "f1": 0.601
    },
    "best_single_wind_line": {
-    "tp": 494,
-    "fp": 733,
+    "tp": 495,
+    "fp": 732,
     "fn": 80,
     "precision": 0.403,
     "recall": 0.861,
     "f1": 0.549
    },
    "mph25": {
-    "tp": 568,
-    "fp": 1942,
+    "tp": 569,
+    "fp": 1941,
     "fn": 6,
-    "precision": 0.226,
+    "precision": 0.227,
     "recall": 0.99,
-    "f1": 0.368
+    "f1": 0.369
    }
   },
   "2022-23": {
@@ -651,20 +651,20 @@
    "wind_line_mph": 60.2,
    "hold_rate": null,
    "per_lift_called_at_50pct": {
-    "tp": 1021,
-    "fp": 562,
-    "fn": 663,
-    "precision": 0.645,
-    "recall": 0.606,
-    "f1": 0.625
+    "tp": 1029,
+    "fp": 572,
+    "fn": 655,
+    "precision": 0.643,
+    "recall": 0.611,
+    "f1": 0.626
    },
    "per_lift_any_pass": {
-    "tp": 1049,
-    "fp": 596,
-    "fn": 635,
-    "precision": 0.638,
-    "recall": 0.623,
-    "f1": 0.63
+    "tp": 1057,
+    "fp": 606,
+    "fn": 627,
+    "precision": 0.636,
+    "recall": 0.628,
+    "f1": 0.632
    },
    "best_single_wind_line": {
     "tp": 1222,
@@ -797,34 +797,34 @@
   "pooled": {
    "n_lift_days": 15028,
    "per_lift_called_at_50pct": {
-    "tp": 3632,
-    "fp": 1937,
-    "fn": 1841,
+    "tp": 3645,
+    "fp": 1948,
+    "fn": 1832,
     "precision": 0.652,
-    "recall": 0.664,
-    "f1": 0.658
+    "recall": 0.666,
+    "f1": 0.659
    },
    "per_lift_any_pass": {
-    "tp": 3785,
-    "fp": 2156,
-    "fn": 1688,
+    "tp": 3798,
+    "fp": 2167,
+    "fn": 1679,
     "precision": 0.637,
-    "recall": 0.692,
-    "f1": 0.663
+    "recall": 0.693,
+    "f1": 0.664
    },
    "best_single_wind_line": {
-    "tp": 4082,
-    "fp": 3381,
-    "fn": 1391,
+    "tp": 4083,
+    "fp": 3380,
+    "fn": 1394,
     "precision": 0.547,
-    "recall": 0.746,
+    "recall": 0.745,
     "f1": 0.631
    },
    "mph25": {
-    "tp": 5401,
-    "fp": 8984,
+    "tp": 5405,
+    "fp": 8980,
     "fn": 72,
-    "precision": 0.375,
+    "precision": 0.376,
     "recall": 0.987,
     "f1": 0.544
    }
@@ -839,9 +839,9 @@
  },
  "coverage": {
   "side_days": 1636,
-  "named_side_days": 1092,
+  "named_side_days": 1091,
   "named_share": 0.667,
-  "gust60_named": 0.411,
-  "gust60_left_out": 0.594
+  "gust60_named": 0.412,
+  "gust60_left_out": 0.593
  }
 }

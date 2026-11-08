@@ -269,7 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.8"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.9"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -486,6 +486,14 @@ def fix_patterns(p, ev, text, dt):
     for e in out:                                                                                                 # 'all lifts except X that were on hold are now closed': X is not on hold
         if e["lift"] == "ALL_ON_HOLD" and e.get("except"):
             ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "hold_start" and x["lift"] in ex)]
+    # 'At Alpine: Summit, Scott and Lakeview are OFF schedule today': a header colon makes the roster rule read it as a schedule; it is a closure
+    for mo in re.finditer(r"(?:^|[\n:.!?])\s*([^.!?\n]{4,160}?)\b(?:are|is)\s+off\s+(?:of\s+)?(?:the\s+)?schedule\b(?!\s+(?:until|after))", p["text"], re.I):
+        lifts_off = find_lifts(mo.group(1))
+        if lifts_off and not re.search(r"\bremain|\bexcept|\ball other|\bon the schedule\b", mo.group(1), re.I):
+            had = [x for x in out + added if x["event_type"] == "scheduled_opening" and x["lift"] in lifts_off]
+            if had:
+                out = [x for x in out if x not in had]; added = [x for x in added if x not in had]
+                for l in lifts_off: add("P-020o", "closed_day", l, None)
     # 'closed for the day, with the exception of X and Y': the exceptions are open, not closed
     for e in list(out + added):
         if e["event_type"] == "closed_day" and (e["lift"] or "").startswith("ALL") and e.get("except"):

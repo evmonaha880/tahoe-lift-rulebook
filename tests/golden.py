@@ -6,6 +6,8 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("At Alpine: Summit, Sherwood, Scott, Lakeview, Kangaroo, and Subway are OFF schedule today. #palisadesops", [(C, "Summit", None), (C, "Subway", None)], [(S, "Summit"), (S, "Subway")]),
+ ("At Alpine: Summit, Scott, Sherwood, and Lakeview are off schedule for the day.", [(C, "Scott", None)], [(S, "Scott")]),
  ("All Palisades lifts are closed for the day, with the exception of First Venture and Ahsoka carpet.", [(C, "ALL_PALISADES", None)], [(C, "First Venture"), (C, "Ahsoka Carpet")]),
  ("The Funitel, Gold Coast and Shirley Lake will remain on wind hold.\n\nAll other lifts at Palisades that were on wind hold will be closed for the remainder of the day.", [(H, "Funitel", "wind"), (C, "ALL_ON_HOLD", "wind")], [(H, "ALL_OTHER")]),
  ("While our Mountain Ops teams perform snow safety, the First Venture chair is the only lift open at Squaw. We will provide updates.", [(D, "ALL_PALISADES", None)], []),
