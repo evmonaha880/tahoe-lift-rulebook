@@ -4,3 +4,5 @@ data/derived/
 .playwright-mcp/
 *.log
 .DS_Store
+__pycache__/
+*.pyc
