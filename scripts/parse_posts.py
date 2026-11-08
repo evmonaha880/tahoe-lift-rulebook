@@ -277,7 +277,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.15"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.16"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -559,6 +559,7 @@ def fix_patterns(p, ev, text, dt):
         if e["lift"] is None and e["event_type"] in ("hold_start", "closed_day", "delay", "reopen", "partial"): e["event_type"] = "other"; e["note"] = "no_lift_named"
     return final
 
+SOD_RE = re.compile(r"\b(?:start|begin)\w*\s+(?:the\s+)?(?:day|today|this\s+morning)\b[^.!?]{0,20}\b(?:on|with)\b|\b(?:start|begin)\w*\s+on\s+(?:a\s+)?(?:\w+\s+)?(?:hold|delay)", re.I)
 def parse_post(p):
     p = {**p, "text": clean_text(p["text"])}
     _CTX["t"] = " ".join(p["text"].replace("&amp;", "&").split())
@@ -593,6 +594,9 @@ def parse_post(p):
             if not hl: ev = [e for e in ev if not (e["lift"] is None and e["event_type"] in ("reopen", "closed_day", "hold_start", "partial"))]
     for e in ev:
         if e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "warning"): e["cause_tags"] = cause_tags(_CTX["t"])
+    if SOD_RE.search(_CTX["t"]):                                      # 'will start/begin the day on wind hold': the lift is on hold from opening, whatever time the post went out (Evan 2026-11-07)
+        for e in ev:
+            if e["event_type"] in ("hold_start", "delay") and e["lift"]: e["begins_day_on_hold"] = True
     seen, out = set(), []
     for e in ev:   # the same fact can be reached by two rules; keep one
         k = (e["lift"], e["event_type"], e["parse_rule_id"])

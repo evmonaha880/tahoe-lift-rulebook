@@ -217,15 +217,15 @@ def closure_conf(es, RL, f):
     ok = (f.get("day_gust") or 0) >= 60 or (f.get("avy") or 0) >= 3 or (f.get("swe24") or 0) >= 1.0 or bool(tags & {"lightning", "power", "flood", "visibility", "ice", "avalanche", "snow", "weather"})
     return {"closure_readers": hits, "closure_plausible": int(ok), "closure_conf": "high" if hits == 2 and ok else "medium" if hits >= 1 or ok else "low"}
 OPEN_TIME = "09:00"      # typical opening; a hold posted earlier means the lift began the day on hold
-def began_on_hold(mine): return any(e["event_type"] in ("hold_start", "delay") and e["start"][11:16] < OPEN_TIME for e in mine)
+def began_on_hold(mine): return any(e["event_type"] in ("hold_start", "delay") and (e["start"][11:16] < OPEN_TIME or e.get("begins_day_on_hold")) for e in mine)
 def reopen_cols(mine, es, L):
     """Observed: a reopening post for this lift (or its group) after the hold began the same day. Assumed (Evan, 2026-11-07): no reopening post that day means it did not reopen."""
     h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day", "delay")]          # a delayed opening has a duration too
     if not h: return {"reopen_posted": "", "hold_minutes": "", "reopen_assumed_none": ""}
-    t0 = min(e["start"] for e in h)
-    if t0[11:16] < OPEN_TIME: t0 = t0[:11] + OPEN_TIME + t0[16:]       # Evan 2026-11-07: a lift that begins the day on hold is held from the opening time until its reopening post
-    ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t0 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
-    return {"reopen_posted": int(bool(ro)), "hold_minutes": minutes(t0, ro[0]) if ro else "", "reopen_assumed_none": int(not ro)}
+    t0 = min(e["start"] for e in h); t00 = t0
+    if began_on_hold(mine) and t0[11:16] != OPEN_TIME: t0 = t0[:11] + OPEN_TIME + t0[16:]       # Evan 2026-11-07: a lift that begins the day on hold is held from the opening time until its reopening post
+    ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t00 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
+    return {"reopen_posted": int(bool(ro)), "hold_minutes": max(0, minutes(t0, ro[0])) if ro else "", "reopen_assumed_none": int(not ro)}
 def covid_era(W, date):
     if W == "2019-20" and date >= "2020-03-01": return "pre_closure"           # the resort suspended operations on 2020-03-15; posts end 2020-03-14
     if W == "2020-21": return "restricted"                                     # reservations, capacity limits and health protocols all season

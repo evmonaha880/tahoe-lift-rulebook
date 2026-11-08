@@ -28,18 +28,18 @@ Share of in-season days (with at least one expected lift row) that had a whole-m
 
 | Condition | Closure share of days |
 |---|---|
-| All in-season days | 6% (52 of 890) |
-| Crest gust under 60 mph | 4% (18 of 468) |
-| 60 to 100 mph | 3% (9 of 301) |
-| 100 to 130 mph | 14% (13 of 91) |
-| 130 mph or more | 40% (12 of 30) |
-| Avalanche danger 1 to 2 | 1% (4 of 490) |
-| Avalanche danger 3 | 7% (11 of 159) |
-| Avalanche danger 4 | 34% (22 of 64) |
-| Gust 100+ and danger 3+ | 28% (23 of 82) |
-| Gust 100+ and 8+ hours at 60 | 24% (21 of 88) |
-| Snow water 1.5 in or more in 24 hours | 20% (16 of 79) |
-| Wind under 60 and no storm signal | 4% (14 of 399) |
+| All in-season days | 6% (52 of 921) |
+| Crest gust under 60 mph | 4% (18 of 483) |
+| 60 to 100 mph | 3% (9 of 315) |
+| 100 to 130 mph | 14% (13 of 92) |
+| 130 mph or more | 39% (12 of 31) |
+| Avalanche danger 1 to 2 | 1% (4 of 513) |
+| Avalanche danger 3 | 7% (11 of 164) |
+| Avalanche danger 4 | 34% (22 of 65) |
+| Gust 100+ and danger 3+ | 27% (23 of 84) |
+| Gust 100+ and 8+ hours at 60 | 24% (21 of 89) |
+| Snow water 1.5 in or more in 24 hours | 19% (16 of 83) |
+| Wind under 60 and no storm signal | 3% (14 of 412) |
 
 18 of the 20 storm closures had at least one of: crest gust of 80 mph or more (15), avalanche danger 3 or higher (17), or snow water of 1.5 in or more (9).
 
@@ -63,11 +63,11 @@ A hold or closure counts as **reopened** only when a post says the lift (or its 
 
 | Crest gust | Hold or closure lift-days | Reopening posted | Median minutes to the posted reopening |
 |---|---|---|---|
-| under 40 | 598 | 42% | 50 |
-| 40 to 60 | 683 | 43% | 54 |
-| 60 to 80 | 1191 | 37% | 60 |
-| 80 to 100 | 1129 | 23% | 65 |
-| 100 or more | 2097 | 16% | 48 |
+| under 40 | 598 | 44% | 46 |
+| 40 to 60 | 683 | 46% | 52 |
+| 60 to 80 | 1191 | 37% | 57 |
+| 80 to 100 | 1129 | 23% | 64 |
+| 100 or more | 2097 | 16% | 44 |
 
 How to read it: the harder the wind, the less often a reopening is posted, and when one is posted it comes later. Under 40 mph about four in ten holds have a posted reopening, so some of the "assumed none" holds there were probably short holds whose end went unposted; at 100 mph and above the assumption is much safer.
 
