@@ -42,7 +42,7 @@ Event types: scheduled_opening, hold_start, reopen, delay, partial, closed_day, 
 - The product is the rulebook and replay, not a chat agent and not a dashboard. The static app lives in `docs/app/` (live at https://evmonaha880.github.io/tahoe-lift-rulebook/app/). No what-if sliders and no chat agent were built.
 
 ## Final status (2026-11-07)
-7,044 posts, 23,977 events, 154 posts (2.2%) matching no rule, 226 parser tests, about 90% of posts fully right on a 240-post hand check (plus or minus 5) before the evening's fixes, and 85 to 88% by five-model majority on two later sets of 120 never-seen posts. Two independent blind readers (Subquadratic, Meta Muse) labeled the posts; the parser agrees with them 93.1% and 97.3%. Results, with the simple rules shown where they win: [RESULTS.md](RESULTS.md). Limits: unposted holds are invisible; per-lift results rest mainly on three winters that name lifts; crest wind sensors dominate; Funitel-top wind is partly estimated; nothing here forecasts tomorrow.
+7,044 posts, 23,977 events, 154 posts (2.2%) matching no rule, 229 parser tests, about 90% of posts fully right on a 240-post hand check (plus or minus 5) before the evening's fixes, and 85 to 88% by five-model majority on two later sets of 120 never-seen posts. Two independent blind readers (Subquadratic, Meta Muse) labeled the posts; the parser agrees with them 93.1% and 97.3%. Results, with the simple rules shown where they win: [RESULTS.md](RESULTS.md). Limits: unposted holds are invisible; per-lift results rest mainly on three winters that name lifts; crest wind sensors dominate; Funitel-top wind is partly estimated; nothing here forecasts tomorrow.
 
 ## Testing
 - Leave-one-winter-out: build rules on all winters but one, test on the one left out, rotate.

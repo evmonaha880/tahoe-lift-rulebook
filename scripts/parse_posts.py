@@ -38,7 +38,7 @@ LIFTS = {
     "Summit": r"summit(?: chair)?",
     "Roundhouse": r"round ?house",
     "Kangaroo": r"kangaroo",
-    "Scott": r"scott(?: chair)?",
+    "Scott": r"scott?(?: chair)?",
     "Treeline Cirque": r"treel(?:ine|ing)(?: cirque)?|tlc",
     "Sherwood": r"sherwood",
     "Subway": r"subway",
@@ -272,7 +272,7 @@ def whole_closure(t, dt=None):
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
-        ("flood", r"flood"), ("rain", r"\brain\b|slush"), ("weather", r"\bweather\b|\bconditions\b")]
+        ("flood", r"flood"), ("grooming", r"groom"), ("rain", r"\brain\b|slush"), ("weather", r"\bweather\b|\bconditions\b")]
 def cause_tags(s):
     """Multi-label cause words in the post text (post level, not sentence level). `cause` stays the single first-match family."""
     return [k for k, p in TAGS if re.search(p, s, re.I)]
@@ -327,6 +327,7 @@ def clean_text(text):
         sent = m.group(0)
         return " " if (NONLIFT.search(sent) and not find_lifts(NONLIFT.sub(" ", sent))) else sent
     text = re.sub(r"[^.!?\n]+[.!?]?", keep, text)
+    text = re.sub(r"\((?:lower|upper|mid)\s+headwall(?: terminal)?\)|\b(?:lower|upper|mid)\s+headwall terminal\b", " ", text, flags=re.I)      # a snow-level landmark, not the lift
     text = re.sub(r"\bmountain run (?:is|are) (?:now )?closed(?:,? (?:so|and)\s+)?", "", text, flags=re.I)
     return re.sub(r"\b(open|operating|spinning|running)\s+(?:until|till)\s+(?:4|4:00|4:30|5)\s*pm\b", r"\1", text, flags=re.I)
 def fix_patterns(p, ev, text, dt):
@@ -415,6 +416,13 @@ def fix_patterns(p, ev, text, dt):
         for l in exc: add("P-020s", "closed_day", l)
     if re.search(r"\b(?:dining|roller|skating|terrace|marketplace|restaurant)\b", text, re.I) and not re.search(r"high camp carpet|\bcarpet\b", text, re.I):
         out = [e for e in out if e["lift"] != "High Camp Carpet"]                                                  # 'dining at High Camp' is a place, not the carpet
+    m = re.search(r"\b(?:noted|marked|denoted|flagged) (?:with|by) (?:an? )?(?:\*|asterisk)[^:\n]*:?", text, re.I)       # '12 lifts scheduled ... impacts, noted with * below: Tram*, Funitel, Red Dog'
+    if m and not any(e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL") for e in out):
+        rest = text[m.end():]; out = [e for e in out if e["event_type"] != "warning"]
+        for piece in re.split(r"[,\n\u2022]", rest):
+            for l in find_lifts(piece):
+                add("P-001a", "scheduled_opening", l, None, **{"note": "roster"})
+                if piece.strip().rstrip("#").strip().endswith("*") or re.search(re.escape(piece.strip().split()[0] if piece.strip() else "x") + r"\*", piece): add("P-012a", "warning", l, "wind")
     for e in out:                                                                                                 # 'all lifts except X that were on hold are now closed': X is not on hold
         if e["lift"] == "ALL_ON_HOLD" and e.get("except"):
             ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "hold_start" and x["lift"] in ex)]

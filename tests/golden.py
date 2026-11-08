@@ -6,6 +6,11 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("Scot is now open", [(R, "Scott", None)], []),
+ ("Palisades: 3\" on the upper mountain. NOAA is calling for snow level of 7600' (lower Headwall terminal) & SW winds 10-15 w gusts. 3 lifts 9a-4p:\nFunitel\nExhibition\nRed Dog\n\n#palisadesops",
+  [(S, "Funitel", None), (S, "Red Dog", None)], [(S, "Headwall")]),
+ ("12 lifts scheduled today at Palisades. Some upper mountain lifts have anticipated weather impacts, noted with * below:\n- Tram*, Funitel, Red Dog, Resort Chair\n- Siberia*, Gold Coast\n#palisadesops",
+  [(S, "Tram", None), (S, "Funitel", None), (S, "Gold Coast", None), (W, "Tram", "wind"), (W, "Siberia", "wind")], [(W, "Funitel"), (W, "Gold Coast")]),
  ("Mtn Meadow and the Tram are now on wind hold. The Base to Base Gondola and High Camp Carpet are off the schedule for the rest of the day.",
   [(H, "Mountain Meadow", "wind"), (H, "Tram", "wind"), (C, "Base to Base Gondola", None), (C, "High Camp Carpet", None)], []),
  ("All lifts are currently on wind hold.", [(H, "ALL", "wind")], [(C, None)]),
