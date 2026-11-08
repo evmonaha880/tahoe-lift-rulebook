@@ -269,7 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.7"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.8"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -486,6 +486,31 @@ def fix_patterns(p, ev, text, dt):
     for e in out:                                                                                                 # 'all lifts except X that were on hold are now closed': X is not on hold
         if e["lift"] == "ALL_ON_HOLD" and e.get("except"):
             ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "hold_start" and x["lift"] in ex)]
+    # 'closed for the day, with the exception of X and Y': the exceptions are open, not closed
+    for e in list(out + added):
+        if e["event_type"] == "closed_day" and (e["lift"] or "").startswith("ALL") and e.get("except"):
+            ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "closed_day" and x["lift"] in ex and x["source_post_id"] == e["source_post_id"])]; added = [x for x in added if not (x["event_type"] == "closed_day" and x["lift"] in ex)]
+    # 'all other lifts that were on wind hold will be closed for the day': only the lifts already on hold, not every other lift
+    m = re.search(r"\ball other (?:scheduled )?lifts[^.!?]{0,60}\b(?:that|which) (?:were|are) on (?:a |an )?(?:(\w+) )?hold[^.!?]{0,40}\b(?:will be|are|is|now)\s+(?:now\s+)?closed", text, re.I)
+    if m:
+        old = [e for e in out + added if e["lift"] == "ALL_OTHER" and e["event_type"] in ("hold_start", "delay")]
+        if old:
+            exc = old[0].get("except", [])
+            out = [x for x in out if x not in old]; added = [x for x in added if x not in old]
+            add("P-014h", "closed_day", "ALL_ON_HOLD", cause_in(m.group(0)) or old[0].get("cause"), **{"except": exc})
+    # 'the only lift open at Squaw is X' and 'starting the day with X, Y, Z' under a weather impact: every other lift of that side has not opened
+    if not any((e["lift"] or "").startswith("ALL") for e in out + added if e["event_type"] in ("hold_start", "delay", "closed_day")):
+        for sent in split_sentences(text):
+            sl = sent.lower()
+            if re.search(r"\b(?:may|might|could|likely|hoping)\b|\bif\b", sl): continue
+            mo = re.search(r"\bthe only (?:lifts?|chairs?)\b[^.!?]{0,40}\b(?:open|operating|running|spinning)\b|\bis the only (?:lift|chair)\b|\b(?:are|is) the only (?:lifts?|chairs?)\b", sl)
+            if mo and find_lifts(sent) and re.search(r"\b(?:winds?|snow safety|weather|hold|delay\w*|impact\w*|avalanche|power|lightning|ice|icing)\b", text, re.I):
+                add("P-014o", "hold_start" if "hold" in text.lower() else "delay", _side_scope(text), cause_in(text), **{"except": find_lifts(sent)}); break
+        else:
+            ms = re.search(r"(?:start|begin)\w*\s+the\s+day\s+(?:at\s+[\w ]{3,25}\s+)?with\s*:", text, re.I)
+            if ms and re.search(r"\b(?:winds?|snow safety|weather|hold|delay|impact\w*|avalanche)\b", text, re.I):
+                listed = find_lifts(text[ms.end():])
+                if len(listed) >= 2: add("P-014o", "delay", _side_scope(text), cause_in(text), **{"except": listed})
     if not any((e["lift"] or "").startswith("ALL") for e in out + added if e["event_type"] in ("hold_start", "delay", "closed_day")):
         for sent in split_sentences(text):
             sl = sent.lower()

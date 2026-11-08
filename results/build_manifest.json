@@ -1,11 +1,11 @@
 {
- "parser_version": "2026.11.07.7",
- "git_commit": "72d693d",
+ "parser_version": "2026.11.07.8",
+ "git_commit": "acc361a",
  "git_dirty": true,
  "python": "3.14.6",
  "numpy": "2.5.0",
- "events_sha": "ff872999969e20e2",
- "lift_days_sha": "f29f43d311c9289f",
+ "events_sha": "1f608396a66f4ee7",
+ "lift_days_sha": "26a1c46ed734d72c",
  "raw_inputs_sha": {
   "avy": "9520bce92fa4d63b",
   "enso": "b6ea6da01ae93342",

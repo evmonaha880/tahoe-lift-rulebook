@@ -6,6 +6,11 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("All Palisades lifts are closed for the day, with the exception of First Venture and Ahsoka carpet.", [(C, "ALL_PALISADES", None)], [(C, "First Venture"), (C, "Ahsoka Carpet")]),
+ ("The Funitel, Gold Coast and Shirley Lake will remain on wind hold.\n\nAll other lifts at Palisades that were on wind hold will be closed for the remainder of the day.", [(H, "Funitel", "wind"), (C, "ALL_ON_HOLD", "wind")], [(H, "ALL_OTHER")]),
+ ("While our Mountain Ops teams perform snow safety, the First Venture chair is the only lift open at Squaw. We will provide updates.", [(D, "ALL_PALISADES", None)], []),
+ ("With some high winds impacting the upper mountain, we will be starting the day at Squaw with:\n\n-Exhibition (mid mountain)\n-Red Dog\n-Far East Express\n-First Venture", [(S, "Exhibition", None), (D, "ALL_PALISADES", "wind")], []),
+ ("We are starting the day with 18 lifts between Alpine and Squaw. Sunny skies.", [], [(D, None), (H, None)]),
  ("ATTN: Due to lightning in the area all operations at Squaw Valley Alpine Meadows are on hold. Stand by for further notice", [(H, "ALL", "weather")], []),
  ("Update: Power is still out here. Therefore, the scheduled lifts are on hold with no anticipated time of opening.", [(H, "ALL", None)], []),
  ("Due to snow safety operations, all scheduled lifts will be delayed this morning. We will update you.", [(D, "ALL", None)], []),

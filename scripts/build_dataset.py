@@ -309,6 +309,7 @@ for Y in YEARS:
                    "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
                    **closure_conf([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], RL, f),
                    **reopen_cols(mine, es, L),
+                   "late_open_implied": int(L in sched and not mine and any(e["lift"] == L and e["event_type"] == "reopen" and e["start"][11:16] >= "09:45" for e in es)),
                    **hour_feats(weather, date, min([e["start"][11:16] for e in mine] or [""])), **local_feats(weather, date, L), **nws_flags(date),
                    "n_posts_day": NPOSTS.get(date, 0), "covid_era": covid_era(W, date),
                    **{"day_" + k: DF[date].get(k, 0) for k in list(DAYFLAG) + ["covid"]},

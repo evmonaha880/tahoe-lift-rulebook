@@ -66,7 +66,7 @@ A hold or closure counts as **reopened** only when a post says the lift (or its 
 | under 40 | 468 | 35% | 50 |
 | 40 to 60 | 523 | 38% | 68 |
 | 60 to 80 | 962 | 29% | 83 |
-| 80 to 100 | 1022 | 18% | 95 |
+| 80 to 100 | 1024 | 18% | 95 |
 | 100 or more | 2028 | 14% | 108 |
 
 How to read it: the harder the wind, the less often a reopening is posted, and when one is posted it comes later. Under 40 mph about four in ten holds have a posted reopening, so some of the "assumed none" holds there were probably short holds whose end went unposted; at 100 mph and above the assumption is much safer.

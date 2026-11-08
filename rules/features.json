@@ -499,6 +499,13 @@
    "asof": "post-derived (post level)",
    "unit": "0/1",
    "source": "words in the post that put the lift on hold"
+  },
+  "late_open_implied": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "a scheduled lift announced as open after 09:45 with no earlier hold, delay or closure post: an implied late opening. Kept apart from `held`; not counted as a hold"
   }
  }
 }
