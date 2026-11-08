@@ -6,6 +6,12 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("Now Open at Palisades:\n\nTram\nFuni\nExhibition\n\nMechanical Hold:\nKT-22",
+  [(R, "Tram", None), (R, "Funitel", None), (R, "Exhibition", None), (H, "KT-22", "mechanical")], [(H, "Tram"), (H, "Exhibition")]),
+ ("Alpine Update:\nScott: Open\nTreeline Cirque: mid-station only\nSherwood: Closed", [(C, "Sherwood", None)], [(C, "Scott")]),
+ ("Exhibition will be closed to the public today for team training.", [(C, "Exhibition", None)], []),
+ ("The Base to Base Gondola is open with offload at KT-22 for advanced levels only.", [], [(H, "KT-22"), (C, "KT-22")]),
+ ("The Palisades and Granite Peak will remain closed due to low visibility.", [], [(C, "Granite Chief")]),
  ("Scot is now open", [(R, "Scott", None)], []),
  ("Palisades: 3\" on the upper mountain. NOAA is calling for snow level of 7600' (lower Headwall terminal) & SW winds 10-15 w gusts. 3 lifts 9a-4p:\nFunitel\nExhibition\nRed Dog\n\n#palisadesops",
   [(S, "Funitel", None), (S, "Red Dog", None)], [(S, "Headwall")]),

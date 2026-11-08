@@ -3,7 +3,8 @@ usage: python3 -I scripts/diff_events.py <old_derived_dir | results/baseline_eve
 Exit 0 always; read the output. Use after every parser change: only the posts you meant to change should appear."""
 import os, sys, json, glob, gzip, collections
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-args = [a for a in sys.argv[1:] if not a.startswith("--")]
+_argv = sys.argv[1:]; _sv = _argv[_argv.index("--show") + 1] if "--show" in _argv else None
+args = [a for a in _argv if not a.startswith("--") and a != _sv]
 old_dir = args[0]; new_dir = args[1] if len(args) > 1 else os.path.join(root, "data", "derived")
 show = int(sys.argv[sys.argv.index("--show") + 1]) if "--show" in sys.argv else 15
 key = lambda e: (e["source_post_id"], e["event_type"], e["lift"], e.get("cause"), tuple(e.get("except", [])))
