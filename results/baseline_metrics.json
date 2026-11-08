@@ -1,0 +1,36 @@
+{
+ "events_by_type": {
+  "other": 1240,
+  "hold_start": 3468,
+  "reopen": 4333,
+  "scheduled_opening": 11581,
+  "partial": 420,
+  "delay": 852,
+  "closed_day": 1396,
+  "parking": 249,
+  "warning": 446
+ },
+ "event_hash": {
+  "2018-19_heldout_events.json": "6f89bbea34678753",
+  "2018-19_train_events.json": "83ae4d538d36bdeb",
+  "2019-20_heldout_events.json": "deaadf89e6c2a15d",
+  "2019-20_train_events.json": "40423096baadae1b",
+  "2020-21_heldout_events.json": "e3a934fcf85a03d8",
+  "2020-21_train_events.json": "e323f99db8633992",
+  "2021-22_heldout_events.json": "d7af72c9a9e649ec",
+  "2021-22_train_events.json": "ee15f65f5ef83738",
+  "2022-23_heldout_events.json": "54d3895aec8406e3",
+  "2022-23_train_events.json": "f6ccd59246855f4b",
+  "2023-24_heldout_events.json": "fe6e5aa38ef06f03",
+  "2023-24_train_events.json": "a8947bddb921365b",
+  "2024-25_heldout_events.json": "fe86f684cd34c7cf",
+  "2024-25_train_events.json": "3d1e48441dc23bbb",
+  "2025-26_heldout_events.json": "dd3279663553e32c",
+  "2025-26_train_events.json": "1138a1982b16fa4a"
+ },
+ "lift_days": 15369,
+ "held": 5670,
+ "total_events": 23985,
+ "git_commit": "dce4e8d",
+ "liftless_status_events": 65
+}

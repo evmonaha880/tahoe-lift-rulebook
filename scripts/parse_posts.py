@@ -269,6 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
+PARSER_VERSION = "2026.11.07.4"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -832,6 +833,7 @@ if __name__ == "__main__":
     for p in posts:
         e = parse_post(p); events += e; per_post[p["id"]] = [x["event_type"] for x in e]
         if any(x.get("unmatched") for x in e): residual.append(p["text"])
+    for _e in events: _e["parser_version"] = PARSER_VERSION
     json.dump(events, open(os.path.join(root, "data", "derived", f"{W}_{split}_events.json"), "w"))
     json.dump(per_post, open(os.path.join(root, "data", "derived", f"{W}_{split}_postlabels.json"), "w"))
     c = collections.Counter(x["event_type"] for x in events); r = collections.Counter(x["parse_rule_id"] for x in events)
