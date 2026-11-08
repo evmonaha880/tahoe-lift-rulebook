@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Liftie Sutras: Send It or End It</title><link rel="stylesheet" href="app.css?v=20261107i"></head>
+<title>The Liftie Sutras: Send It or End It</title><link rel="stylesheet" href="app.css?v=20261107m"></head>
 <body>
 <header>
   <div class="brand">The Liftie Sutras<i>Send It or End It</i></div>
@@ -13,7 +13,7 @@
     <div class="eyebrow2">A true story from the chairlift</div>
     <h1>The Liftie Sutras</h1><div class="sub2">Send It or End It</div>
     <p class="big">The rules that decide when a ski lift stops were never written down. We dug them up.</p>
-    <figure class="photo2"><img src="hook.jpg" alt="A huge crowd waiting under a lift at Palisades Tahoe during a wind hold"><figcaption>A lift line at Palisades Tahoe, posted to r/palisadestahoe as a wind hold.</figcaption></figure>
+    <figure class="photo2"><img src="hook.jpg" alt="A huge crowd waiting in a long line under a lift at Palisades Tahoe"><figcaption>A lift line at Palisades Tahoe, from r/palisadestahoe.</figcaption></figure>
   </section>
   <section class="story">
     <div class="beat"><div class="n">1</div><div><h2>A morning you do not control</h2><p>It is a powder day. You are in a line that is not moving. The Tram and the Funitel, the two big lifts the rest of the mountain hangs from, have stopped.</p><p>No sign says why. No one says for how long. You stand there, cold, while the day drains away.</p></div></div>
@@ -34,7 +34,7 @@
         <div class="seal">SEND IT<br>OR<br>END IT</div>
       </div>
     </div>
-    <p class="proofline">Each sutra was tested on winters it never saw. People guess lifts stop around 25 mph. The data says about <b id="h_line">60</b>.</p>
+    <p class="proofline">Sutra I was tested on winters it never saw; the others are counts over all eight winters. People guess lifts stop around 25 mph. The data says about <b id="h_line">60</b>.</p>
     <div class="cta"><button class="go" data-goto="mountain">Open the book</button><button class="go alt" data-goto="proof">See the proof</button></div>
   </section>
 </div></div>
@@ -47,11 +47,11 @@
     <p class="lede">The operators never wrote the rules down, but every morning they left traces. Each layer is a winter. The number on a layer is how well the book called that winter's wind-hold days when it was hidden, from 0 to 1. Click a layer to read what was found in it.</p>
     <div class="dig"><div><div class="layers" id="layers"></div><div class="legend" id="legend"></div></div><div class="find" id="find"></div></div><div class="drift" id="drift"></div></div></div>
   <div class="view" id="v-proof"><div class="page"><h2>Hide a winter. Predict it.</h2>
-    <p class="lede">For each winter, the rules were rebuilt from the other seven and then asked to call the hidden one. The first chart is the main finding. The lift-level numbers below it come from the repository's own results (scripts/baselines.py), counted on scheduled lift-days only.</p>
+    <p class="lede">For each winter, the rules were rebuilt from the other seven and then asked to call the hidden one. The first chart is the main finding. The lift-level numbers below it come from the repository's own results (scripts/baselines.py), counted on expected lift-days: lifts on the morning schedule, plus lifts that normally run on a whole-mountain closure day. Winter 2020-21 ran under COVID operating rules and is left out of those counts.</p>
     <div id="linestrip" style="max-width:1000px;margin-bottom:10px"></div><div id="proofnums"></div><div id="proof" style="max-width:1000px"></div><div class="cap" id="proofcap"></div></div></div>
   <div class="view" id="v-readers"><div class="page"><h2>Nobody graded their own homework</h2>
-    <p class="lede">Our parser read every post. Two independent AI readers, Subquadratic (all 7,044 posts) and Meta Muse (7,040; four calls failed), read them blind. Posts where both readers agreed with each other and the parser differed were pulled for review.</p>
+    <p class="lede">Our parser read every post. Two independent AI readers, Subquadratic (all 7,044 posts) and Meta Muse (7,040; four calls failed), read them blind. Posts where both readers agreed with each other and the parser differed were pulled for review. On 2026-11-07 five models (Claude Opus, Sonnet and Haiku, Meta Muse and Subquadratic) also graded the parser's events by hand on two sets of 120 posts nobody had seen: the five-model majority called 88% and 85% of posts fully right. Closure posts are the weakest part of the parser.</p>
     <div class="three" id="three"></div><div class="pairs" id="pairs"></div><div id="dis"></div></div></div>
 </main>
-<script src="data.js?v=20261107i"></script><script src="model.js?v=20261107i"></script><script src="app.js?v=20261107i"></script><script src="tour.js?v=20261107i"></script>
+<script src="data.js?v=20261107m"></script><script src="model.js?v=20261107m"></script><script src="app.js?v=20261107m"></script><script src="tour.js?v=20261107m"></script>
 </body></html>

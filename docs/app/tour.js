@@ -17,14 +17,15 @@ const en=document.createElement('div'); en.id='endc'; en.innerHTML='<h1>The Lift
 const say=(k,t)=>{cap.innerHTML=(k?'<div><small>'+k+'</small>'+t+'</div>':'<div>'+t+'</div>');};
 const go=v=>$('#nav [data-v='+v+']').click();
 const sc=sel=>{const e=$(sel); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});};
+const stats=()=>{const t=(document.querySelector('.banner')||{}).innerText||''; const a=t.match(/held (\d+) of (\d+)/)||[], c=t.match(/book caught (\d+) and wrongly called a hold on (\d+)/)||[], w=t.match(/snow water ([\d.]+) in, avalanche danger (\d) of 5/)||[]; return {h:+a[1],n:+a[2],c:+c[1],f:+c[2],swe:w[1],avy:w[2]};};
 const pick=(id,val)=>{const e=document.getElementById(id); e.value=val; e.dispatchEvent(new Event('change'));};
 const T=[
  [0,()=>{go('home');$('#v-home').scrollTop=0;say('The problem','A powder morning. The big lifts stop. Nobody says why, or for how long.');}],
  [7,()=>{sc('.story');say('The idea','The rules that stop a lift were never written down. So we dug them up.');}],
  [12,()=>{sc('.dig3');say('How we dug',posts+' posts from 8 winters of operators, matched to the weather. Three independent readers. One winter hidden at a time.');}],
  [20,()=>{sc('.tome');say('What came out','The Liftie Sutras. Wind holds begin near 60 mph. The old belief was 25.');}],
- [27,()=>{go('mountain');say('The app','Replay a real morning. Dec 16, 2024: operators held 10 of 25 lifts. The book called all 10, with 13 false alarms. It never saw this winter.');}],
- [34,()=>{pick('selW','2022-23');pick('selD','2023-03-15');say('A storm day','Mar 15, 2023: 12 lifts held in light wind. Snow water 1.6 in, avalanche danger 3: the snow and avalanche sutra.');}],
+ [27,()=>{go('mountain');pick('selW','2024-25');pick('selD','2024-12-16');const k=stats();say('The app','Replay a real morning. Dec 16, 2024: operators held '+k.h+' of '+k.n+' lifts. The book called '+(k.f===0?'them':'all '+k.c)+', with '+k.f+' false alarms. It never saw this winter.');}],
+ [34,()=>{pick('selW','2022-23');pick('selD','2023-03-15');const k=stats();say('A storm day','Mar 15, 2023: '+k.h+' of '+k.n+' lifts held or late in light wind. Snow water '+k.swe+' in, avalanche danger '+k.avy+': the snow and avalanche sutra.');}],
  [41,()=>{pick('selW','2024-25');pick('selD','2024-12-16');$('[data-m=sandbox]').click();$('[data-a=ar]').click();say('Possible 2026-27','Set conditions. A warm atmospheric river, one El Niño possibility. Not a forecast.');}],
  [47,()=>{go('proof');say('The proof','Hide a winter, predict it. Eight fits, one line: '+lo+' to '+hi+' mph. It beats the 25 mph belief every winter.');}],
  [54,()=>{go('readers');say('How we checked','Every post read by our parser and two blind AI readers: Subquadratic and Meta Muse.');}],

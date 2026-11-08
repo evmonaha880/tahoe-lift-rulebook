@@ -1,6 +1,6 @@
 # Sponsor tracks and prize requirements
 
-**Status at submission:** only Subquadratic and Meta Muse are used, as independent blind labelers of the posts. Fetch.ai, Gemini and MongoDB are not used and not claimed. Nothing below was built. This is the reference for what each sponsor prize asks for, so decisions can be made against real criteria. Source: the event's partner guides and the Fetch.ai hackpack (read 2026-11-07). Cash is upside; the core build and the portfolio piece come first. See `DECISIONS.md` entries 15, 18 and 19.
+**Status at submission:** only Subquadratic and Meta Muse are used, as independent blind labelers of the posts. After the deadline (2026-11-07 evening) both were also used as event-level graders of the parser on 120-post samples, next to three Claude models (see PARSING_RULES.md). Fetch.ai, Gemini and MongoDB are not used and not claimed. Nothing below was built. This is the reference for what each sponsor prize asks for, so decisions can be made against real criteria. Source: the event's partner guides and the Fetch.ai hackpack (read 2026-11-07). Cash is upside; the core build and the portfolio piece come first. See `DECISIONS.md` entries 15, 18 and 19.
 
 ## Prize table (from the participant guide)
 

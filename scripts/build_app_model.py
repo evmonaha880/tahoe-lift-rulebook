@@ -155,6 +155,9 @@ H = [r for r in SW if r["held"]]
 def wshare(group):
     held = sum(b["held_days"] for l, b in book.items() if l in group); wind = sum(b["wind_days"] for l, b in book.items() if l in group)
     return round(wind / held, 3) if held else None
+# lift-days that exist only because a post named the lift on hold, delay or closure (not scheduled, not under a whole-side closure, not the COVID winter): held by construction
+_no = [r for r in rows if not r["expected"] and r["covid_era"] != "restricted"]
+_nof = round(sum(r["held"] for r in _no) / len(_no), 3) if _no else None
 # whole-side closures by avalanche danger and by gust, over every in-season day that has at least one expected lift row
 _days = {}
 for r in SW: _days.setdefault((r["winter"], r["date"]), dict(gust=r["day_gust"], avy=r["avy"], closed=0))["closed"] |= r["closed_all"]
@@ -179,6 +182,7 @@ facts = dict(posts_total=posts_total, posts_all3=ag["posts"],
              holds_on_days_below_60=round(sum(1 for r in H if r["day_gust"] < 60) / len(H), 3),
              holds_no_cause=round(sum(r["held_unstated"] for r in H) / len(H), 3), holds_wind=round(sum(r["held_wind"] for r in H) / len(H), 3),
              hold_lift_days=len(H), scheduled_lift_days=len(SW),
+             named_only_held=_nof, named_only_n=len(_no),
              closure_days=len({(r["winter"], r["date"]) for r in rows if r["closed_all"]}),
              closure_by_avy=_cb_avy, closure_by_gust=_cb_gust, storm=_storm, dur=_dur)
 model=dict(facts=facts,feat=feat,groups=groups,proof=proof,commit=commit,lifts=LIFTS,book=book,loo=loo,days=D,posts={d["date"]:posts.get(d["date"],[]) for d in D},medians=med,arch=archetypes,agree=agree,disagree=disagree,winters=WINTERS,built=datetime.now().strftime("%Y-%m-%d %H:%M"))
