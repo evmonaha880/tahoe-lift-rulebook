@@ -126,6 +126,29 @@ groups = dict(upper=[l for l in LG["palisades"]["UPPER_MOUNTAIN"]["lifts"] if l 
               alpine=list(dict.fromkeys(al["named_together"] + al["named_separately_not_upper"] + al["also_alpine"])))
 PRESET_DATES = ("2024-12-15", "2024-12-16")                       # the "Set conditions" starting points read weather straight from the dataset
 feat = {d["date"]: d["x"] for d in days.values() if d["date"] in PRESET_DATES}
-model=dict(feat=feat,groups=groups,proof=proof,commit=commit,lifts=LIFTS,book=book,loo=loo,days=D,posts={d["date"]:posts.get(d["date"],[]) for d in D},medians=med,arch=archetypes,agree=agree,disagree=disagree,winters=WINTERS,built=datetime.now().strftime("%Y-%m-%d %H:%M"))
+# ---- plain-language findings the page quotes, computed here so the copy can never drift from the data
+SW = [r for r in rows if r["scheduled"] and r["day_gust"] is not None]
+GATE = {"Tram", "Funitel", "Base to Base Gondola"}; UPG, LOG = set(groups["upper"]), set(groups["lower"])
+def rate(rs): return round(sum(r["held"] for r in rs) / len(rs), 3) if rs else None
+bydate = collections.defaultdict(list)
+for r in SW: bydate[(r["winter"], r["date"])].append(r)
+up_g, up_ng = [], []
+for rs in bydate.values():
+    gate_held = any(r["lift"] in GATE and r["held"] for r in rs)
+    (up_g if gate_held else up_ng).extend(r for r in rs if r["lift"] in UPG)
+H = [r for r in SW if r["held"]]
+def wshare(group):
+    held = sum(b["held_days"] for l, b in book.items() if l in group); wind = sum(b["wind_days"] for l, b in book.items() if l in group)
+    return round(wind / held, 3) if held else None
+posts_total = sum(len(json.load(open(f))) for f in glob.glob(f"{ROOT}/data/derived/20*_train.json") + glob.glob(f"{ROOT}/data/derived/20*_heldout.json"))
+facts = dict(posts_total=posts_total, posts_all3=ag["posts"],
+             up_when_gate_held=rate(up_g), up_when_no_gate_held=rate(up_ng),
+             windy_hold_rate=dict(gates=rate([r for r in SW if r["lift"] in GATE and r["day_gust"] >= 60]), upper=rate([r for r in SW if r["lift"] in UPG and r["day_gust"] >= 60]), lower=rate([r for r in SW if r["lift"] in LOG and r["day_gust"] >= 60])),
+             wind_named_share_upper=wshare(GATE | UPG), wind_named_share_lower=wshare(LOG),
+             wind_named_holds_on_60=round(sum(1 for r in H if r["held_wind"] and r["day_gust"] >= 60) / max(1, sum(1 for r in H if r["held_wind"])), 3),
+             holds_on_days_below_60=round(sum(1 for r in H if r["day_gust"] < 60) / len(H), 3),
+             holds_no_cause=round(sum(r["held_unstated"] for r in H) / len(H), 3), holds_wind=round(sum(r["held_wind"] for r in H) / len(H), 3),
+             hold_lift_days=len(H), scheduled_lift_days=len(SW))
+model=dict(facts=facts,feat=feat,groups=groups,proof=proof,commit=commit,lifts=LIFTS,book=book,loo=loo,days=D,posts={d["date"]:posts.get(d["date"],[]) for d in D},medians=med,arch=archetypes,agree=agree,disagree=disagree,winters=WINTERS,built=datetime.now().strftime("%Y-%m-%d %H:%M"))
 open(os.path.join(APP,"model.js"),"w").write("window.MODEL = "+json.dumps(model,separators=(",",":"))+";\n")
 print("lifts",len(LIFTS),"days",len(D),"posts",sum(len(v) for v in posts.values()),"size KB",os.path.getsize(os.path.join(APP,"model.js"))//1024)

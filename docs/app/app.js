@@ -7,7 +7,7 @@ const esc=s=>dec(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"'
 const GATES=['Tram','Funitel','Base to Base Gondola'];
 const UPPER=M.groups.upper, LOWER=M.groups.lower, ALPINE=M.groups.alpine;   // from rules/lift_groups.json
 const TIERS=[['gate','The gates',GATES],['up','Upper mountain',UPPER],['low','Lower mountain',LOWER],['alp','Alpine Meadows',ALPINE]];
-const FL={day_gust:['gusts over the day','mph'],early_gust:['early-morning gusts','mph'],day_spd:['sustained wind over the day','mph'],early_spd:['early-morning wind','mph'],swe24:['snow water in 24 hours','in'],avy:['avalanche danger','of 5'],temp_base:['base temperature','F'],swe6:['snow water in 6 hours','in'],prec24s:['precipitation in 24 hours','in'],fnt_day_gust:['gusts at the Funitel top (partly estimated)','mph']};
+const FL={day_gust:['gusts over the day','mph'],early_gust:['early-morning gusts','mph'],day_spd:['sustained wind over the day','mph'],early_spd:['early-morning wind','mph'],swe24:['snow water in 24 hours','in'],avy:['avalanche danger','of 5'],temp_base:['base temperature','F'],swe6:['snow water in 6 hours','in'],prec24s:['precipitation in 24 hours','in'],fnt_day_gust:['gusts at the Funitel top (partly estimated)','mph'],new_snow24:['new snow in 24 hours (Alpine base depth)','in']};
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const dlabel=d=>{const p=d.split('-');return MON[+p[1]-1]+' '+(+p[2])+', '+p[0]};
 const dayBy=date=>M.days.find(d=>d.date===date);
@@ -18,6 +18,14 @@ const LINE={};M.winters.forEach(w=>{ LINE[w]=P.lift[w]&&P.lift[w].wind_line_mph!
 function odds(rule,x){ if(!rule) return null; const v=x[rule.f]; if(v==null) return null; const fired=v>=rule.t; return {p:fired?rule.above:rule.below,fired,rule}; }
 const NAIVE=x=>x.day_gust!=null&&x.day_gust>=25;
 
+function lowerBits(){ const k=M.book['KT-22'], e=M.book['Exhibition'], out=[];
+  if(k&&k.f==='avy') out.push('KT-22 holds '+Math.round(k.above*100)+'% of days at avalanche danger '+k.t+' or higher, '+Math.round(k.below*100)+'% below');
+  if(e&&e.f==='swe24') out.push('Exhibition holds '+Math.round(e.above*100)+'% of days with '+e.t+' in of snow water, '+Math.round(e.below*100)+'% below');
+  return out.length?' For some of them the snow matters more than the wind: '+out.join('; ')+'.':''; }
+function lineBits(){
+  const g=Object.entries(M.book).filter(([L,b])=>b.f==='day_gust'||b.f==='early_gust').sort((a,b)=>a[1].t-b[1].t);
+  const ex=['Siberia','Gold Coast','Funitel'].map(L=>{const b=M.book[L]; return b&&b.f==='day_gust'?L+' '+Math.round(b.t):null;}).filter(Boolean);
+  return 'from '+Math.round(g[0][1].t)+' mph ('+g[0][0]+') to past 100, such as '+ex.join(', ')+' (gusts over the day)'; }
 /* ---- state ---- */
 const SL=[['day_gust','Gusts over the day','mph',0,130,1],['early_gust','Early-morning gusts','mph',0,120,1],['day_spd','Sustained wind, day','mph',0,100,1],['early_spd','Sustained wind, early','mph',0,90,1],['swe24','Snow water, 24 hours','in',0,4,0.1],['avy','Avalanche danger','of 5',0,5,1]];
 const S={arch:null,mode:'replay',x:Object.assign({},M.medians),winter:'2024-25',date:'2024-12-16',tab:'home'};
@@ -79,7 +87,7 @@ function drawCenter(){
     banner='<b>'+dlabel(S.date)+'.</b> Operators held <b>'+H+'</b> of '+live.length+' scheduled lifts. The book caught <b>'+C+'</b> and wrongly called a hold on <b>'+FA+'</b> that ran. One '+LINE[S.winter]+' mph wind line caught <b>'+lC+'</b> and wrongly called <b>'+lFA+'</b>. A 25 mph rule caught <b>'+nC+'</b> and wrongly called <b>'+nFA+'</b>.'+legend;
   } else {
     const n=sc.rows.filter(r=>r.o&&r.o.p>=.5).length, gate=sc.rows.filter(r=>GATES.includes(r.L)&&r.o&&r.o.p>=.5).length;
-    const ar=(M.arch||[]).find(a=>a.id===S.arch); banner=(ar?'<b>Possible 2026-27 day: '+esc(ar.name)+'.</b> ':'')+'<b>'+n+'</b> of '+sc.rows.length+' lifts likely to hold.'+(gate?' <span style="color:var(--hold)">A gate lift is at risk, and most of the upper mountain follows it.</span>':' The gates look clear.')+'<div class="legend2"><b>Odds</b> = how often that lift held on past days at or past its line. Fitted on all eight winters, not held out.</div>';
+    const ar=(M.arch||[]).find(a=>a.id===S.arch); banner=(ar?'<b>Possible 2026-27 day: '+esc(ar.name)+'.</b> ':'')+'<b>'+n+'</b> of '+sc.rows.length+' lifts likely to hold.'+(gate?' <span style="color:var(--hold)">A gate lift is at risk. When a gate holds, about half of the upper mountain ('+Math.round(M.facts.up_when_gate_held*100)+'% of lift-days) holds with it.</span>':' The gates look clear.')+'<div class="legend2"><b>Odds</b> = how often that lift held on past days at or past its line. Fitted on all eight winters, not held out.</div>';
   }
   let h='<div class="banner">'+banner+'</div>';
   const known=new Set();
@@ -133,8 +141,12 @@ $('pill').textContent='rules built '+M.built+' · '+M.lifts.length+' lifts · '+
 
 /* ---- landing ---- */
 (function(){ const A=M.agree||D.agree, ln=D.strata.map(s=>s.line), lo=Math.min(...ln), hi=Math.max(...ln);
-  $('h_posts').textContent=A.posts.toLocaleString(); $('h_wint').textContent=M.winters.length; $('h_line').textContent=Math.round((lo+hi)/2);
-  $('g1').textContent='Found in all '+M.winters.length+' winters, each time without peeking at that winter, between '+lo.toFixed(1)+' and '+hi.toFixed(1)+' mph. Each lift then has its own line.';
+  $('h_posts').textContent=M.facts.posts_total.toLocaleString(); $('h_read').textContent='read the posts ('+M.facts.posts_all3.toLocaleString()+' read by all three)'; $('h_wint').textContent=M.winters.length; $('h_line').textContent=Math.round((lo+hi)/2);
+  $('g1').textContent='Found in all '+M.winters.length+' winters, each time without peeking at that winter, between '+lo.toFixed(1)+' and '+hi.toFixed(1)+' mph. Each lift then has its own line, '+lineBits()+'. Where operators named wind, the crest gusts that day were sixty or more '+Math.round(M.facts.wind_named_holds_on_60*100)+'% of the time.';
+  const F=M.facts, pc=x=>Math.round(x*100)+'%', td=dayBy('2023-03-15'), tdh=td?Object.values(td.act).filter(a=>a[0]).length:null;
+  $('g2').textContent='Everything on the upper mountain hangs from the Tram and the Funitel. When a gate lift holds, '+pc(F.up_when_gate_held)+' of upper-mountain lift-days hold with it; when no gate holds, '+pc(F.up_when_no_gate_held)+'.';
+  $('g3').textContent='KT-22, Exhibition, Red Dog and Resort Chair still run '+pc(1-F.windy_hold_rate.lower)+' of the time on days with gusts of sixty or more. When they do stop, wind is named on '+pc(F.wind_named_share_lower)+' of their holds, against '+pc(F.wind_named_share_upper)+' on the high lifts.'+lowerBits();
+  $('g4').textContent='A calm morning in 2023: '+(tdh!=null?tdh:'several')+' lifts held, gusts only '+(td?Math.round(td.x.day_gust):22)+' mph. This page is torn out. Overall '+pc(F.holds_on_days_below_60)+' of lift holds come on days under the sixty line, and '+pc(F.holds_no_cause)+' come with no cause given.';
   document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>{ const t=b.dataset.goto; document.querySelector('#nav [data-v='+t+']').click(); }); })();
 /* ---- dig ---- */
 let sel=1;
@@ -165,7 +177,7 @@ function drawProof(){
     ss.forEach((r,i)=>{ s+='<circle cx="'+x(r.line)+'" cy="'+(66-(i%2)*14)+'" r="7" fill="#b3261e" stroke="#1d1a16" stroke-width="1.5"/>'; });
     s+='<line x1="'+x(25)+'" y1="30" x2="'+x(25)+'" y2="80" stroke="#1d1a16" stroke-width="2" stroke-dasharray="5 4"/><text x="'+x(25)+'" y="22" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#1d1a16">the usual belief: 25</text>';
     s+='<text x="'+x((lo+hi)/2)+'" y="22" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#b3261e">eight hidden-winter fits: '+lo.toFixed(1)+' to '+hi.toFixed(1)+'</text></svg>';
-    $('linestrip').innerHTML='<h3 style="margin-top:4px">The unwritten line, found eight times</h3>'+s+'<div class="cap">Each dot is the gust speed where wind holds begin, learned without that winter\'s data. The eight fits land within '+(hi-lo).toFixed(1)+' mph of each other.</div>'; })();
+    $('linestrip').innerHTML='<h3 style="margin-top:4px">The unwritten line, found eight times</h3>'+s+'<div class="cap">Each dot is the gust speed where wind holds begin, learned without that winter\'s data. The eight fits land within '+(hi-lo).toFixed(1)+' mph of each other. Over all eight hidden winters that line catches '+Math.round(P.day_pooled.learned.recall*100)+'% of wind-hold days and is right '+Math.round(P.day_pooled.learned.precision*100)+'% of the times it calls one; a 25 mph rule catches '+Math.round(P.day_pooled.mph25.recall*100)+'% but is right only '+Math.round(P.day_pooled.mph25.precision*100)+'%.</div>'; })();
   const rows=D.strata.slice().reverse(), W=1000, rowH=46, top=14, left=100, right=60, H=top+rows.length*rowH+34, x=v=>left+(W-left-right)*v;
   let s='<svg viewBox="0 0 '+W+' '+H+'">'; [0,.2,.4,.6,.8,1].forEach(t=>{s+='<line x1="'+x(t)+'" y1="'+top+'" x2="'+x(t)+'" y2="'+(H-26)+'" stroke="#cdbf9e" stroke-dasharray="4 5"/><text x="'+x(t)+'" y="'+(H-6)+'" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#4a4338">'+t.toFixed(1)+'</text>';});
   rows.forEach((r,i)=>{const y=top+i*rowH+rowH/2; s+='<text x="0" y="'+(y+5)+'" font-family="ui-monospace,Menlo,monospace" font-size="15">'+r.winter+'</text><line x1="'+x(r.baseline)+'" y1="'+y+'" x2="'+x(r.score)+'" y2="'+y+'" stroke="#1d1a16" stroke-width="3"/><circle cx="'+x(r.baseline)+'" cy="'+y+'" r="8" fill="#f3ead6" stroke="#1d1a16" stroke-width="3"/><circle cx="'+x(r.score)+'" cy="'+y+'" r="9" fill="#1d1a16"/><text x="'+(x(r.score)+16)+'" y="'+(y+5)+'" font-family="ui-monospace,Menlo,monospace" font-size="14" fill="#b3261e">+'+(r.score-r.baseline).toFixed(2)+'</text>';});

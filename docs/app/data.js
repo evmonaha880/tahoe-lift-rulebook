@@ -32,7 +32,7 @@ window.DATA = {
     { label: "winters dug up", value: "8" },
     { label: "posts read", value: "7,040" },
     { label: "independent readers", value: "3" },
-    { label: "rules recovered", value: "37" }
+    { label: "rules recovered", value: "39" }
   ],
   drift: { old: { date: "Winter 2020-21", text: "The wind is howling out there! All upper mountain lifts at Squaw, including the Tram and Squaw One, will start the day on wind hold. #squawlifts" }, new: { date: "Winter 2024-25", text: "At Palisades, Upper Mountain is off the schedule for today, including Wa She Shu, Tram, Funitel. Lower Mountain is on patrol hold (Exhibition, Far East, KT-22, Red Dog, Resort Chair). #palisadesops" }, marks: ["Squaw","#squawlifts","Palisades","#palisadesops"] },
   outlook: {
@@ -44,7 +44,7 @@ window.DATA = {
     ],
     method: "Each button sets the sliders to the median of matching days from the three El Niño winters in our data (2018-19 and 2019-20 weak, 2023-24 strong). It shows what days like these tend to look like, not what will happen."
   },
-  renamed: "Mid-dig, the resort changed its name: Squaw Valley Alpine Meadows became Palisades Tahoe (2021). Same lifts, new words.",
+  renamed: "Mid-dig, in 2021, the resort changed its name: Squaw Valley Alpine Meadows became Palisades Tahoe, and two lifts were renamed with it. Squaw One is now Wa She Shu; Squaw Creek is now Resort Chair. Same lifts, new words. The parser folds the old names into the new so each lift keeps one history.",
   strata: [
     { winter: "2025-26", era: "Palisades Tahoe", phase: "neutral", strength: "", days: 90, wind_holds: 21, score: 0.702, baseline: 0.375, line: 60.1,
       artifact: { date: "Winter 2025-26", text: "Alpine lifts are scheduled to open at 9am. Scott and Summit are on wind hold. Mountain Ops is working hard on snow mitigation. Projected opening for lower mountain at Palisades is 10am, with upper mountain goal for 12pm." } },
