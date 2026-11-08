@@ -1,6 +1,6 @@
 # Data sources
 
-Final counts: 7,044 X posts (originals only) across 8 winters, 23,912 parsed events, 14,547 lift-days (10,232 scheduled). Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, not tested. Credentials live outside the repo. Raw data goes in `data/raw/` (git-ignored).
+Final counts: 7,044 X posts (originals only) across 8 winters, 23,907 parsed events, 15,335 lift-days (10,232 scheduled; 860 more are lifts that normally run on a whole-mountain closure day, now counted as expected; 100 fall outside the season windows and are excluded from fitting). Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, not tested. Credentials live outside the repo. Raw data goes in `data/raw/` (git-ignored).
 
 ## 1. Lift status posts: Palisades ops account on X
 - **What:** the resort's operations account posts lift status (holds, reopenings, delays, schedules, and other operational notes). These are the events to explain.

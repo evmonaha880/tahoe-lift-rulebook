@@ -92,6 +92,10 @@ def snow_feats(S, date):
 def feats_agg(W, date, st):
     vals = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
     return max(vals) if vals else None
+def hours_over(W, date, st, thr):
+    """hours between 6am and 4pm local with a 15-minute gust reading at or above thr at one station (readings / 4); None when the station has no readings"""
+    v = [x for h in range(6, 16) for x in W.get((date, h), {}).get(st, {}).get("gust", [])]
+    return round(sum(1 for x in v if x >= thr) / 4, 2) if v else None
 def feats(W, date, S):
     def agg(h0, h1, key, fn, stations=RIDGE):
         vals = [x for h in range(h0, h1) for s in stations for x in W.get((date, h), {}).get(s, {}).get(key, [])]
@@ -99,6 +103,7 @@ def feats(W, date, S):
     return {"early_gust": agg(5, 9, "gust", max), "early_spd": agg(5, 9, "spd", max),
             "day_gust": agg(6, 16, "gust", max), "day_spd": agg(6, 16, "spd", max),
             "fnt_day_gust": agg(6, 16, "gust", max, ["Funitel Top"]),
+            "sib_h40": hours_over(W, date, "Siberia", 40), "sib_h60": hours_over(W, date, "Siberia", 60),
             "temp_base": agg(6, 10, "temp", lambda v: sum(v) / len(v), ["Roundhouse Btm"]),
             **snow_feats(S, date), "avy": AV.get(date)}
 # Group scopes ("all upper mountain lifts are on wind hold") are credited to each real lift in the group, from rules/lift_groups.json.
@@ -108,7 +113,29 @@ _UP, _LO = set(_P["UPPER_MOUNTAIN"]["lifts"]), set(_P["LOWER_MOUNTAIN"]["lifts"]
 GROUPS = {"UPPER_MOUNTAIN": _UP, "LOWER_MOUNTAIN": _LO,
           "ALL_PALISADES": _UP | _LO | set(_P["UNGROUPED"]) | set(_LG["not_in_the_2026_lifts_file"]["legacy_names_in_posts"]),
           "ALL_ALPINE": set(_A["named_together"]) | set(_A["named_separately_not_upper"]) | set(_A["also_alpine"])}
+SIDE = {}
+for _l in GROUPS["ALL_PALISADES"]: SIDE[_l] = "palisades"
+for _l in GROUPS["ALL_ALPINE"]: SIDE[_l] = "alpine"
+SEASONS = json.load(open(os.path.join(R, "..", "rules", "season_windows.json")))["winters"]
+OPS = ("scheduled_opening", "reopen", "hold_start", "closed_day", "delay", "partial")
+def effective_windows(W, ev):
+    """open = earliest of the web date and the first day a roster post lists a lift on that side; close = latest of the web date and the last such roster day (union, so no real operating day is cut)"""
+    out = {}
+    for side in ("palisades", "alpine"):
+        days = sorted({e["start"][:10] for e in ev if e["event_type"] == "scheduled_opening" and SIDE.get(e["lift"]) == side})   # roster days only: a storm post alone is not an operating day
+        any_days = sorted({e["start"][:10] for e in ev if e["event_type"] in ("scheduled_opening", "reopen", "hold_start", "delay", "partial") and SIDE.get(e["lift"]) == side})   # a hold or reopening also proves the side was running
+        web = SEASONS.get(W, {}).get(side, {})
+        o = [d for d in (web.get("open"), days[0] if days else None) if d]; c = [d for d in (web.get("close"), any_days[-1] if any_days else None) if d]
+        out[side] = {"open": min(o) if o else None, "close": max(c) if c else None, "first_post_day": days[0] if days else None, "last_post_day": any_days[-1] if any_days else None, "web_open": web.get("open"), "web_close": web.get("close")}
+    return out
+def typical_roster(ev):
+    n = collections.Counter(e["lift"] for e in ev if e["event_type"] == "scheduled_opening" and e["lift"] in SIDE)
+    r = {"palisades": set(), "alpine": set()}
+    for l, c in n.items():
+        if c >= 8: r[SIDE[l]].add(l)
+    return r
 YEARS = list(map(int, sys.argv[1:]))
+EFFECTIVE = {}
 WEATHER = {Y: load_weather(Y) for Y in YEARS}
 def fit_funitel():
     """The Funitel-top station was off in Feb-May 2024, Nov 2025-Feb 2026 and before Apr 2019 (the source returns no rows for those dates).
@@ -142,12 +169,18 @@ for Y in YEARS:
     ev = []
     for sp in ("train", "heldout"):
         for e in json.load(open(os.path.join(R, "derived", f"{W}_{sp}_events.json"))): e["split"] = sp; ev.append(e)
+    EFFECTIVE[W] = effective_windows(W, ev); ROSTER = typical_roster(ev)
     by = collections.defaultdict(list)
     for e in ev: by[e["start"][:10]].append(e)
     for date, es in sorted(by.items()):
         sched = {e["lift"] for e in es if e["event_type"] == "scheduled_opening" and e["lift"] and e["lift"] != "ALL"}
         lifts = set(sched) | {e["lift"] for e in es if e["lift"] and e["lift"] not in ("ALL", "ALL_OTHER", "ALL_ALPINE", "ALL_PALISADES", "UPPER_MOUNTAIN", "LOWER_MOUNTAIN") and e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "reopen")}
         if any(e["lift"] == "ALL_OTHER" for e in es): lifts = set(lifts) | {"(all other lifts)"}
+        # whole-side closures ("Palisades Tahoe is CLOSED today", "all lifts at Alpine are closed"): every lift of that side that normally runs is a row, even when no roster was posted
+        cl = [e for e in es if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")]
+        cl_scope = set()
+        for e in cl: cl_scope |= {"palisades", "alpine"} if e["lift"] == "ALL" else {"palisades"} if e["lift"] == "ALL_PALISADES" else {"alpine"}
+        for sd in cl_scope: lifts = set(lifts) | ROSTER[sd]
         if not lifts: continue
         f = feats(weather, date, SN)
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
@@ -162,7 +195,7 @@ for Y in YEARS:
             else: f["fnt_src"] = ""
         else: f["fnt_src"] = "measured"
         for L in sorted(lifts):
-            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL" or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
+            mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or e["lift"] == "ALL" or (e["lift"] == "ALL_ON_HOLD" and any(x["lift"] == L and x["event_type"] == "hold_start" and x["start"] < e["start"] for x in es)) or (e["lift"] == "ALL_OTHER" and L not in e.get("except", [])) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
             row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),
@@ -170,12 +203,18 @@ for Y in YEARS:
                    "held_mech": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "mechanical" for e in mine)),
                    "held_weather": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "weather" for e in mine)),
                    "held_unstated": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and not e["cause"] for e in mine)),
+                   "closed_all": int(any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine)),
+                   "closed_all_time": min([e["start"][11:16] for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")] or [""]),
+                   **{"tag_" + t: int(any(t in (e.get("cause_tags") or []) and e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)) for t in ("avalanche", "snow", "ice", "visibility", "lightning", "power", "flood", "rain")},
+                   "side": SIDE.get(L, ""),
+                   "in_season": int(bool(SIDE.get(L)) and EFFECTIVE[W][SIDE[L]]["open"] is not None and EFFECTIVE[W][SIDE[L]]["open"] <= date <= (EFFECTIVE[W][SIDE[L]]["close"] or "9999")) if SIDE.get(L) else 1,
                    "first_event": min([e["start"][11:16] for e in mine] or [""]),
                    "in_heldout_posts": int(any(e["split"] == "heldout" for e in mine))}
             rows.append(row)
 out = os.path.join(R, "derived", "lift_days.csv")
 with open(out, "w", newline="") as fh:
     w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
+json.dump(EFFECTIVE, open(os.path.join(R, "derived", "season_windows_effective.json"), "w"), indent=1)
 n = len(rows); print(f"{n} lift-days -> {out}")
 for W in sorted({r['winter'] for r in rows}):
     x = [r for r in rows if r['winter'] == W]

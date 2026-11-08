@@ -9,6 +9,10 @@ for r in rows:
     for k in NUM: r[k] = float(r[k]) if r[k] != "" else None
     for k in ("held", "held_wind", "held_unstated", "held_patrol", "held_mech", "held_weather"): r[k] = int(r[k])
     r["scheduled"] = r["scheduled"] == "True"
+    r["closed_all"] = int(r["closed_all"]); r["in_season"] = int(r["in_season"])
+    for k in ("sib_h40", "sib_h60"): r[k] = float(r[k]) if r[k] != "" else None
+rows = [r for r in rows if r["in_season"] == 1]            # season windows (rules/season_windows.json + the first roster day): days the side was not open are not evidence
+for r in rows: r["expected"] = r["scheduled"] or r["closed_all"] == 1   # a lift under a whole-side closure was meant to run that day even though no roster was posted
 WINTERS = sorted({r["winter"] for r in rows})
 FEATS = ["early_gust", "day_gust", "early_spd", "day_spd", "fnt_day_gust", "avy", "temp_base", "swe24", "swe6", "prec24s", "new_snow24"]   # same list as recover_rules.py
 def f1(tp, fp, fn): return 2 * tp / (2 * tp + fp + fn) if tp else 0.0

@@ -8,7 +8,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from ruleslib import ROOT, rows, FEATS, WINTERS, f1, fit        # the project's one definition of how rules are fitted
 APP = os.path.join(ROOT, "docs", "app")
-S = [r for r in rows if r["scheduled"]]
+for r in rows:
+    for k in [k for k in r if k.startswith("tag_")]: r[k]=int(r[k])
+S = [r for r in rows if r["expected"]]
 def f1(tp,fp,fn): return 2*tp/(2*tp+fp+fn) if tp else 0.0
 def fit(rs, y, feats):
     best=None
@@ -46,9 +48,15 @@ for L in LIFTS:
 days={}
 for r in rows:
     k=(r["winter"],r["date"])
-    d=days.setdefault(k,dict(date=r["date"],winter=r["winter"],x={f:r[f] for f in FEATS+["fnt_day_gust"]},act={}))
-    if r["scheduled"]:
-        cause="w" if r["held_wind"] else "p" if r["held_patrol"] else "m" if r["held_mech"] else "x" if r["held_weather"] else "u" if r["held_unstated"] else ""
+    d=days.setdefault(k,dict(date=r["date"],winter=r["winter"],x={f:r[f] for f in FEATS+["fnt_day_gust","sib_h60"]},act={}))
+    if r["closed_all"]:
+        t=d.setdefault("ca",dict(t=r["closed_all_time"],tags=[]))
+        t["t"]=min(t["t"],r["closed_all_time"]) if r["closed_all_time"] else t["t"]
+        t.setdefault("sides",[]); t["sides"]=sorted(set(t["sides"])|{r["side"]})
+        for g in ("avalanche","snow","ice","visibility","lightning","power","flood"):
+            if r["tag_"+g] and g not in t["tags"]: t["tags"].append(g)
+    if r["expected"]:
+        cause="c" if r["closed_all"] else "w" if r["held_wind"] else "p" if r["held_patrol"] else "m" if r["held_mech"] else "x" if r["held_weather"] else "u" if r["held_unstated"] else ""
         d["act"][r["lift"]]=[r["held"],cause]
 D=sorted([d for d in days.values() if d["act"]],key=lambda d:d["date"])
 
@@ -127,28 +135,46 @@ groups = dict(upper=[l for l in LG["palisades"]["UPPER_MOUNTAIN"]["lifts"] if l 
 PRESET_DATES = ("2024-12-15", "2024-12-16")                       # the "Set conditions" starting points read weather straight from the dataset
 feat = {d["date"]: d["x"] for d in days.values() if d["date"] in PRESET_DATES}
 # ---- plain-language findings the page quotes, computed here so the copy can never drift from the data
-SW = [r for r in rows if r["scheduled"] and r["day_gust"] is not None]
-GATE = {"Tram", "Funitel", "Base to Base Gondola"}; UPG, LOG = set(groups["upper"]), set(groups["lower"])
+SW = [r for r in rows if r["expected"] and r["day_gust"] is not None]
+GATE = {"Tram", "Funitel"}; UPG, LOG = set(groups["upper"]), set(groups["lower"])
 def rate(rs): return round(sum(r["held"] for r in rs) / len(rs), 3) if rs else None
 bydate = collections.defaultdict(list)
 for r in SW: bydate[(r["winter"], r["date"])].append(r)
-up_g, up_ng = [], []
+up_g, up_ng, up_g_o, up_ng_o = [], [], [], []          # *_o: days with no whole-side closure, so the cascade is not just "everything closed together"
 for rs in bydate.values():
-    gate_held = any(r["lift"] in GATE and r["held"] for r in rs)
+    gate_held = any(r["lift"] in GATE and r["held"] for r in rs); shut = any(r["closed_all"] for r in rs)
     (up_g if gate_held else up_ng).extend(r for r in rs if r["lift"] in UPG)
+    if not shut: (up_g_o if gate_held else up_ng_o).extend(r for r in rs if r["lift"] in UPG)
 H = [r for r in SW if r["held"]]
 def wshare(group):
     held = sum(b["held_days"] for l, b in book.items() if l in group); wind = sum(b["wind_days"] for l, b in book.items() if l in group)
     return round(wind / held, 3) if held else None
+# whole-side closures by avalanche danger and by gust, over every in-season day that has at least one expected lift row
+_days = {}
+for r in SW: _days.setdefault((r["winter"], r["date"]), dict(gust=r["day_gust"], avy=r["avy"], closed=0))["closed"] |= r["closed_all"]
+def _share(sel): sel = list(sel); return dict(n=len(sel), share=round(sum(d["closed"] for d in sel) / len(sel), 3) if sel else None)
+_cb_avy = {str(a): _share(d for d in _days.values() if d["avy"] is not None and round(d["avy"]) == a) for a in (1, 2, 3, 4)}
+_cb_gust = {lab: _share(d for d in _days.values() if lo <= d["gust"] < hi) for lab, lo, hi in (("under60", 0, 60), ("60to80", 60, 80), ("80to100", 80, 100), ("100to130", 100, 130), ("130plus", 130, 999))}
+# storm days (2+ in of new snow, 1+ in of snow water in 24 h, or avalanche danger 3+) versus other days, wind under 60 mph: share of expected lifts held or closed, and share of days with any gateway or high lift held
+def _isstorm(r): return (r["new_snow24"] is not None and r["new_snow24"] >= 2) or (r["swe24"] is not None and r["swe24"] >= 1.0) or (r["avy"] is not None and r["avy"] >= 3)
+_calm = [r for r in SW if r["day_gust"] < 60 and (r["new_snow24"] is not None or r["avy"] is not None)]
+_st, _ot = [r for r in _calm if _isstorm(r)], [r for r in _calm if not _isstorm(r)]
+_storm = dict(held_storm=rate(_st), held_other=rate(_ot), n_storm=len(_st), n_other=len(_ot), days_storm=len({(r["winter"], r["date"]) for r in _st}), days_other=len({(r["winter"], r["date"]) for r in _ot}),
+              gate_storm=rate([r for r in _st if r["lift"] in GATE]), gate_other=rate([r for r in _ot if r["lift"] in GATE]))
+# duration: hours with gusts of 60 mph or more at Siberia (6am to 4pm), gateway lifts, days with a 60 to 100 mph peak
+_g = [r for r in SW if r["lift"] in GATE and r["sib_h60"] is not None and 60 <= r["day_gust"] < 100]
+_dur = {lab: dict(n=len(x), rate=rate(x)) for lab, x in (("h0to2", [r for r in _g if r["sib_h60"] <= 2]), ("h2to5", [r for r in _g if 2 < r["sib_h60"] <= 5]), ("h5to9", [r for r in _g if 5 < r["sib_h60"] <= 9]), ("h9plus", [r for r in _g if r["sib_h60"] > 9]))}
 posts_total = sum(len(json.load(open(f))) for f in glob.glob(f"{ROOT}/data/derived/20*_train.json") + glob.glob(f"{ROOT}/data/derived/20*_heldout.json"))
 facts = dict(posts_total=posts_total, posts_all3=ag["posts"],
-             up_when_gate_held=rate(up_g), up_when_no_gate_held=rate(up_ng),
+             up_when_gate_held=rate(up_g), up_when_no_gate_held=rate(up_ng), up_when_gate_held_open=rate(up_g_o), up_when_no_gate_held_open=rate(up_ng_o),
              windy_hold_rate=dict(gates=rate([r for r in SW if r["lift"] in GATE and r["day_gust"] >= 60]), upper=rate([r for r in SW if r["lift"] in UPG and r["day_gust"] >= 60]), lower=rate([r for r in SW if r["lift"] in LOG and r["day_gust"] >= 60])),
              wind_named_share_upper=wshare(GATE | UPG), wind_named_share_lower=wshare(LOG),
              wind_named_holds_on_60=round(sum(1 for r in H if r["held_wind"] and r["day_gust"] >= 60) / max(1, sum(1 for r in H if r["held_wind"])), 3),
              holds_on_days_below_60=round(sum(1 for r in H if r["day_gust"] < 60) / len(H), 3),
              holds_no_cause=round(sum(r["held_unstated"] for r in H) / len(H), 3), holds_wind=round(sum(r["held_wind"] for r in H) / len(H), 3),
-             hold_lift_days=len(H), scheduled_lift_days=len(SW))
+             hold_lift_days=len(H), scheduled_lift_days=len(SW),
+             closure_days=len({(r["winter"], r["date"]) for r in rows if r["closed_all"]}),
+             closure_by_avy=_cb_avy, closure_by_gust=_cb_gust, storm=_storm, dur=_dur)
 model=dict(facts=facts,feat=feat,groups=groups,proof=proof,commit=commit,lifts=LIFTS,book=book,loo=loo,days=D,posts={d["date"]:posts.get(d["date"],[]) for d in D},medians=med,arch=archetypes,agree=agree,disagree=disagree,winters=WINTERS,built=datetime.now().strftime("%Y-%m-%d %H:%M"))
 open(os.path.join(APP,"model.js"),"w").write("window.MODEL = "+json.dumps(model,separators=(",",":"))+";\n")
 print("lifts",len(LIFTS),"days",len(D),"posts",sum(len(v) for v in posts.values()),"size KB",os.path.getsize(os.path.join(APP,"model.js"))//1024)

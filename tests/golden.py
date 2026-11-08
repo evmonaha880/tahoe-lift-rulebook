@@ -194,6 +194,17 @@ CASES = [
  ("Palisades Now Open: Tram Funitel KT-22 HC Carpet Big Blue", [(R, "High Camp Carpet", None)], [(R, "Palisades Carpets")]),
  ("We received 12 inches of snow in the last 24 hours! Operational delays are expected due to heavy snowfall and high winds.", [(W, None, "wind")], [(D, None)]),
  ("Palisades Open at 9am:\nFunitel\nKT\nRed Dog\n\nWind Hold:\nBase 2 Base – Both sides\nTram\nBailey's", [(H, "Base to Base Gondola", "wind"), (H, "Tram", "wind")], []),
+ # ---- P-022 whole-resort / whole-side closure (added 2026-11-07 after the deadline; patterns drawn from train-split posts, held-out checked separately)
+ ("Both side of Palisades Tahoe are CLOSED today due to avalanche hazard  and limited access on the mountain. #palisadesops", [(C, "ALL", "patrol")], [(H, None), (R, None)]),
+ ("Palisades Tahoe is CLOSED today: We received 38 inches of snow in the last 24 hours and have another 38\"+ in the forecast for the next 24 hours.", [(C, "ALL", "weather")], []),
+ ("OPS UPDATE: ALL LIFTS CLOSED TODAY In order to focus on reopening the mountain quickly after the storm clears, all lift ops are closed today.", [(C, "ALL", None)], [(R, None)]),
+ ("Due to intense snowfall, extremely high winds and low visibility, all lifts (Alpine and Palisades side) are closed for today.", [(C, "ALL", "wind")], []),
+ ("Reminder that Alpine is closed today. Palisades has 10 lifts on the schedule for 8a - 2p.", [(C, "ALL_ALPINE", None)], [(C, "ALL_PALISADES")]),
+ ("Due to high avalanche danger and flooding on Olympic Valley Rd and Alpine Meadows Rd, Palisades Tahoe will not have any lift operations today.", [(C, "ALL", None)], []),
+ ("Alpine Meadows Road is closed while we perform avalanche mitigation.", [], [(C, None), (H, None)]),
+ ("All lifts that were on wind hold are now closed for the day.", [(C, "ALL_ON_HOLD", "wind")], [(C, "ALL"), (C, "ALL_PALISADES")]),
+ ("Alpine Bowl Chair is now closed for the remainder of the day.", [(C, "Alpine Bowl", None)], [(C, "ALL_ALPINE")]),
+ ("Due to forecasted weather conditions, Alpine will be closed on Friday, March 1st. Thank you.", [(W, "ALL_ALPINE", None)], [(C, None)]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

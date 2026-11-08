@@ -9,6 +9,10 @@ for r in rows:
     for k in NUM: r[k] = float(r[k]) if r[k] != "" else None
     for k in ("held", "held_wind", "held_unstated", "held_patrol", "held_mech", "held_weather"): r[k] = int(r[k])
     r["scheduled"] = r["scheduled"] == "True"
+    r["closed_all"] = int(r["closed_all"]); r["in_season"] = int(r["in_season"])
+    for k in ("sib_h40", "sib_h60"): r[k] = float(r[k]) if r[k] != "" else None
+rows = [r for r in rows if r["in_season"] == 1]            # season windows (rules/season_windows.json + the first roster day): days the side was not open are not evidence
+for r in rows: r["expected"] = r["scheduled"] or r["closed_all"] == 1   # a lift under a whole-side closure was meant to run that day even though no roster was posted
 WINTERS = sorted({r["winter"] for r in rows})
 FEATS = ["early_gust", "day_gust", "early_spd", "day_spd", "fnt_day_gust", "avy", "temp_base", "swe24", "swe6", "prec24s", "new_snow24"]
 def f1(tp, fp, fn): return 2 * tp / (2 * tp + fp + fn) if tp else 0.0
@@ -80,7 +84,7 @@ for W in WINTERS:
     sc = score(sub, lambda r: r[fa] >= a and r[fb] >= bb, "held_patrol"); allpos = 2 * sc["base_rate"] / (1 + sc["base_rate"])
     print(f"  {W}: {fa}>={a:.2f} AND {fb}>={bb:.2f} -> F1 {sc['f1']:.2f} (precision {sc['precision']}, recall {sc['recall']}); 'always say hold' would score {allpos:.2f}")
 # ---------- lift level (scheduled lift-days only: the roster says the lift was meant to run)
-S = [r for r in rows if r["scheduled"]]
+S = [r for r in rows if r["expected"]]
 cnt = collections.Counter(r["lift"] for r in S); LIFTS = [l for l, n in cnt.items() if n >= 40]
 print(f"\nLIFT LEVEL: {len(S)} scheduled lift-days, {len(LIFTS)} lifts with >=40 days")
 agg_l = collections.defaultdict(lambda: dict(tp=0, fp=0, fn=0)); agg_b = collections.defaultdict(lambda: dict(tp=0, fp=0, fn=0))
@@ -94,7 +98,7 @@ for L in sorted(LIFTS):
                 observed_wind_stated_days=sum(r['held_wind'] for r in full), observed_held_days=sum(r['held'] for r in full),
                 unstated_cause_days=sum(r['held_unstated'] for r in full), loo={})
     for W in WINTERS:
-        tr = [r for r in full if r["winter"] != W]; te = [r for r in full if r["winter"] == W and r["scheduled"]]
+        tr = [r for r in full if r["winter"] != W]; te = [r for r in full if r["winter"] == W and r["expected"]]
         if len(tr) < 25 or len(te) < 10: continue
         b = fit(tr, "held", fs)
         if not b: continue

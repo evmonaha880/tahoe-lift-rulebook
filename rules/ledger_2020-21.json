@@ -81,6 +81,15 @@
   "status": "proposed"
  },
  {
+  "rule_id": "P-022",
+  "event_type": "closed_day",
+  "pattern": "Whole-resort or whole-side closure with no lift named: 'Palisades Tahoe is CLOSED today', 'ALL LIFTS CLOSED TODAY', 'will not have any lift operations' (lift = ALL_PALISADES / ALL_ALPINE / ALL)",
+  "winters": [
+   "2020-21"
+  ],
+  "status": "proposed"
+ },
+ {
   "rule_id": "P-030",
   "event_type": "delay",
   "pattern": "'Delayed Opening' or '<lift> on a mechanical delay'",

@@ -4,9 +4,9 @@ D.strata.forEach(s=>Object.assign(s,P.strata[s.winter]));   // per-winter days, 
 const $=id=>document.getElementById(id);
 const dec=s=>{const t=document.createElement('textarea');t.innerHTML=String(s);return t.value;};
 const esc=s=>dec(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const GATES=['Tram','Funitel','Base to Base Gondola'];
+const GATES=['Tram','Funitel'];
 const UPPER=M.groups.upper, LOWER=M.groups.lower, ALPINE=M.groups.alpine;   // from rules/lift_groups.json
-const TIERS=[['gate','The gateways',GATES],['up','Upper mountain',UPPER],['low','Lower mountain',LOWER],['alp','Alpine Meadows',ALPINE]];
+const TIERS=[['gate','The gateways (Tram and Funitel)',GATES],['link','Base to Base',['Base to Base Gondola']],['up','Upper mountain',UPPER],['low','Lower mountain',LOWER],['alp','Alpine Meadows',ALPINE]];
 const FL={day_gust:['gusts over the day','mph'],early_gust:['early-morning gusts','mph'],day_spd:['sustained wind over the day','mph'],early_spd:['early-morning wind','mph'],swe24:['snow water in 24 hours','in'],avy:['avalanche danger','of 5'],temp_base:['base temperature','F'],swe6:['snow water in 6 hours','in'],prec24s:['precipitation in 24 hours','in'],fnt_day_gust:['gusts at the Funitel top (partly estimated)','mph'],new_snow24:['new snow in 24 hours (Alpine base depth)','in']};
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const dlabel=d=>{const p=d.split('-');return MON[+p[1]-1]+' '+(+p[2])+', '+p[0]};
@@ -76,6 +76,13 @@ function scene(){
   const rows=M.lifts.map(L=>{const rule=rules[L]||M.book[L]; const o=odds(rule,Object.assign({},M.medians,x)); const a=day?day.act[L]:null; return {L,rule,o,a,scheduled:replay?!!a:true};});
   return {replay,day,x,rows};
 }
+/* ---- conditions and whole-mountain closures ---- */
+const isStorm=x=>(x.new_snow24!=null&&x.new_snow24>=2)||(x.swe24!=null&&x.swe24>=1)||(x.avy!=null&&x.avy>=3);
+const TAGW={avalanche:'avalanche danger',snow:'snow',ice:'ice',visibility:'low visibility',lightning:'lightning',power:'power',flood:'flooding'};
+function closureLine(day){ if(!day||!day.ca) return ''; const c=day.ca, sd=(c.sides||[]).map(s=>s==='alpine'?'Alpine':'Palisades').join(' and ');
+  return '<div class="legend2" style="border-left:3px solid var(--hold)"><b>Whole-mountain closure.</b> Operators closed all lifts at '+(sd||'the resort')+(c.t?' by '+c.t:'')+(c.tags&&c.tags.length?' ('+c.tags.map(t=>TAGW[t]||t).join(', ')+' named in the post)':'')+'. The tiles below count every lift as held.</div>'; }
+function condLine(x){ const b=[]; if(x.day_gust!=null) b.push('gusts '+Math.round(x.day_gust)+' mph'); if(x.sib_h60!=null) b.push(x.sib_h60+' hours at 60 mph or more'); if(x.new_snow24!=null) b.push('new snow '+Math.round(x.new_snow24)+' in'); if(x.swe24!=null) b.push('snow water '+x.swe24.toFixed(1)+' in'); if(x.avy!=null) b.push('avalanche danger '+Math.round(x.avy)+' of 5');
+  return b.length?'<div class="legend2"><b>Conditions.</b> '+b.join(', ')+'.</div>':''; }
 /* ---- center: the mountain ---- */
 function drawCenter(){
   const sc=scene(); let banner='';
@@ -84,7 +91,7 @@ function drawCenter(){
     const live=sc.rows.filter(r=>r.a&&r.o); const H=live.filter(r=>r.a[0]).length;
     const C=live.filter(r=>r.a[0]&&r.o.p>=.5).length, FA=live.filter(r=>!r.a[0]&&r.o.p>=.5).length;
     const nq=NAIVE(sc.x), nC=nq?H:0, nFA=nq?live.filter(r=>!r.a[0]).length:0; const lq=sc.x.day_gust>=LINE[S.winter], lC=lq?H:0, lFA=lq?live.filter(r=>!r.a[0]).length:0;
-    banner='<b>'+dlabel(S.date)+'.</b> Operators held <b>'+H+'</b> of '+live.length+' scheduled lifts. The book caught <b>'+C+'</b> and wrongly called a hold on <b>'+FA+'</b> that ran. One '+LINE[S.winter]+' mph wind line caught <b>'+lC+'</b> and wrongly called <b>'+lFA+'</b>. A 25 mph rule caught <b>'+nC+'</b> and wrongly called <b>'+nFA+'</b>.'+legend;
+    banner='<b>'+dlabel(S.date)+'.</b> Operators held <b>'+H+'</b> of '+live.length+' scheduled lifts. The book caught <b>'+C+'</b> and wrongly called a hold on <b>'+FA+'</b> that ran. One '+LINE[S.winter]+' mph wind line caught <b>'+lC+'</b> and wrongly called <b>'+lFA+'</b>. A 25 mph rule caught <b>'+nC+'</b> and wrongly called <b>'+nFA+'</b>.'+closureLine(sc.day)+condLine(sc.x)+legend;
   } else {
     const n=sc.rows.filter(r=>r.o&&r.o.p>=.5).length, gate=sc.rows.filter(r=>GATES.includes(r.L)&&r.o&&r.o.p>=.5).length;
     const ar=(M.arch||[]).find(a=>a.id===S.arch); banner=(ar?'<b>Possible 2026-27 day: '+esc(ar.name)+'.</b> ':'')+'<b>'+n+'</b> of '+sc.rows.length+' lifts likely to hold.'+(gate?' <span style="color:var(--hold)">A gateway lift is at risk. When a gateway holds, about half of the upper mountain ('+Math.round(M.facts.up_when_gate_held*100)+'% of lift-days) holds with it.</span>':' The gateways look clear.')+'<div class="legend2"><b>Odds</b> = how often that lift held on past days at or past its line. Fitted on all eight winters, not held out.</div>';
@@ -102,7 +109,7 @@ function tile(r,sc,gate){
   if(sc.replay&&!r.a) return '<div class="tile na"><div class="n">'+esc(r.L)+'</div><div class="p">–</div><div class="bar"><i style="width:0"></i></div><div class="a">not on the schedule</div></div>';
   const p=r.o?r.o.p:null, pct=p==null?'–':Math.round(p*100)+'%';
   let cls='tile'+(gate?' gate':'')+(r.o&&r.o.fired?' fired':''), a='',m='';
-  if(sc.replay&&r.a){ const held=r.a[0]; cls+=held?' held':' ran'; const why={w:'wind',p:'snow safety',m:'mechanical',x:'weather',u:'no cause given','':''}[r.a[1]];
+  if(sc.replay&&r.a){ const held=r.a[0]; cls+=held?' held':' ran'; const why={w:'wind',p:'snow safety',m:'mechanical',x:'weather',u:'no cause given',c:'whole mountain closed','':''}[r.a[1]];
     a=held?'HELD'+(why?' · '+why:''):'ran'; if(p!=null) m='<span class="m">'+((p>=.5)===!!held?'✓':'✗')+'</span>'; }
   return '<div class="'+cls+'">'+m+'<div class="n">'+esc(r.L)+'</div><div class="p">'+pct+'</div><div class="bar"><i style="width:'+(p==null?0:p*100)+'%"></i></div><div class="a">'+a+'</div></div>';
 }
@@ -110,7 +117,7 @@ function tile(r,sc,gate){
 function drawRight(){
   const sc=scene(); let h='<h3>The sutras that apply</h3>';
   const fired=sc.rows.filter(r=>r.o&&r.o.fired&&(!sc.replay||r.a)).sort((a,b)=>b.o.p-a.o.p);
-  const missedAll=sc.replay?sc.rows.filter(r=>r.a&&r.a[0]&&(!r.o||r.o.p<.5)):[];
+  const missedAll=sc.replay?sc.rows.filter(r=>r.a&&r.a[0]&&r.a[1]!=='c'&&(!r.o||r.o.p<.5)):[];
   const missed=missedAll.filter(r=>!r.o||r.o.p<.25), near=missedAll.filter(r=>r.o&&r.o.p>=.25);
   fired.slice(0,3).forEach(r=>{
     const R=r.o.rule, fl=FL[R.f]||[R.f,''], full=M.book[r.L];
@@ -120,12 +127,18 @@ function drawRight(){
       '<div class="pencil"><b>Pencil.</b> The '+Math.round(R.t)+' line was worked out from weather'+(sc.replay?', without this winter':'')+'.</div></div>';
   });
   if(fired.length>3) h+='<div class="note" style="margin-top:0">and '+(fired.length-3)+' more lifts are past their line.</div>';
-  if(!fired.length&&!missed.length&&!near.length) h+='<div class="empty">No sutra applies. The chairs spin.</div>';
-  else if(!fired.length) h+='<div class="empty">No sutra applies here.</div>';
+  const xx=Object.assign({},M.medians,sc.x), ST=M.facts.storm, stormOn=isStorm(xx)&&xx.day_gust<60;
+  const CG=M.facts.closure_by_gust, CAV=M.facts.closure_by_avy, GL={under60:'under 60 mph',"60to80":'60 to 80 mph',"80to100":'80 to 100 mph',"100to130":'100 to 130 mph',"130plus":'130 mph or more'};
+  const gk=xx.day_gust==null?null:xx.day_gust<60?'under60':xx.day_gust<80?'60to80':xx.day_gust<100?'80to100':xx.day_gust<130?'100to130':'130plus', ak=xx.avy==null?null:String(Math.max(1,Math.min(4,Math.round(xx.avy))));
+  const closeOn=CG&&((sc.day&&sc.day.ca)||(xx.day_gust!=null&&xx.day_gust>=100)||(xx.avy!=null&&xx.avy>=4));
+  if(closeOn&&gk&&CG[gk]&&CG[gk].share!=null) h+='<div class="sut"><div class="h">Whole-mountain closure<span>'+Math.round(CG[gk].share*100)+'%</span></div><p>On days with gusts '+GL[gk]+', operators closed every lift on '+Math.round(CG[gk].share*100)+'% of days ('+CG[gk].n+' days)'+(ak&&CAV&&CAV[ak]&&CAV[ak].share!=null?'; at avalanche danger '+ak+' of 5, on '+Math.round(CAV[ak].share*100)+'% of days ('+CAV[ak].n+' days)':'')+'.</p><div class="ink"><b>Ink.</b> "All lifts closed today" posts, '+M.facts.closure_days+' days in the eight winters.</div><div class="pencil"><b>Pencil.</b> Shares are counted from the posts, not fitted.</div></div>';
+  if(stormOn&&ST) h+='<div class="sut"><div class="h">Snow and avalanche<span>'+Math.round(ST.held_storm*100)+'%</span></div><p>With wind under 60 mph, '+Math.round(ST.held_storm*100)+'% of lifts were held or closed on days with 2+ in of new snow, 1+ in of snow water or avalanche danger 3+, against '+Math.round(ST.held_other*100)+'% on other days ('+ST.days_storm+' such days).</p><div class="ink"><b>Ink.</b> Operators name avalanche control, snow safety and storm delays in their posts on these days.</div><div class="pencil"><b>Pencil.</b> The storm test is a plain rule read from the data, not a fitted line.</div></div>';
+  if(!fired.length&&!missed.length&&!near.length&&!stormOn&&!closeOn) h+='<div class="empty">No sutra applies. The chairs spin.</div>';
+  else if(!fired.length&&!stormOn&&!closeOn) h+='<div class="empty">No sutra applies here.</div>';
   if(near.length){h+='<div class="note" style="margin:10px 0"><b>A near miss.</b> '+near.slice(0,6).map(r=>esc(r.L)+' ('+Math.round(r.o.p*100)+'%)').join(', ')+' held, just under the book\'s 50% line.</div>';}
   if(missed.length){
-    const cc={};missed.forEach(r=>{const k={w:'wind',p:'snow safety',m:'mechanical',x:'weather',u:'no cause given','':'cause unknown'}[r.a[1]];cc[k]=(cc[k]||0)+1;});
-    h+='<div class="torn"><b>A missing page.</b> Fewer than 1 in 4 odds, yet '+missed.length+' lift'+(missed.length===1?'':'s')+' held that no sutra called: '+missed.slice(0,6).map(r=>esc(r.L)).join(', ')+(missed.length>6?' and '+(missed.length-6)+' more':'')+'. Operators gave: '+Object.entries(cc).map(([k,v])=>v+' '+k).join(', ')+'.</div>';
+    const cc={};missed.forEach(r=>{const k={w:'wind',p:'snow safety',m:'mechanical',x:'weather',u:'no cause given',c:'whole mountain closed','':'cause unknown'}[r.a[1]];cc[k]=(cc[k]||0)+1;});
+    h+='<div class="torn"><b>A missing page.</b> Fewer than 1 in 4 odds, yet '+missed.length+' lift'+(missed.length===1?'':'s')+' held that no sutra called: '+missed.slice(0,6).map(r=>esc(r.L)).join(', ')+(missed.length>6?' and '+(missed.length-6)+' more':'')+'. Operators gave: '+Object.entries(cc).map(([k,v])=>v+' '+k).join(', ')+'.'+(stormOn?' Snow or avalanche work is the likely reason: this was a storm or avalanche-danger day.':'')+'</div>';
   }
   if(sc.replay){
     const ps=M.posts[S.date]||[];
@@ -140,13 +153,13 @@ document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{S.tab=b.datas
 $('pill').textContent='rules built '+M.built+' · '+M.lifts.length+' lifts · '+M.winters.length+' winters';
 
 /* ---- landing ---- */
-(function(){ const A=M.agree||D.agree, ln=D.strata.map(s=>s.line), lo=Math.min(...ln), hi=Math.max(...ln);
+(function(){ const F=M.facts, A=M.agree||D.agree, ln=D.strata.map(s=>s.line), lo=Math.min(...ln), hi=Math.max(...ln);
   $('h_posts').textContent=M.facts.posts_total.toLocaleString(); $('h_read').textContent='read the posts ('+M.facts.posts_all3.toLocaleString()+' read by all three)'; $('h_wint').textContent=M.winters.length; $('h_line').textContent=Math.round((lo+hi)/2);
-  $('g1').textContent='Found in all '+M.winters.length+' winters, each time without peeking at that winter, between '+lo.toFixed(1)+' and '+hi.toFixed(1)+' mph. Each lift then has its own line, '+lineBits()+'. Where operators named wind, the crest gusts that day were sixty or more '+Math.round(M.facts.wind_named_holds_on_60*100)+'% of the time.';
-  const F=M.facts, pc=x=>Math.round(x*100)+'%', td=dayBy('2023-03-15'), tdh=td?Object.values(td.act).filter(a=>a[0]).length:null;
-  $('g2').textContent='Everything on the upper mountain hangs from the Tram and the Funitel. When a gateway lift holds, '+pc(F.up_when_gate_held)+' of upper-mountain lift-days hold with it; when no gateway holds, '+pc(F.up_when_no_gate_held)+'.';
-  $('g3').textContent='KT-22, Exhibition, Red Dog and Resort Chair still run '+pc(1-F.windy_hold_rate.lower)+' of the time on days with gusts of sixty or more. When they do stop, wind is named on '+pc(F.wind_named_share_lower)+' of their holds, against '+pc(F.wind_named_share_upper)+' on the high lifts.'+lowerBits();
-  $('g4').textContent='A calm morning in 2023: '+(tdh!=null?tdh:'several')+' lifts held, gusts only '+(td?Math.round(td.x.day_gust):22)+' mph. This page is torn out. Overall '+pc(F.holds_on_days_below_60)+' of lift holds come on days under the sixty line, and '+pc(F.holds_no_cause)+' come with no cause given.';
+  $('g1').textContent='Found in all '+M.winters.length+' winters, each time without peeking at that winter, between '+lo.toFixed(1)+' and '+hi.toFixed(1)+' mph. Each lift then has its own line, '+lineBits()+'. Where operators named wind, the crest gusts that day were sixty or more '+Math.round(M.facts.wind_named_holds_on_60*100)+'% of the time. Hours matter too: with a 60 to 100 mph peak, a gateway held on '+(F.dur&&F.dur.h0to2?Math.round(F.dur.h0to2.rate*100)+'%':'few')+' of days with 2 hours or less at 60+, and '+(F.dur?Math.round(((F.dur.h5to9?F.dur.h5to9.n*F.dur.h5to9.rate:0)+(F.dur.h9plus?F.dur.h9plus.n*F.dur.h9plus.rate:0))/Math.max(1,(F.dur.h5to9?F.dur.h5to9.n:0)+(F.dur.h9plus?F.dur.h9plus.n:0))*100)+'%':'many')+' with more than 5.';
+  const pc=x=>Math.round(x*100)+'%', td=dayBy('2023-03-15'), tdh=td?Object.values(td.act).filter(a=>a[0]).length:null;
+  const ST=F.storm||{}, CA=F.closure_by_avy||{};
+  $('g2').textContent='Everything on the upper mountain hangs from the Tram and the Funitel. When a gateway lift holds, '+pc(F.up_when_gate_held)+' of upper-mountain lift-days hold with it ('+pc(F.up_when_gate_held_open)+' on days without a whole-mountain closure); when no gateway holds, '+pc(F.up_when_no_gate_held)+'.';
+  $('g4').textContent='With wind under 60 mph, '+pc(ST.held_storm)+' of lifts were held or closed on days with 2+ in of new snow, 1+ in of snow water or avalanche danger 3+, against '+pc(ST.held_other)+' on other days. Avalanche danger 4 closed the whole mountain on '+(CA['4']?pc(CA['4'].share):'many')+' of days ('+F.closure_days+' closure days in all).';
   document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>{ const t=b.dataset.goto; document.querySelector('#nav [data-v='+t+']').click(); }); })();
 /* ---- dig ---- */
 let sel=1;
