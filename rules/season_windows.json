@@ -138,5 +138,6 @@
   "Alpine open/close for several winters",
   "Palisades 2022-23 exact opening day"
  ],
- "_sides_note": "Palisades and Alpine do not always open and close on the same days (Alpine often closes earlier in spring; Palisades has run into May or July 4th in big years). The Base to Base Gondola keeps its own seasonal timeline; build_dataset.py treats it as in season when either side is. General summary supplied by Evan, unverified."
+ "_sides_note": "Palisades and Alpine do not always open and close on the same days (Alpine often closes earlier in spring; Palisades has run into May or July 4th in big years). The Base to Base Gondola keeps its own seasonal timeline; build_dataset.py treats it as in season when either side is. General summary supplied by Evan, unverified.",
+ "_covid_note": "2019-20 ended with the COVID-19 suspension on 2020-03-15 (posts end 2020-03-14). Winter 2020-21 ran under operating rules (reservations, capacity limits); it is flagged covid_era=restricted and left out of lift-level fits."
 }

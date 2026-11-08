@@ -10,7 +10,13 @@ from ruleslib import ROOT, rows, FEATS, WINTERS, f1, fit        # the project's 
 APP = os.path.join(ROOT, "docs", "app")
 for r in rows:
     for k in [k for k in r if k.startswith("tag_")]: r[k]=int(r[k])
-S = [r for r in rows if r["expected"]]
+INF = {}                                                    # inferred causes (scripts/infer_causes.py): confident ones only, shown as inferred in the app
+_f = os.path.join(ROOT, "data", "derived", "cause_inferred.csv")
+if os.path.exists(_f):
+    import csv as _csv
+    for _r in _csv.DictReader(open(_f)):
+        if _r["confident"] == "1": INF[(_r["winter"], _r["date"], _r["lift"])] = {"wind": "w", "patrol": "p", "mechanical": "m", "weather": "x"}[_r["cause_inferred"]]
+S = [r for r in rows if r["fit_ok"]]
 def f1(tp,fp,fn): return 2*tp/(2*tp+fp+fn) if tp else 0.0
 def fit(rs, y, feats):
     best=None
@@ -57,7 +63,7 @@ for r in rows:
             if r["tag_"+g] and g not in t["tags"]: t["tags"].append(g)
     if r["expected"]:
         cause="c" if r["closed_all"] else "w" if r["held_wind"] else "p" if r["held_patrol"] else "m" if r["held_mech"] else "x" if r["held_weather"] else "u" if r["held_unstated"] else ""
-        d["act"][r["lift"]]=[r["held"],cause]
+        d["act"][r["lift"]]=[r["held"],cause]+([INF[(r["winter"],r["date"],r["lift"])]] if cause=="u" and (r["winter"],r["date"],r["lift"]) in INF else [])
 D=sorted([d for d in days.values() if d["act"]],key=lambda d:d["date"])
 
 # 2026-27 El Nino possibilities: medians of matching days from the El Nino winters in the data (2018-19 weak, 2019-20 weak, 2023-24 strong)
@@ -135,7 +141,7 @@ groups = dict(upper=[l for l in LG["palisades"]["UPPER_MOUNTAIN"]["lifts"] if l 
 PRESET_DATES = ("2024-12-15", "2024-12-16")                       # the "Set conditions" starting points read weather straight from the dataset
 feat = {d["date"]: d["x"] for d in days.values() if d["date"] in PRESET_DATES}
 # ---- plain-language findings the page quotes, computed here so the copy can never drift from the data
-SW = [r for r in rows if r["expected"] and r["day_gust"] is not None]
+SW = [r for r in rows if r["fit_ok"] and r["day_gust"] is not None]
 GATE = {"Tram", "Funitel"}; UPG, LOG = set(groups["upper"]), set(groups["lower"])
 def rate(rs): return round(sum(r["held"] for r in rs) / len(rs), 3) if rs else None
 bydate = collections.defaultdict(list)

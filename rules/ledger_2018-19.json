@@ -90,6 +90,15 @@
   "status": "proposed"
  },
  {
+  "rule_id": "P-012h",
+  "event_type": "warning",
+  "pattern": "Hedged wording in any post: 'winds may impact lift operations', 'please EXPECT DELAYS', 'possible wind holds' (a prediction; post-level, lift None)",
+  "winters": [
+   "2018-19"
+  ],
+  "status": "proposed"
+ },
+ {
   "rule_id": "P-030",
   "event_type": "delay",
   "pattern": "'Delayed Opening' or '<lift> on a mechanical delay'",

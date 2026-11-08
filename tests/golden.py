@@ -206,6 +206,11 @@ CASES = [
  ("Alpine Bowl Chair is now closed for the remainder of the day.", [(C, "Alpine Bowl", None)], [(C, "ALL_ALPINE")]),
  ("Due to forecasted weather conditions, Alpine will be closed on Friday, March 1st. Thank you.", [(W, "ALL_ALPINE", None)], [(C, None)]),
  ("Due to increasing winds, all lifts that are currently on wind hold are now closed for the day.  The Funitel is also experiencing increased winds.", [(C, "ALL_ON_HOLD", "wind")], [(C, "ALL"), (C, "ALL_PALISADES")]),
+ # ---- P-012h hedged wording (train-post patterns)
+ ("Palisades: snow, high of 38, SW winds of 30mph+. Weather may impact lifts.  21 lift 9a-4p:  Base to Base Tram Funitel KT Red Dog Resort", [(W, None, None), (S, "Tram", None)], [(H, None), (C, None)]),
+ ("Alpine: 12\" overnight 35\" in 24h. 11 lifts scheduled but please EXPECT DELAYS. Cloudy skies, a high of 26 and NE winds of 20+mph.", [(W, None, None)], [(H, None)]),
+ ("Increasing winds this AM will impact operations.  Est. 9am Open: Tram B2B Far East Funitel KT22 Red Dog", [(W, None, "wind")], [(H, None), (C, None)]),
+ ("We have received over 2 feet of new snow in the past 24 hours! High winds and heavy snow will affect lift operations today.", [(W, None, None)], [(H, None)]),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

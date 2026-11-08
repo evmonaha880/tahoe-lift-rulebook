@@ -109,6 +109,7 @@ RULES = [
     ("P-020", "closed_day", "'<lifts> closed for the day/remainder' or 'off (the) schedule' or 'now closed'"),
     ("P-021", "closed_day", "'All lifts ... are now closed for the day' (lifts = all)"),
     ("P-022", "closed_day", "Whole-resort or whole-side closure with no lift named: 'Palisades Tahoe is CLOSED today', 'ALL LIFTS CLOSED TODAY', 'will not have any lift operations' (lift = ALL_PALISADES / ALL_ALPINE / ALL)"),
+    ("P-012h", "warning", "Hedged wording in any post: 'winds may impact lift operations', 'please EXPECT DELAYS', 'possible wind holds' (a prediction; post-level, lift None)"),
     ("P-030", "delay", "'Delayed Opening' or '<lift> on a mechanical delay'"),
     ("P-040", "reopen", "'<lifts> is/are (now/also) open' or 're-opened'"),
     ("P-050", "parking", "Parking lots full / parking at <alternate lot>"),
@@ -285,6 +286,23 @@ def split_roster_prose(raw):
         if len(x.split()) >= 5: return None
     return None
 
+# ---- P-012h hedged wording: a prediction, not an event ("winds may impact lift operations", "please EXPECT DELAYS", "possible wind holds").
+# Added to any post that has such a sentence and no warning event yet. Always post-level (lift None).
+HEDGE = re.compile(r"\b(?:may|might|could|can|will)\s+(?:also\s+)?(?:have an?\s+)?(?:impact|affect)\b[^.!?]{0,45}\b(?:lifts?|lift operations?|operations?|operation|status)\b|\b(?:lift operations?|operations?|openings?)\b[^.!?]{0,25}\b(?:may|might|could|will)\s+(?:be\s+)?(?:impact(?:ed)?|affect(?:ed)?|limit(?:ed)?|delay(?:ed)?)\b|\b(?:please\s+)?expect\s+(?:some\s+|possible\s+)?delays?\b|\b(?:may|might|could)\s+(?:result in|cause|see|bring)\s+(?:some\s+)?(?:delays?|holds?|closures?)\b|\bpossible\s+(?:wind\s+)?(?:holds?|delays?|closures?)\b|\bwinds?\s+(?:may|might|could)\b[^.!?]{0,35}\b(?:lifts?|operations?)\b", re.I)
+def hedged_warnings(p, ev, text):
+    if any(e["event_type"] == "warning" for e in ev) or re.search(r"\b(?:accident|hwy|highway|i-80|traffic|roads?|chains?|collision|crash|shuttle|parking)\b", text, re.I): return []      # road delays are not lift warnings
+    out = []
+    for sent in split_sentences(text):
+        m = HEDGE.search(sent)
+        if not m or re.search(r"\bwill have an? (?:slightly )?delayed (?:opening|start)\b", sent, re.I): continue
+        dt = datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles"))
+        base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None, "event_type": "warning", "parse_rule_id": "P-012h", "confidence": 1.0}
+        cause = cause_in(sent) or ("wind" if re.search(r"\bwinds?\b|gust", text, re.I) else None)
+        cause = {"lightning": "weather"}.get(cause, cause)
+        out.append({**base, "lift": None, "cause": cause, "cause_source": "observed" if cause else "unstated"})   # post-level: a roster in the same sentence would otherwise make every listed lift a subject
+        break
+    return out
+
 def parse_post(p):
     _CTX["t"] = " ".join(p["text"].replace("&amp;", "&").split())
     sp = split_roster_prose(p["text"])
@@ -293,6 +311,7 @@ def parse_post(p):
         ev = fill_causes(_CTX["t"], evs)
     else:
         ev = fill_causes(" ".join(p["text"].replace("&amp;", "&").split()), _parse_post(p))
+    ev = ev + hedged_warnings(p, ev, _CTX["t"])
     for e in ev:
         if e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "warning"): e["cause_tags"] = cause_tags(_CTX["t"])
     seen, out = set(), []

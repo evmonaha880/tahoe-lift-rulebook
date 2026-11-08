@@ -57,7 +57,7 @@ def lift_level(S):
     win = collections.Counter(max(M, key=lambda m: res[W][m]["f1"]) for W in WINTERS if W in res)
     res["winters_won_by_method"] = dict(win)
     return res
-SCHED = [r for r in rows if r["expected"]]
+SCHED = [r for r in rows if r["fit_ok"]]
 out["lift_level"] = lift_level(SCHED)                                   # headline: the roster said the lift was meant to run
 out["lift_level_all_named"] = lift_level(rows)                          # includes lifts that appear only because a post named them (76% held): inflated, shown to reconcile
 out["lift_level"]["row_set"] = "expected lift-days only (scheduled, plus lifts that normally run on a whole-side closure day)"; out["lift_level_all_named"]["row_set"] = "all lift-days incl. unscheduled lifts named only in hold/delay posts (selection-biased)"

@@ -147,6 +147,51 @@ def closure_kind(es, date):
     if tags & {"power", "flood"}: return "infrastructure"
     first = min(e["start"][11:16] for e in es)
     return "schedule" if date[5:7] in ("04", "05", "06") and first < "10:00" else "unstated"
+DAYFLAG = {"avy_control": r"avalanche|control work|mitigation|snow safety|hazard reduction", "power": r"power outage|lack of power|outage|electrical|generator|power loss|power is", "lightning": r"lightning|thunder",
+           "ice": r"\bice\b|\bicy\b|icing|rime|de-?ic", "vis": r"visibility|\bfog\b|whiteout|white-out", "mech": r"mechanical|winch|hose|technical|repair", "flood": r"flood|road (?:is )?closed|rock ?slide|mudslide"}
+def day_flags(W):
+    """day-level cause words from EVERY post that day (not only the posts that produced an event): {date: {flag: number of posts}}"""
+    out = collections.defaultdict(lambda: collections.Counter()); n = collections.Counter()
+    from zoneinfo import ZoneInfo
+    for sp in ("train", "heldout"):
+        for p in json.load(open(os.path.join(R, "derived", f"{W}_{sp}.json"))):
+            d = datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d"); n[d] += 1
+            for k, rx in DAYFLAG.items():
+                if re.search(rx, p["text"], re.I): out[d][k] += 1
+            if re.search(r"covid|coronavirus|pandemic|reservation|mask", p["text"], re.I): out[d]["covid"] += 1
+    return out, n
+def reader_labels(W):
+    """blind-reader scores for the 'closed' class: {post id: (Subquadratic, Meta Muse)}"""
+    out = {}
+    for sp in ("train", "heldout"):
+        try: a = json.load(open(os.path.join(R, "derived", f"{W}_{sp}_labels_subq.json"))); b = json.load(open(os.path.join(R, "derived", f"{W}_{sp}_labels_muse.json")))
+        except Exception: continue
+        for i in a:
+            x, y = a.get(i, {}), b.get(i, {})
+            out[str(i)] = (x.get("closed") if isinstance(x, dict) and "error" not in x else None, y.get("closed") if isinstance(y, dict) and "error" not in y else None)
+    return out
+def closure_conf(es, RL, f):
+    """confidence in a whole-side closure: how many of the two blind readers also call the post a closure, and whether the weather or the named cause makes it plausible"""
+    if not es: return {"closure_readers": "", "closure_plausible": "", "closure_conf": ""}
+    hits = 0
+    for e in es:
+        a, b = RL.get(str(e["source_post_id"]), (None, None)); hits = max(hits, int((a or 0) >= .5) + int((b or 0) >= .5))
+    tags = {t for e in es for t in (e.get("cause_tags") or [])}
+    ok = (f.get("day_gust") or 0) >= 60 or (f.get("avy") or 0) >= 3 or (f.get("swe24") or 0) >= 1.0 or bool(tags & {"lightning", "power", "flood", "visibility", "ice", "avalanche", "snow", "weather"})
+    return {"closure_readers": hits, "closure_plausible": int(ok), "closure_conf": "high" if hits == 2 and ok else "medium" if hits >= 1 or ok else "low"}
+def reopen_cols(mine, es, L):
+    """Observed: a reopening post for this lift (or its group) after the hold began the same day. Assumed (Evan, 2026-11-07): no reopening post that day means it did not reopen."""
+    h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day")]
+    if not h: return {"reopen_posted": "", "hold_minutes": "", "reopen_assumed_none": ""}
+    t0 = min(e["start"] for e in h)
+    ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t0 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
+    return {"reopen_posted": int(bool(ro)), "hold_minutes": minutes(t0, ro[0]) if ro else "", "reopen_assumed_none": int(not ro)}
+def covid_era(W, date):
+    if W == "2019-20" and date >= "2020-03-01": return "pre_closure"           # the resort suspended operations on 2020-03-15; posts end 2020-03-14
+    if W == "2020-21": return "restricted"                                     # reservations, capacity limits and health protocols all season
+    return ""
+def minutes(a, b):
+    return round((datetime.fromisoformat(b) - datetime.fromisoformat(a)).total_seconds() / 60)
 YEARS = list(map(int, sys.argv[1:]))
 EFFECTIVE = {}
 WEATHER = {Y: load_weather(Y) for Y in YEARS}
@@ -182,7 +227,7 @@ for Y in YEARS:
     ev = []
     for sp in ("train", "heldout"):
         for e in json.load(open(os.path.join(R, "derived", f"{W}_{sp}_events.json"))): e["split"] = sp; ev.append(e)
-    EFFECTIVE[W] = effective_windows(W, ev); ROSTER = typical_roster(ev)
+    EFFECTIVE[W] = effective_windows(W, ev); ROSTER = typical_roster(ev); DF, NPOSTS = day_flags(W); RL = reader_labels(W)
     by = collections.defaultdict(list)
     for e in ev: by[e["start"][:10]].append(e)
     for date, es in sorted(by.items()):
@@ -218,6 +263,10 @@ for Y in YEARS:
                    "held_unstated": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and not e["cause"] for e in mine)),
                    "closed_all": int(any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine)),
                    "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
+                   **closure_conf([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], RL, f),
+                   **reopen_cols(mine, es, L),
+                   "n_posts_day": NPOSTS.get(date, 0), "covid_era": covid_era(W, date),
+                   **{"day_" + k: DF[date].get(k, 0) for k in list(DAYFLAG) + ["covid"]},
                    "closed_all_time": min([e["start"][11:16] for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")] or [""]),
                    **{"tag_" + t: int(any(t in (e.get("cause_tags") or []) and e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)) for t in ("avalanche", "snow", "ice", "visibility", "lightning", "power", "flood", "rain")},
                    "side": SIDE.get(L, ""),

@@ -1,6 +1,8 @@
 # Data sources
 
-Final counts: 7,044 X posts (originals only) across 8 winters, 23,907 parsed events, 15,336 lift-days (10,232 scheduled; 851 more are lifts that normally run on a whole-mountain closure day, now counted as expected; 100 fall outside the season windows and are excluded from fitting). Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, not tested. Credentials live outside the repo. Raw data goes in `data/raw/` (git-ignored).
+Final counts: 7,044 X posts (originals only) across 8 winters, 23,907 parsed events, 15,333 lift-days (10,232 scheduled; 846 more are lifts that normally run on a whole-mountain closure day, now counted as expected; 99 fall outside the season windows; 214 expected lift-days in the 2020-21 COVID winter are left out of lift-level fits).
+
+New columns in `lift_days.csv` (2026-11-07 evening): `closed_all`, `closed_all_time`, `closure_kind`, `closure_conf`, `closure_readers`, `closure_plausible`, `in_season`, `side` (palisades, alpine or link), `tag_*` multi-label cause words, `day_*` counts of cause words in all of that day's posts (avalanche control, power, lightning, ice, visibility, mechanical, flood or road, COVID), `n_posts_day`, `covid_era`, `reopen_posted`, `hold_minutes`, `reopen_assumed_none`, `sib_h40`, `sib_h60`. Inferred causes are in `data/derived/cause_inferred.csv`, never in `lift_days.csv`. Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, not tested. Credentials live outside the repo. Raw data goes in `data/raw/` (git-ignored).
 
 ## 1. Lift status posts: Palisades ops account on X
 - **What:** the resort's operations account posts lift status (holds, reopenings, delays, schedules, and other operational notes). These are the events to explain.

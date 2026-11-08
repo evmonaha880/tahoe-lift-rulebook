@@ -79,10 +79,12 @@ function scene(){
 /* ---- conditions and whole-mountain closures ---- */
 const isStorm=x=>(x.new_snow24!=null&&x.new_snow24>=2)||(x.swe24!=null&&x.swe24>=1)||(x.avy!=null&&x.avy>=3);
 const TAGW={avalanche:'avalanche danger',snow:'snow',ice:'ice',visibility:'low visibility',lightning:'lightning',power:'power',flood:'flooding'};
-function closureLine(day){ if(!day||!day.ca) return ''; const c=day.ca, sd=(c.sides||[]).map(s=>s==='alpine'?'Alpine':'Palisades').join(' and ');
+function closureLine(day){ if(!day||!day.ca) return ''; const c=day.ca, sd=(c.sides||[]).filter(s=>s!=='link').map(s=>s==='alpine'?'Alpine':'Palisades').join(' and ');
   return '<div class="legend2" style="border-left:3px solid var(--hold)"><b>Whole-mountain closure.</b> Operators closed all lifts at '+(sd||'the resort')+(c.t?' by '+c.t:'')+(c.tags&&c.tags.length?' ('+c.tags.map(t=>TAGW[t]||t).join(', ')+' named in the post)':'')+'. The tiles below count every lift as held.</div>'; }
 function condLine(x){ const b=[]; if(x.day_gust!=null) b.push('gusts '+Math.round(x.day_gust)+' mph'); if(x.sib_h60!=null) b.push(x.sib_h60+' hours at 60 mph or more'); if(x.new_snow24!=null) b.push('new snow '+Math.round(x.new_snow24)+' in'); if(x.swe24!=null) b.push('snow water '+x.swe24.toFixed(1)+' in'); if(x.avy!=null) b.push('avalanche danger '+Math.round(x.avy)+' of 5');
   return b.length?'<div class="legend2"><b>Conditions.</b> '+b.join(', ')+'.</div>':''; }
+function covidLine(day){ if(!day) return ''; if(day.winter==='2020-21') return '<div class="legend2" style="border-left:3px solid var(--hold)"><b>COVID winter.</b> 2020-21 ran under operating rules (reservations, capacity limits). Lifts held or ran for reasons that are not weather, so this winter is shown here but left out of the lift-level rule fits.</div>';
+  if(day.winter==='2019-20'&&day.date>='2020-03-01') return '<div class="legend2" style="border-left:3px solid var(--hold)"><b>Last weeks of 2019-20.</b> The resort suspended operations on Mar 15, 2020 for COVID-19; the posts end on Mar 14.</div>'; return ''; }
 /* ---- center: the mountain ---- */
 function drawCenter(){
   const sc=scene(); let banner='';
@@ -91,7 +93,7 @@ function drawCenter(){
     const live=sc.rows.filter(r=>r.a&&r.o); const H=live.filter(r=>r.a[0]).length;
     const C=live.filter(r=>r.a[0]&&r.o.p>=.5).length, FA=live.filter(r=>!r.a[0]&&r.o.p>=.5).length;
     const nq=NAIVE(sc.x), nC=nq?H:0, nFA=nq?live.filter(r=>!r.a[0]).length:0; const lq=sc.x.day_gust>=LINE[S.winter], lC=lq?H:0, lFA=lq?live.filter(r=>!r.a[0]).length:0;
-    banner='<b>'+dlabel(S.date)+'.</b> Operators held <b>'+H+'</b> of '+live.length+' scheduled lifts. The book caught <b>'+C+'</b> and wrongly called a hold on <b>'+FA+'</b> that ran. One '+LINE[S.winter]+' mph wind line caught <b>'+lC+'</b> and wrongly called <b>'+lFA+'</b>. A 25 mph rule caught <b>'+nC+'</b> and wrongly called <b>'+nFA+'</b>.'+closureLine(sc.day)+condLine(sc.x)+legend;
+    banner='<b>'+dlabel(S.date)+'.</b> Operators held <b>'+H+'</b> of '+live.length+' scheduled lifts. The book caught <b>'+C+'</b> and wrongly called a hold on <b>'+FA+'</b> that ran. One '+LINE[S.winter]+' mph wind line caught <b>'+lC+'</b> and wrongly called <b>'+lFA+'</b>. A 25 mph rule caught <b>'+nC+'</b> and wrongly called <b>'+nFA+'</b>.'+closureLine(sc.day)+covidLine(sc.day)+condLine(sc.x)+legend;
   } else {
     const n=sc.rows.filter(r=>r.o&&r.o.p>=.5).length, gate=sc.rows.filter(r=>GATES.includes(r.L)&&r.o&&r.o.p>=.5).length;
     const ar=(M.arch||[]).find(a=>a.id===S.arch); banner=(ar?'<b>Possible 2026-27 day: '+esc(ar.name)+'.</b> ':'')+'<b>'+n+'</b> of '+sc.rows.length+' lifts likely to hold.'+(gate?' <span style="color:var(--hold)">A gateway lift is at risk. When a gateway holds, about half of the upper mountain ('+Math.round(M.facts.up_when_gate_held*100)+'% of lift-days) holds with it.</span>':' The gateways look clear.')+'<div class="legend2"><b>Odds</b> = how often that lift held on past days at or past its line. Fitted on all eight winters, not held out.</div>';
@@ -110,7 +112,7 @@ function tile(r,sc,gate){
   const p=r.o?r.o.p:null, pct=p==null?'–':Math.round(p*100)+'%';
   let cls='tile'+(gate?' gate':'')+(r.o&&r.o.fired?' fired':''), a='',m='';
   if(sc.replay&&r.a){ const held=r.a[0]; cls+=held?' held':' ran'; const why={w:'wind',p:'snow safety',m:'mechanical',x:'weather',u:'no cause given',c:'whole mountain closed','':''}[r.a[1]];
-    a=held?'HELD'+(why?' · '+why:''):'ran'; if(p!=null) m='<span class="m">'+((p>=.5)===!!held?'✓':'✗')+'</span>'; }
+    a=held?'HELD'+(why?' · '+why:'')+(r.a[1]==='u'&&r.a[2]?' (likely '+{w:'wind',p:'avalanche or snow safety',m:'mechanical',x:'weather'}[r.a[2]]+', inferred)':''):'ran'; if(p!=null) m='<span class="m">'+((p>=.5)===!!held?'✓':'✗')+'</span>'; }
   return '<div class="'+cls+'">'+m+'<div class="n">'+esc(r.L)+'</div><div class="p">'+pct+'</div><div class="bar"><i style="width:'+(p==null?0:p*100)+'%"></i></div><div class="a">'+a+'</div></div>';
 }
 /* ---- right: the sutras ---- */

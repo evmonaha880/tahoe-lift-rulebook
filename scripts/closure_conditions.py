@@ -48,5 +48,23 @@ md += ["", f"{_any} of the {len(S)} storm closures had at least one of: crest gu
  "- The kind comes from words in the post, which can name several causes; the tags are post-level, not sentence-level.",
  "- A closure is only as complete as the posts. The parser's closure rule was checked by hand on held-out posts (see `docs/PARSING_RULES.md`): it is the weakest part of the parser.",
  "- Avalanche danger is the Sierra Avalanche Center's forecast rating for the day; it is not the resort's own decision rule, which is unpublished."]
+
+# ---- confidence in the closure reading, and what happens after a hold
+conf = collections.Counter(); seen = set()
+for r in rows:
+    if r["closed_all"] == "1" and r["in_season"] == "1" and (r["winter"], r["date"]) not in seen: seen.add((r["winter"], r["date"])); conf[r["closure_conf"]] += 1
+md += ["", "## How sure we are that each closure is real", "",
+       f"Each closure day is graded by two independent checks: whether the two blind AI readers (Subquadratic, Meta Muse) also call the post a closure, and whether the weather or the named cause makes a closure plausible (gusts of 60+, avalanche danger 3+, 1+ in of snow water, or lightning, power, flooding, visibility, ice or snow named). High = both readers and plausible. Medium = one of the two. Low = neither.", "",
+       f"- High {conf['high']}, medium {conf['medium']}, low {conf['low']} (of {sum(conf.values())} closure days). `closure_conf` is a column in `lift_days.csv` so any analysis can drop the weaker ones.",
+       "- This checks the closures the parser found. It does not find closures the parser missed; the hand check found closure scope errors and a few missed closures (see `docs/PARSING_RULES.md`).", "",
+       "## After a hold: did it reopen?", "",
+       "A hold or closure counts as **reopened** only when a post says the lift (or its group) is open again later the same day. **Assumption (Evan, 2026-11-07): no reopening post that day means the lift did not reopen.** It is stored as `reopen_assumed_none`, kept apart from the observed `reopen_posted`, so it can be switched off.", "",
+       "| Crest gust | Hold or closure lift-days | Reopening posted | Median minutes to the posted reopening |", "|---|---|---|---|"]
+H = [r for r in rows if r["in_season"] == "1" and r["reopen_posted"] != ""]
+for lab, lo, hi in (("under 40", 0, 40), ("40 to 60", 40, 60), ("60 to 80", 60, 80), ("80 to 100", 80, 100), ("100 or more", 100, 999)):
+    x = [r for r in H if num(r["day_gust"]) is not None and lo <= num(r["day_gust"]) < hi]
+    mins = [num(r["hold_minutes"]) for r in x if r["hold_minutes"] not in ("", None)]
+    md.append(f"| {lab} | {len(x)} | {pct(sum(1 for r in x if r['reopen_posted'] == '1'), len(x))} | {st.median(mins):.0f} |" if mins else f"| {lab} | {len(x)} | {pct(sum(1 for r in x if r['reopen_posted'] == '1'), len(x))} | n/a |")
+md += ["", "How to read it: the harder the wind, the less often a reopening is posted, and when one is posted it comes later. Under 40 mph about four in ten holds have a posted reopening, so some of the \"assumed none\" holds there were probably short holds whose end went unposted; at 100 mph and above the assumption is much safer.", ""]
 open(os.path.join(ROOT, "docs", "CLOSURES.md"), "w").write("\n".join(x for x in md if x is not None) + "\n")
 print(f"{len(C)} closure days, {len(D)} days; wrote docs/CLOSURES.md")

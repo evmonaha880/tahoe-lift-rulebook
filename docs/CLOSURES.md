@@ -49,3 +49,25 @@ Share of in-season days (with at least one expected lift row) that had a whole-m
 - The kind comes from words in the post, which can name several causes; the tags are post-level, not sentence-level.
 - A closure is only as complete as the posts. The parser's closure rule was checked by hand on held-out posts (see `docs/PARSING_RULES.md`): it is the weakest part of the parser.
 - Avalanche danger is the Sierra Avalanche Center's forecast rating for the day; it is not the resort's own decision rule, which is unpublished.
+
+## How sure we are that each closure is real
+
+Each closure day is graded by two independent checks: whether the two blind AI readers (Subquadratic, Meta Muse) also call the post a closure, and whether the weather or the named cause makes a closure plausible (gusts of 60+, avalanche danger 3+, 1+ in of snow water, or lightning, power, flooding, visibility, ice or snow named). High = both readers and plausible. Medium = one of the two. Low = neither.
+
+- High 44, medium 3, low 0 (of 47 closure days). `closure_conf` is a column in `lift_days.csv` so any analysis can drop the weaker ones.
+- This checks the closures the parser found. It does not find closures the parser missed; the hand check found closure scope errors and a few missed closures (see `docs/PARSING_RULES.md`).
+
+## After a hold: did it reopen?
+
+A hold or closure counts as **reopened** only when a post says the lift (or its group) is open again later the same day. **Assumption (Evan, 2026-11-07): no reopening post that day means the lift did not reopen.** It is stored as `reopen_assumed_none`, kept apart from the observed `reopen_posted`, so it can be switched off.
+
+| Crest gust | Hold or closure lift-days | Reopening posted | Median minutes to the posted reopening |
+|---|---|---|---|
+| under 40 | 409 | 40% | 50 |
+| 40 to 60 | 504 | 39% | 65 |
+| 60 to 80 | 950 | 28% | 82 |
+| 80 to 100 | 1020 | 18% | 96 |
+| 100 or more | 2057 | 13% | 108 |
+
+How to read it: the harder the wind, the less often a reopening is posted, and when one is posted it comes later. Under 40 mph about four in ten holds have a posted reopening, so some of the "assumed none" holds there were probably short holds whose end went unposted; at 100 mph and above the assumption is much safer.
+
