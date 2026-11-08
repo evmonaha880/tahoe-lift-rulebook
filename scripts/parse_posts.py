@@ -269,7 +269,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.9"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.07.11"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -343,19 +343,21 @@ def _status_of(s):
     if re.search(r"\b(?:on|under|in|placed on|remain(?:s|ing)? on|returns? to)\s+(?:a\s+|an\s+|the\s+)?(?:\w+\s+)?hold\b|\bhold\b", sl) and not re.search(r"\bhold(?:s)? (?:until|off)\b", sl): return "hold", cause_in(s)
     if re.search(r"off (?:of )?the schedule|\bclosed\b|will not (?:open|operate|run|spin)|not (?:operating|open|running|spinning)|removed from the schedule|won't (?:open|operate)", sl): return "closed", cause_in(s)
     if _HEDGEY.search(sl): return None, None
+    if re.search(r"\bexpect(?:ed|ing)?\b[^.!?]{0,25}\bdelays?\b|\bdelays?\s+(?:are\s+|is\s+)?(?:expected|possible|likely|anticipated)\b|\banticipat\w+[^.!?]{0,25}\bdelays?\b", sl): return None, None     # 'expect some delays' is a warning, not a delay for the list below it
     if re.search(r"\bdelay|estimated opening|opening times? (?:is|are)|opening shortly", sl): return "delay", cause_in(s)
     if re.search(r"\b(?:now|currently|already)\s+(?:open|spinning|running|operating)|\b(?:is|are|been|have|has)\s+(?:now\s+|also\s+)?(?:open(?:ed)?|spinning|running|operating)\b|\bhas opened\b|\bnow open\b|\bopen to the public\b|\bopen at \w+\s*:?\s*$|^open\b", sl): return "reopen", None
     if re.search(r"schedul|planning|plan to|plan on|anticipat|expect|project|set (?:for|to)|will (?:be )?(?:open|spin|run|operat)|to (?:spin|open)\b|opening at|open at \d|\d\s*(?:am|a)\b|spinning today|in the schedule|on the schedule", sl): return "schedule", None
     return None, None
-def fallback_events(text, out, add):
+def fallback_events(text, out, add, hour=12):
     covered = {e["lift"] for e in out if e["lift"] and e["event_type"] in ("scheduled_opening", "hold_start", "closed_day", "delay", "reopen", "partial", "warning")}
     covered |= {x for e in out for x in e.get("except", [])}
     if any((e["lift"] or "").startswith("ALL") for e in out if e["event_type"] in ("hold_start", "closed_day", "delay")): return
     emit = {"hold": "hold_start", "closed": "closed_day", "delay": "delay", "reopen": "reopen", "schedule": "scheduled_opening"}
-    done = set()
-    def put(lifts, st, cause):
+    done = set(); section = []
+    def put(lifts, st, cause, via_section=False):
         for l in lifts:
             if l in covered or l in done: continue
+            if via_section: section.append(l)
             done.add(l); add("P-099", emit[st], l, cause if st in ("hold", "closed", "delay") else None, **{"note": "fallback"})
     cur = None; got_items = False                                                 # list section: 'Now open at Alpine:' / 'The following are all open.' then one lift (or a few) per line
     for ln in text.replace("\u2022", "\n").split("\n"):
@@ -368,13 +370,13 @@ def fallback_events(text, out, add):
         if not lf:
             st, c = _status_of(plain)
             if st: cur = (st, c); got_items = False
-            elif re.search(r"\b\d{1,2}\s+lifts?\b", plain) and not re.search(r"hold|clos|delay", plain, re.I): cur = ("schedule", None); got_items = False
+            elif re.search(r"\b\d{1,2}\s+lifts?\b", plain) and not re.search(r"hold|clos", plain, re.I): cur = ("schedule", None); got_items = False
             continue
         m = re.match(r"^([^:]{2,40}):\s*(.+)$", plain)                            # 'Headwall: delayed opening'
         if m and find_lifts(m.group(1)):
             st, c = _status_of(m.group(2))
             if st: put(find_lifts(m.group(1)), st, c); continue
-        if cur and len(plain) < 70 and not re.search(r"[.!?]\s*$", plain) and not re.search(r"\b(?:hold|delay|off the schedule)\b", plain, re.I): put(lf, cur[0], cur[1]); got_items = True; continue
+        if cur and len(plain) < 70 and not re.search(r"[.!?]\s*$", plain) and not re.search(r"\b(?:hold|delay|off the schedule)\b", plain, re.I): put(lf, cur[0], cur[1], True); got_items = True; continue
         if plain.endswith(":"):
             st, c = _status_of(plain)
             if st: cur = (st, c); got_items = False; put(lf, st, c)
@@ -527,7 +529,13 @@ def fix_patterns(p, ev, text, dt):
                 add("P-010w", "hold_start", _side_scope(text), cause_in(sent)); break           # 'all operations ... on hold', 'the scheduled lifts are on hold'
             if re.search(r"\ball (?:scheduled )?lifts\b[^.!?]{0,30}\b(?:will (?:be|have)|are) (?:a )?delayed", sl):
                 add("P-030w", "delay", _side_scope(text), cause_in(sent)); break
-    fallback_events(p["text"], out + added, add)                                                          # keeps the line breaks the list sections need
+    # an early post that sorts the day's lifts under Open / Delayed / Hold headings is the day's roster: every lift listed was on the schedule
+    _st = collections.defaultdict(set)
+    for e in out + added:
+        if e["lift"] and not e["lift"].startswith("ALL") and e["event_type"] in ("reopen", "delay", "hold_start"): _st[e["event_type"]].add(e["lift"])
+    if dt.hour < 10 and len(_st["reopen"]) >= 1 and len(_st["delay"] | _st["hold_start"]) >= 4 and not any(e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL") for e in out + added):
+        for l in sorted(_st["reopen"] | _st["delay"] | _st["hold_start"]): add("P-001s", "scheduled_opening", l, None, **{"note": "status_list_roster"})
+    fallback_events(p["text"], out + added, add, dt.hour)                                                          # keeps the line breaks the list sections need
     final = out + added
     for e in final:
         if e["lift"] is None and e["event_type"] in ("hold_start", "closed_day", "delay", "reopen", "partial"): e["event_type"] = "other"; e["note"] = "no_lift_named"

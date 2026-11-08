@@ -6,6 +6,8 @@ from parse_posts import parse_post
 # (text, must=[(event_type, lift, cause_or_None_for_any)], must_not=[(event_type, lift_or_None_for_any)])
 H, C, D, R, P, S, W, O = "hold_start", "closed_day", "delay", "reopen", "partial", "scheduled_opening", "warning", "other"
 CASES = [
+ ("Here's the scoop for this morning on the Palisades side:\n\nOpen:\n\nBase to Base\n\nDelayed:\nFunitel\nResort\nRed Dog\nExhibition\nFirst Venture\nTram\n\n#palisadesops", [(S, "Funitel", None), (S, "Base to Base Gondola", None), (D, "Funitel", None)], []),
+ ("8 lifts on the schedule at Alpine for 9a-4p. Please expect some delays due to snow safety.\n\nBase to Base\nRoundhouse\nSummit\nTreeline Cirque\nMeadow\nYellow\nSubway\nBig Carpet\n\n#palisadesops", [(S, "Roundhouse", None), (W, None, None)], [(D, "Roundhouse"), (D, "Summit"), (D, "Alpine Meadow")]),
  ("At Alpine: Summit, Sherwood, Scott, Lakeview, Kangaroo, and Subway are OFF schedule today. #palisadesops", [(C, "Summit", None), (C, "Subway", None)], [(S, "Summit"), (S, "Subway")]),
  ("At Alpine: Summit, Scott, Sherwood, and Lakeview are off schedule for the day.", [(C, "Scott", None)], [(S, "Scott")]),
  ("All Palisades lifts are closed for the day, with the exception of First Venture and Ahsoka carpet.", [(C, "ALL_PALISADES", None)], [(C, "First Venture"), (C, "Ahsoka Carpet")]),

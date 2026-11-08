@@ -218,7 +218,7 @@ def closure_conf(es, RL, f):
     return {"closure_readers": hits, "closure_plausible": int(ok), "closure_conf": "high" if hits == 2 and ok else "medium" if hits >= 1 or ok else "low"}
 def reopen_cols(mine, es, L):
     """Observed: a reopening post for this lift (or its group) after the hold began the same day. Assumed (Evan, 2026-11-07): no reopening post that day means it did not reopen."""
-    h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day")]
+    h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day", "delay")]          # a delayed opening has a duration too
     if not h: return {"reopen_posted": "", "hold_minutes": "", "reopen_assumed_none": ""}
     t0 = min(e["start"] for e in h)
     ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t0 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
