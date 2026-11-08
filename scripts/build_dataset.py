@@ -216,11 +216,14 @@ def closure_conf(es, RL, f):
     tags = {t for e in es for t in (e.get("cause_tags") or [])}
     ok = (f.get("day_gust") or 0) >= 60 or (f.get("avy") or 0) >= 3 or (f.get("swe24") or 0) >= 1.0 or bool(tags & {"lightning", "power", "flood", "visibility", "ice", "avalanche", "snow", "weather"})
     return {"closure_readers": hits, "closure_plausible": int(ok), "closure_conf": "high" if hits == 2 and ok else "medium" if hits >= 1 or ok else "low"}
+OPEN_TIME = "09:00"      # typical opening; a hold posted earlier means the lift began the day on hold
+def began_on_hold(mine): return any(e["event_type"] in ("hold_start", "delay") and e["start"][11:16] < OPEN_TIME for e in mine)
 def reopen_cols(mine, es, L):
     """Observed: a reopening post for this lift (or its group) after the hold began the same day. Assumed (Evan, 2026-11-07): no reopening post that day means it did not reopen."""
     h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day", "delay")]          # a delayed opening has a duration too
     if not h: return {"reopen_posted": "", "hold_minutes": "", "reopen_assumed_none": ""}
     t0 = min(e["start"] for e in h)
+    if t0[11:16] < OPEN_TIME: t0 = t0[:11] + OPEN_TIME + t0[16:]       # Evan 2026-11-07: a lift that begins the day on hold is held from the opening time until its reopening post
     ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t0 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
     return {"reopen_posted": int(bool(ro)), "hold_minutes": minutes(t0, ro[0]) if ro else "", "reopen_assumed_none": int(not ro)}
 def covid_era(W, date):
@@ -305,7 +308,7 @@ for Y in YEARS:
         else: f["fnt_src"] = "measured"
         for L in sorted(lifts):
             mine = [e for e in es if e["event_type"] in ("hold_start", "closed_day", "delay", "partial") and (e["lift"] == L or (e["lift"] == "ALL" and L not in e.get("except", [])) or (e["lift"] == "ALL_ON_HOLD" and L not in e.get("except", []) and any(x["lift"] == L and x["event_type"] == "hold_start" and x["start"] < e["start"] for x in es)) or (e["lift"] == "ALL_OTHER" and L not in e.get("except", []) and other_side_ok(e, L, es)) or (e["lift"] in GROUPS and L in GROUPS[e["lift"]] and L not in e.get("except", []) and not any(x["source_post_id"] == e["source_post_id"] and x["lift"] == L and x["event_type"] in ("reopen", "scheduled_opening", "partial") for x in es)))]
-            row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched, **f,
+            row = {"winter": W, "date": date, "lift": L, "scheduled": L in sched or began_on_hold(mine), "began_on_hold": int(began_on_hold(mine)), **f,
                    "held": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)),
                    "held_wind": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "wind" for e in mine)),
                    "held_patrol": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "patrol" for e in mine)),
