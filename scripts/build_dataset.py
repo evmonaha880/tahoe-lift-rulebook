@@ -116,6 +116,7 @@ GROUPS = {"UPPER_MOUNTAIN": _UP, "LOWER_MOUNTAIN": _LO,
 SIDE = {}
 for _l in GROUPS["ALL_PALISADES"]: SIDE[_l] = "palisades"
 for _l in GROUPS["ALL_ALPINE"]: SIDE[_l] = "alpine"
+SIDE["Base to Base Gondola"] = "link"      # joins the two sides; it keeps its own seasonal timeline, so it counts as in season when either side is
 SEASONS = json.load(open(os.path.join(R, "..", "rules", "season_windows.json")))["winters"]
 OPS = ("scheduled_opening", "reopen", "hold_start", "closed_day", "delay", "partial")
 def effective_windows(W, ev):
@@ -127,13 +128,25 @@ def effective_windows(W, ev):
         web = SEASONS.get(W, {}).get(side, {})
         o = [d for d in (web.get("open"), days[0] if days else None) if d]; c = [d for d in (web.get("close"), any_days[-1] if any_days else None) if d]
         out[side] = {"open": min(o) if o else None, "close": max(c) if c else None, "first_post_day": days[0] if days else None, "last_post_day": any_days[-1] if any_days else None, "web_open": web.get("open"), "web_close": web.get("close")}
+    ov = [out[sd]["open"] for sd in ("palisades", "alpine") if out[sd]["open"]]; cv = [out[sd]["close"] for sd in ("palisades", "alpine") if out[sd]["close"]]
+    out["link"] = {"open": min(ov) if ov else None, "close": max(cv) if cv else None, "note": "Base to Base Gondola: in season when either side is"}
     return out
 def typical_roster(ev):
     n = collections.Counter(e["lift"] for e in ev if e["event_type"] == "scheduled_opening" and e["lift"] in SIDE)
-    r = {"palisades": set(), "alpine": set()}
+    r = {"palisades": set(), "alpine": set(), "link": set()}
     for l, c in n.items():
         if c >= 8: r[SIDE[l]].add(l)
     return r
+def closure_kind(es, date):
+    """why a whole-side closure happened, from the post tags and the date: storm (wind, snow, avalanche, visibility, ice) / lightning / infrastructure (power, flooding) / schedule (no cause named, April to June, announced before 10am, e.g. 'Alpine is closed today' on a spring schedule) / unstated"""
+    if not es: return ""
+    tags = set(t for e in es for t in (e.get("cause_tags") or [])); causes = {e.get("cause") for e in es} - {None}
+    if tags & {"avalanche", "snow", "ice", "visibility", "weather"} or "wind" in causes or "patrol" in causes: return "storm"
+    if "wind" in tags: return "storm"
+    if "lightning" in tags: return "lightning"
+    if tags & {"power", "flood"}: return "infrastructure"
+    first = min(e["start"][11:16] for e in es)
+    return "schedule" if date[5:7] in ("04", "05", "06") and first < "10:00" else "unstated"
 YEARS = list(map(int, sys.argv[1:]))
 EFFECTIVE = {}
 WEATHER = {Y: load_weather(Y) for Y in YEARS}
@@ -180,7 +193,7 @@ for Y in YEARS:
         cl = [e for e in es if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")]
         cl_scope = set()
         for e in cl: cl_scope |= {"palisades", "alpine"} if e["lift"] == "ALL" else {"palisades"} if e["lift"] == "ALL_PALISADES" else {"alpine"}
-        for sd in cl_scope: lifts = set(lifts) | ROSTER[sd]
+        for sd in cl_scope: lifts = set(lifts) | ROSTER[sd] | (ROSTER["link"] if cl_scope == {"palisades", "alpine"} else set())
         if not lifts: continue
         f = feats(weather, date, SN)
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
@@ -204,6 +217,7 @@ for Y in YEARS:
                    "held_weather": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "weather" for e in mine)),
                    "held_unstated": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and not e["cause"] for e in mine)),
                    "closed_all": int(any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine)),
+                   "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
                    "closed_all_time": min([e["start"][11:16] for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")] or [""]),
                    **{"tag_" + t: int(any(t in (e.get("cause_tags") or []) and e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)) for t in ("avalanche", "snow", "ice", "visibility", "lightning", "power", "flood", "rain")},
                    "side": SIDE.get(L, ""),

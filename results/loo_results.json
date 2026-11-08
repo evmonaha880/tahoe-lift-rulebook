@@ -316,22 +316,22 @@
   },
   "2022-23": {
    "learned": {
-    "tp": 505,
+    "tp": 501,
     "fp": 149,
-    "fn": 639,
-    "f1": 0.562
+    "fn": 638,
+    "f1": 0.56
    },
    "baseline": {
-    "tp": 1121,
+    "tp": 1116,
     "fp": 2750,
     "fn": 23,
-    "f1": 0.447
+    "f1": 0.446
    }
   },
   "2023-24": {
    "learned": {
     "tp": 405,
-    "fp": 393,
+    "fp": 392,
     "fn": 152,
     "f1": 0.598
    },
@@ -466,8 +466,8 @@
    },
    "lift_sensitivity": {
     "Emigrant": 0.84,
-    "Base to Base Gondola": 0.7,
     "Silverado": 0.69,
+    "Base to Base Gondola": 0.68,
     "Broken Arrow": 0.64,
     "Alpine Bowl": 0.63,
     "High Camp Carpet": 0.6,
@@ -538,7 +538,7 @@
     "Emigrant": 0.84,
     "Broken Arrow": 0.69,
     "Silverado": 0.67,
-    "Base to Base Gondola": 0.66,
+    "Base to Base Gondola": 0.65,
     "Alpine Bowl": 0.62,
     "Olympic Lady": 0.6,
     "High Camp Carpet": 0.58,
@@ -608,8 +608,8 @@
    "lift_sensitivity": {
     "Emigrant": 0.85,
     "Silverado": 0.68,
-    "Base to Base Gondola": 0.68,
     "Broken Arrow": 0.67,
+    "Base to Base Gondola": 0.66,
     "Olympic Lady": 0.64,
     "Alpine Bowl": 0.63,
     "(all other lifts)": 0.57,
@@ -680,7 +680,7 @@
     "Emigrant": 0.85,
     "Alpine Bowl": 0.7,
     "Broken Arrow": 0.69,
-    "Base to Base Gondola": 0.69,
+    "Base to Base Gondola": 0.68,
     "Silverado": 0.64,
     "High Camp Carpet": 0.6,
     "Tram": 0.6,
@@ -728,24 +728,24 @@
   "2022-23": {
    "rule": "day_gust >= 60.6",
    "learned": {
-    "tp": 461,
+    "tp": 457,
     "fp": 364,
-    "fn": 722,
-    "n": 4040,
-    "precision": 0.559,
-    "recall": 0.39,
-    "f1": 0.459,
-    "base_rate": 0.293
+    "fn": 721,
+    "n": 4035,
+    "precision": 0.557,
+    "recall": 0.388,
+    "f1": 0.457,
+    "base_rate": 0.292
    },
    "baseline": {
-    "tp": 1160,
+    "tp": 1155,
     "fp": 2766,
     "fn": 23,
-    "n": 4040,
+    "n": 4035,
     "precision": 0.295,
-    "recall": 0.981,
-    "f1": 0.454,
-    "base_rate": 0.293
+    "recall": 0.98,
+    "f1": 0.453,
+    "base_rate": 0.292
    },
    "lift_sensitivity": {
     "Silverado": 0.74,
@@ -765,8 +765,8 @@
     "Big Blue": 0.45,
     "Bailey's Beach": 0.45,
     "SnoVentures": 0.43,
-    "Ahsoka Carpet": 0.42,
     "Kaya Carpet": 0.42,
+    "Ahsoka Carpet": 0.42,
     "Summit": 0.42,
     "Siberia": 0.41,
     "Lakeview": 0.41,
@@ -776,9 +776,9 @@
     "Gold Coast": 0.34,
     "Exhibition": 0.34,
     "Kangaroo": 0.33,
-    "Broken Arrow": 0.33,
     "Little Carpet": 0.33,
     "Wa She Shu": 0.33,
+    "Broken Arrow": 0.33,
     "Funitel": 0.33,
     "KT-22": 0.31,
     "Yellow": 0.3,
@@ -820,7 +820,7 @@
    },
    "lift_sensitivity": {
     "Emigrant": 0.91,
-    "Base to Base Gondola": 0.71,
+    "Base to Base Gondola": 0.68,
     "Broken Arrow": 0.68,
     "Silverado": 0.65,
     "Tram": 0.58,
@@ -892,8 +892,8 @@
    "lift_sensitivity": {
     "Emigrant": 0.85,
     "Silverado": 0.68,
-    "Base to Base Gondola": 0.67,
     "Broken Arrow": 0.67,
+    "Base to Base Gondola": 0.65,
     "Alpine Bowl": 0.61,
     "Olympic Lady": 0.58,
     "(all other lifts)": 0.57,
@@ -963,8 +963,8 @@
    "lift_sensitivity": {
     "Emigrant": 0.85,
     "Silverado": 0.68,
-    "Base to Base Gondola": 0.68,
     "Broken Arrow": 0.67,
+    "Base to Base Gondola": 0.66,
     "Alpine Bowl": 0.62,
     "Olympic Lady": 0.58,
     "High Camp Carpet": 0.57,

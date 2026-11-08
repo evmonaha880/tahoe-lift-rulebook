@@ -308,20 +308,6 @@
   "loo": {}
  },
  {
-  "lift": "Base to Base Gondola",
-  "rule": "fnt_day_gust >= 27.1",
-  "tag": "inferred",
-  "scheduled_days": 257,
-  "hold_rate_above": 0.773,
-  "n_above": 97,
-  "hold_rate_below": 0.144,
-  "n_below": 160,
-  "observed_wind_stated_days": 61,
-  "observed_held_days": 98,
-  "unstated_cause_days": 34,
-  "loo": {}
- },
- {
   "lift": "Solitude",
   "rule": "fnt_day_gust >= 32.8",
   "tag": "inferred",
@@ -333,6 +319,20 @@
   "observed_wind_stated_days": 39,
   "observed_held_days": 72,
   "unstated_cause_days": 29,
+  "loo": {}
+ },
+ {
+  "lift": "Base to Base Gondola",
+  "rule": "fnt_day_gust >= 26.8",
+  "tag": "inferred",
+  "scheduled_days": 252,
+  "hold_rate_above": 0.758,
+  "n_above": 95,
+  "hold_rate_below": 0.134,
+  "n_below": 157,
+  "observed_wind_stated_days": 59,
+  "observed_held_days": 93,
+  "unstated_cause_days": 31,
   "loo": {}
  },
  {

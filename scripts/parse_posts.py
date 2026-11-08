@@ -255,7 +255,7 @@ def whole_closure(t):
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
-        ("flood", r"flood"), ("rain", r"\brain\b|slush")]
+        ("flood", r"flood"), ("rain", r"\brain\b|slush"), ("weather", r"\bweather\b|\bconditions\b")]
 def cause_tags(s):
     """Multi-label cause words in the post text (post level, not sentence level). `cause` stays the single first-match family."""
     return [k for k, p in TAGS if re.search(p, s, re.I)]
