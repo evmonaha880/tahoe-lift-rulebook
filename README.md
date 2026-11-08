@@ -6,6 +6,8 @@ The lift operators follow rules that are not published. The only evidence is wha
 
 Built from an empty repo on 2026-11-07 at the AIE Code Summit Hackathon (problem statement: Software Archaeology). All code here was written during the event. Data is pulled from public sources.
 
+**Demo video (1 minute): https://youtu.be/Y7q8n83wd7w**
+
 **Live demo: https://evmonaha880.github.io/tahoe-lift-rulebook/app/** (source in [docs/app/](docs/app/index.html)). Replay a real morning from a winter the rules never saw, set your own conditions, and see the evidence.
 
 Hook photo: r/palisadestahoe.
