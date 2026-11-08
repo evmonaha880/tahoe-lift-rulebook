@@ -22,7 +22,7 @@ Final counts: 7,044 X posts (originals only) across 8 winters, 23,912 parsed eve
 | **Total** | **10,892** | **about $54.46** |
 
 - **Plan:** one winter at a time, starting 2023-24, then 2024-25, 2025-26, then older. See `PARSING_RULES.md`.
-- **Gotchas:** wording and format change across eras (UNVERIFIED for Palisades; observed at another mountain's feed). Raw posts must not be redistributed. Replies (customer questions) may or may not carry cause information: decision pending.
+- **Gotchas:** wording and format change across eras (UNVERIFIED for Palisades; observed at another mountain's feed). The raw pull files are kept out of git; the app shows the text of public posts beside the events parsed from them. Replies (customer questions) may or may not carry cause information: decision pending.
 
 ## 2. Weather stations: Western Weather Group public report builder
 - **What:** Palisades Tahoe's own weather site. 13 stations, up to 40 fields. **VERIFIED:** no login needed.

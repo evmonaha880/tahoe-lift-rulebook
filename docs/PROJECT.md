@@ -39,7 +39,7 @@ Event types: scheduled_opening, hold_start, reopen, delay, partial, closed_day, 
 ## Output options
 - **A (base): Rulebook + replay.** A page showing the recovered rules per lift (each tagged observed or inferred, with evidence counts) and a replay of a past morning: predict from early weather, then reveal what happened. Plus a scoreboard on unseen winters against a simple baseline. Static page, desktop only.
 - **B (stretch): What-if sliders.** Pick wind, gusts, snow, temperature and time; see per-lift hold chance, expected reopening and which rule fired. Probabilities are honest counts ("held 87% of the time, 41 cases").
-- The product is the rulebook and replay, not a chat agent and not a dashboard. The static app lives in `site/` (added at submission). No what-if sliders and no chat agent were built.
+- The product is the rulebook and replay, not a chat agent and not a dashboard. The static app lives in `docs/app/` (live at https://evmonaha880.github.io/tahoe-lift-rulebook/app/). No what-if sliders and no chat agent were built.
 
 ## Final status (2026-11-07)
 7,044 posts, 23,912 events, 150 posts (2.1%) matching no rule, 176 parser tests, about 90% of posts fully right on a 240-post hand check (plus or minus 5). Two independent blind readers (Subquadratic, Meta Muse) labeled the posts; the parser agrees with them 93.1% and 97.2%. Results, with the simple rules shown where they win: [RESULTS.md](RESULTS.md). Limits: unposted holds are invisible; per-lift results rest mainly on three winters that name lifts; crest wind sensors dominate; Funitel-top wind is partly estimated; nothing here forecasts tomorrow.

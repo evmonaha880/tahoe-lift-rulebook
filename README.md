@@ -6,6 +6,10 @@ The lift operators follow rules that are not published. The only evidence is wha
 
 Built from an empty repo on 2026-11-07 at the AIE Code Summit Hackathon (problem statement: Software Archaeology). All code here was written during the event. Data is pulled from public sources.
 
+**Live demo: https://evmonaha880.github.io/tahoe-lift-rulebook/app/** (source in [docs/app/](docs/app/index.html)). Replay a real morning from a winter the rules never saw, set your own conditions, and see the evidence.
+
+Hook photo: r/palisadestahoe.
+
 ## Status (final, 2026-11-07)
 
 | | |
@@ -30,7 +34,7 @@ Built from an empty repo on 2026-11-07 at the AIE Code Summit Hackathon (problem
 | Palisades Tahoe / Alpine Meadows weather stations (Western Weather Group public report builder) | Wind, gust, direction, temp, humidity, pressure, snow and precipitation, 13 stations, hourly from Oct 2016 and 15-minute from about 2018 | `scripts/pull_wwg.py` |
 | NRCS SNOTEL site 784, Palisades Tahoe | Hourly snow water, snow depth, temperature, wind, 2008 onward | `scripts/pull_free.py` |
 | NOAA CPC ONI and RONI indices | El Nino / La Nina phase by season, 1950 onward | `scripts/pull_free.py` |
-| Palisades mountain operations account on X | Lift status posts (the events to explain) | X API, pay per use. Raw posts are not redistributed. |
+| Palisades mountain operations account on X | Lift status posts (the events to explain) | X API, pay per use. The raw pull files stay out of git; the app shows the text of public posts next to the events parsed from them. |
 | Sierra Avalanche Center public API | Daily danger rating, 2013 onward | `https://api.avalanche.org/v2/public/products?avalanche_center_id=SAC` (no key) |
 
 `scripts/pull_probe*.py`, `scripts/wwg_*.py` are the exploration scripts used to find each source's depth and request format.
