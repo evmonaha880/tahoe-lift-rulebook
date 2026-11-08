@@ -1,0 +1,504 @@
+{
+ "_about": "Every column of data/derived/lift_days.csv: its role, when it is known (as-of), unit, source and interval. scripts/check_data.py fails if a column is missing here. 'full-day hindsight' features describe the day and must not be presented as a morning prediction.",
+ "columns": {
+  "winter": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "date": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "lift": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "side": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "scheduled": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "in_season": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "covid_era": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "n_posts_day": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "in_heldout_posts": {
+   "role": "key_or_bookkeeping",
+   "asof": "n/a",
+   "unit": "",
+   "note": "identifies the lift-day or how it was selected"
+  },
+  "early_gust": {
+   "role": "feature",
+   "asof": "morning (known by 9am)",
+   "unit": "mph",
+   "source": "wwg 15-minute ridge stations (Siberia, Summit, Roundhouse Top, Scott Top, Belmont, Funitel Top)",
+   "interval": "maximum 15-minute gust (or sustained speed) over local 05:00-09:00, all ridge stations",
+   "note": "usable for a morning-of call"
+  },
+  "early_spd": {
+   "role": "feature",
+   "asof": "morning (known by 9am)",
+   "unit": "mph",
+   "source": "wwg 15-minute ridge stations (Siberia, Summit, Roundhouse Top, Scott Top, Belmont, Funitel Top)",
+   "interval": "maximum 15-minute gust (or sustained speed) over local 05:00-09:00, all ridge stations",
+   "note": "usable for a morning-of call"
+  },
+  "day_gust": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "mph",
+   "source": "wwg 15-minute ridge stations",
+   "interval": "maximum over local 06:00-16:00, all ridge stations",
+   "note": "includes hours after the hold: describes the day, does not predict it"
+  },
+  "day_spd": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "mph",
+   "source": "wwg 15-minute ridge stations",
+   "interval": "maximum over local 06:00-16:00, all ridge stations",
+   "note": "includes hours after the hold: describes the day, does not predict it"
+  },
+  "fnt_day_gust": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "mph",
+   "source": "Funitel Top station; estimated from Siberia and Belmont when the station was off or in the 2025-26 regime",
+   "interval": "maximum over local 06:00-16:00",
+   "note": "see fnt_src and fnt_measured; 0.0 on a windy day is treated as sensor dropout"
+  },
+  "fnt_measured": {
+   "role": "feature_raw",
+   "asof": "full-day hindsight",
+   "unit": "mph",
+   "source": "Funitel Top station",
+   "interval": "as fnt_day_gust, raw reading before the dropout rule",
+   "note": "blank when the station had no readings"
+  },
+  "fnt_src": {
+   "role": "quality_flag",
+   "asof": "n/a",
+   "unit": "",
+   "note": "'measured' or 'estimated' (regression on Siberia and Belmont) for fnt_day_gust"
+  },
+  "sib_h40": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "hours",
+   "source": "Siberia station",
+   "interval": "15-minute readings at or above 40 / 60 mph between local 06:00 and 16:00, divided by 4"
+  },
+  "sib_h60": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "hours",
+   "source": "Siberia station",
+   "interval": "15-minute readings at or above 40 / 60 mph between local 06:00 and 16:00, divided by 4"
+  },
+  "temp_base": {
+   "role": "feature",
+   "asof": "morning (known by 10am)",
+   "unit": "degrees F",
+   "source": "Roundhouse Btm station",
+   "interval": "mean over local 06:00-10:00"
+  },
+  "swe24": {
+   "role": "feature",
+   "asof": "morning (at 9am)",
+   "unit": "inches of water",
+   "source": "SNOTEL 784 hourly",
+   "interval": "change over the 24 h / 6 h before 9am local (prec24s: precipitation gauge)",
+   "note": "gauges undercount in wind"
+  },
+  "swe6": {
+   "role": "feature",
+   "asof": "morning (at 9am)",
+   "unit": "inches of water",
+   "source": "SNOTEL 784 hourly",
+   "interval": "change over the 24 h / 6 h before 9am local (prec24s: precipitation gauge)",
+   "note": "gauges undercount in wind"
+  },
+  "prec24s": {
+   "role": "feature",
+   "asof": "morning (at 9am)",
+   "unit": "inches of water",
+   "source": "SNOTEL 784 hourly",
+   "interval": "change over the 24 h / 6 h before 9am local (prec24s: precipitation gauge)",
+   "note": "gauges undercount in wind"
+  },
+  "new_snow24": {
+   "role": "feature",
+   "asof": "morning (at 9am)",
+   "unit": "inches",
+   "source": "Alpine base depth sensor, dropout-filtered",
+   "interval": "depth now minus the lowest depth in the previous 24 h, 3-hourly, 5-reading medians"
+  },
+  "new_snow24_snotel": {
+   "role": "feature_raw",
+   "asof": "morning (at 9am)",
+   "unit": "inches",
+   "source": "SNOTEL depth",
+   "interval": "sum of hourly depth increases over 24 h",
+   "note": "older noisy figure kept for comparison"
+  },
+  "depth": {
+   "role": "feature",
+   "asof": "morning (at 9am)",
+   "unit": "inches",
+   "source": "SNOTEL 784"
+  },
+  "avy": {
+   "role": "feature",
+   "asof": "forecast issued the morning of the day (known at opening)",
+   "unit": "1-5 danger rating",
+   "source": "Sierra Avalanche Center forecast, valid_day=current, max of the bands",
+   "interval": "forecast for the day"
+  },
+  "gust_at_event": {
+   "role": "feature",
+   "asof": "at event time (first post about the lift)",
+   "unit": "mph",
+   "source": "Siberia station",
+   "interval": "gust and speed in the hour of the first post; strongest gust in the three hours before it",
+   "note": "blank without a post time; these describe the hold, not the morning"
+  },
+  "gust_prior3h": {
+   "role": "feature",
+   "asof": "at event time (first post about the lift)",
+   "unit": "mph",
+   "source": "Siberia station",
+   "interval": "gust and speed in the hour of the first post; strongest gust in the three hours before it",
+   "note": "blank without a post time; these describe the hold, not the morning"
+  },
+  "spd_at_event": {
+   "role": "feature",
+   "asof": "at event time (first post about the lift)",
+   "unit": "mph",
+   "source": "Siberia station",
+   "interval": "gust and speed in the hour of the first post; strongest gust in the three hours before it",
+   "note": "blank without a post time; these describe the hold, not the morning"
+  },
+  "local_station": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "mph",
+   "source": "rules/lift_stations.json: the station nearest each lift",
+   "interval": "maximum over local 06:00-16:00"
+  },
+  "local_gust": {
+   "role": "feature",
+   "asof": "full-day hindsight",
+   "unit": "mph",
+   "source": "rules/lift_stations.json: the station nearest each lift",
+   "interval": "maximum over local 06:00-16:00"
+  },
+  "nws_hw_w": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_hw_a": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_wi": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_ws_w": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_ws_a": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_ww": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_bz": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_flood": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_wind_any": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_storm_any": {
+   "role": "feature",
+   "asof": "alert in force at any time 06:00-16:00 (hindsight)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073",
+   "note": "an alert issued during the day counts; use nws_pre_* for what was known at 6am"
+  },
+  "nws_pre_wind": {
+   "role": "feature",
+   "asof": "in force at 06:00 (known before opening)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073"
+  },
+  "nws_pre_storm": {
+   "role": "feature",
+   "asof": "in force at 06:00 (known before opening)",
+   "unit": "0/1",
+   "source": "Iowa Environmental Mesonet VTEC archive, zone CAZ073"
+  },
+  "held": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "held=1 if any hold, delay or closure event applied to the lift that day; held_* give the single stated cause"
+  },
+  "held_wind": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "held=1 if any hold, delay or closure event applied to the lift that day; held_* give the single stated cause"
+  },
+  "held_patrol": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "held=1 if any hold, delay or closure event applied to the lift that day; held_* give the single stated cause"
+  },
+  "held_mech": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "held=1 if any hold, delay or closure event applied to the lift that day; held_* give the single stated cause"
+  },
+  "held_weather": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "held=1 if any hold, delay or closure event applied to the lift that day; held_* give the single stated cause"
+  },
+  "held_unstated": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "unit": "0/1",
+   "source": "ops posts",
+   "note": "held=1 if any hold, delay or closure event applied to the lift that day; held_* give the single stated cause"
+  },
+  "closed_all": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts; readers = blind model readers; plausible = weather agrees"
+  },
+  "closure_kind": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts; readers = blind model readers; plausible = weather agrees"
+  },
+  "closure_readers": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts; readers = blind model readers; plausible = weather agrees"
+  },
+  "closure_plausible": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts; readers = blind model readers; plausible = weather agrees"
+  },
+  "closure_conf": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts; readers = blind model readers; plausible = weather agrees"
+  },
+  "closed_all_time": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts; readers = blind model readers; plausible = weather agrees"
+  },
+  "reopen_posted": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts",
+   "note": "no reopening post is read as no reopening"
+  },
+  "hold_minutes": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts",
+   "note": "no reopening post is read as no reopening"
+  },
+  "reopen_assumed_none": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts",
+   "note": "no reopening post is read as no reopening"
+  },
+  "first_event": {
+   "role": "outcome",
+   "asof": "post-derived",
+   "source": "ops posts",
+   "note": "no reopening post is read as no reopening"
+  },
+  "day_avy_control": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_power": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_lightning": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_ice": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_vis": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_mech": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_flood": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "day_covid": {
+   "role": "label_text",
+   "asof": "post-derived (day level)",
+   "unit": "0/1/2",
+   "source": "words in that day's posts"
+  },
+  "tag_avalanche": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_snow": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_ice": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_visibility": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_lightning": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_power": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_flood": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_rain": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  },
+  "tag_grooming": {
+   "role": "label_text",
+   "asof": "post-derived (post level)",
+   "unit": "0/1",
+   "source": "words in the post that put the lift on hold"
+  }
+ }
+}

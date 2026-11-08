@@ -47,6 +47,10 @@ rows = list(csv.DictReader(open(os.path.join(D, "lift_days.csv"))))
 keys = collections.Counter((r["date"], r["lift"]) for r in rows)
 dups = [k for k, n in keys.items() if n > 1]
 if dups: err(f"lift_days: {len(dups)} duplicate (date, lift) rows, e.g. {dups[:3]}")
+FEATS = json.load(open(os.path.join(root, "rules", "features.json")))["columns"]
+_cols = list(rows[0].keys())
+if [c for c in _cols if c not in FEATS]: err(f"lift_days columns with no entry in rules/features.json (role, as-of, unit): {[c for c in _cols if c not in FEATS]}")
+if [c for c in FEATS if c not in _cols]: err(f"rules/features.json describes columns that are not in lift_days: {[c for c in FEATS if c not in _cols]}")
 fnum = lambda x: float(x) if x not in ("", None) else None
 bywinter = collections.Counter()
 for r in rows:

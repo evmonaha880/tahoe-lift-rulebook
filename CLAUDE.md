@@ -35,3 +35,12 @@ It is **not** the earlier "Tahoe Lift Call" / "Daily Call" / Latitude / Suez wor
 - One file per artifact. Revise in place, no `v2` siblings.
 - Commit often with clear messages. Git history is the proof of new work.
 - Banned by the hackathon: a dashboard as the main feature, basic RAG, Streamlit, image analyzers (full list in `docs/PROJECT.md`).
+
+## Data rules (added 2026-11-07, from the post-hackathon architecture review)
+- **Rebuild with one command:** `scripts/run_all.sh` (parse, tests, build, fit, checks, manifest). Before pushing: tests pass, `scripts/diff_events.py results/baseline_events.json.gz` lists only the posts you meant to change, `scripts/check_data.py` and `scripts/check_app_model.py` pass, and any doc or app line that quotes a changed number is updated in the same commit.
+- **Raw is never edited;** derived tables are rebuilt, never hand-patched. Observed (from posts) and inferred (modelled) stay in separate columns and files.
+- **Every parser behaviour change bumps `PARSER_VERSION`** in `scripts/parse_posts.py` and gets a golden test.
+- **Every lift-day column is described in `rules/features.json`,** including when it is known. Full-day hindsight features describe a day; only morning (as-of) features may be presented as a prediction. Name the split (leave-one-winter-out) and the as-of basis next to every score.
+- **Validation sample:** `results/validation_sample_ids.json` is frozen. Do not read those posts or grade them more than once; a fix prompted by them needs a new sample.
+- **Guesses carry a flag** (for example `fnt_src`, `note: fallback`); never fill a gap silently.
+

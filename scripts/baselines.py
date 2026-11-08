@@ -23,6 +23,17 @@ for W in WINTERS:
     for k in ("tp", "fp", "fn"): pool["mph25"][k] += b[k]
     out["day_level"][W] = dict(n_days=len(te), line_mph=round(t, 1), learned=prf(a), mph25=prf(b))
 out["day_level"]["pooled"] = dict(learned=prf(pool["learned"]), mph25=prf(pool["mph25"]))
+# ---------------- the same day-level line, using only what is known by 9am (early_gust, 05:00-09:00) instead of the full-day maximum
+dm = {}
+for r in rows:
+    d = dm.setdefault((r["winter"], r["date"]), dict(winter=r["winter"], g=r["early_gust"], held_wind=0)); d["held_wind"] |= r["held_wind"]
+DM = list(dm.values()); poolm = NEW(); lines_m = []
+for W in WINTERS:
+    tr = [d for d in DM if d["winter"] != W and d["g"] is not None]; te = [d for d in DM if d["winter"] == W and d["g"] is not None]
+    if not tr or not te: continue
+    _, _, t = fit(tr, "held_wind", ["g"]); lines_m.append(t)
+    for d in te: add(poolm, d["g"] >= t, d["held_wind"])
+out["day_level_morning"] = dict(pooled=prf(poolm), line_mph_min=round(min(lines_m), 1), line_mph_max=round(max(lines_m), 1), feature="early_gust: maximum gust 05:00-09:00 at the ridge stations", full_day_f1=out["day_level"]["pooled"]["learned"]["f1"])
 # ---------------- lift level, on two row sets
 def lift_level(S):
     cnt = collections.Counter(r["lift"] for r in S); LIFTS = sorted(l for l, n in cnt.items() if n >= 40)
@@ -118,6 +129,7 @@ _cov = (f"**Coverage.** Lift-level rules are fitted on the {len(_named):,} of {l
         f"The side-days left out are windier: {100*_hi(set(_sd)-_named):.0f}% have a crest gust of 60 mph or more, against {100*_hi(_named):.0f}% of the named ones. A sensitivity run that infers rosters where a stated lift count allows it (`docs/SENSITIVITY.md`) is data-limited and moves the pooled scores by about 0.01.")
 md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; the other winters score under 60 lift-days each because most of their posts give a count (\"32 lifts scheduled\") rather than names.", "",
        _cov, "",
+       f"**Morning versus full-day wind.** The day-level line above uses the strongest gust of the whole day (06:00 to 16:00), which includes hours after a hold. Using only the gust known by 9am (05:00 to 09:00) gives a pooled F1 of {out['day_level_morning']['pooled']['f1']} against {DL['pooled']['learned']['f1']} for the full day, with a learned line of {out['day_level_morning']['line_mph_min']} to {out['day_level_morning']['line_mph_max']} mph. The full-day numbers describe a day; the morning numbers are what a call at opening could have used.", "",
        "**Simple rules against per-lift rules at lift level.**",
        f"- One learned wind line scores a pooled F1 of {L['pooled']['best_single_wind_line']['f1']}, against {L['pooled']['per_lift_any_pass']['f1']} for per-lift rules (any pass) and {L['pooled']['per_lift_called_at_50pct']['f1']} for per-lift rules at 50% odds: fitting each lift separately adds {L['pooled']['per_lift_any_pass']['f1'] - L['pooled']['best_single_wind_line']['f1']:+.3f} of F1.",
        f"- The 25 mph rule has the highest recall ({L['pooled']['mph25']['recall']}) but very low precision ({L['pooled']['mph25']['precision']}), so its pooled F1 is the lowest ({L['pooled']['mph25']['f1']}). It tops the F1 table in {L['winters_won_by_method'].get('mph25', 0)} of {len([W for W in WINTERS if W in L])} winters, but those are the tiny ones.",

@@ -483,6 +483,20 @@
   },
   "row_set": "expected lift-days only (scheduled, plus lifts that normally run on a whole-side closure day)"
  },
+ "day_level_morning": {
+  "pooled": {
+   "tp": 356,
+   "fp": 165,
+   "fn": 57,
+   "precision": 0.683,
+   "recall": 0.862,
+   "f1": 0.762
+  },
+  "line_mph_min": 47.2,
+  "line_mph_max": 55.4,
+  "feature": "early_gust: maximum gust 05:00-09:00 at the ridge stations",
+  "full_day_f1": 0.811
+ },
  "lift_level_all_named": {
   "2018-19": {
    "n_lift_days": 1040,

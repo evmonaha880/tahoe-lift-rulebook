@@ -313,7 +313,7 @@ for Y in YEARS:
                    "n_posts_day": NPOSTS.get(date, 0), "covid_era": covid_era(W, date),
                    **{"day_" + k: DF[date].get(k, 0) for k in list(DAYFLAG) + ["covid"]},
                    "closed_all_time": min([e["start"][11:16] for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")] or [""]),
-                   **{"tag_" + t: int(any(t in (e.get("cause_tags") or []) and e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)) for t in ("avalanche", "snow", "ice", "visibility", "lightning", "power", "flood", "rain")},
+                   **{"tag_" + t: int(any(t in (e.get("cause_tags") or []) and e["event_type"] in ("hold_start", "closed_day", "delay") for e in mine)) for t in ("avalanche", "snow", "ice", "visibility", "lightning", "power", "flood", "rain", "grooming")},
                    "side": SIDE.get(L, ""),
                    "in_season": int(bool(SIDE.get(L)) and EFFECTIVE[W][SIDE[L]]["open"] is not None and EFFECTIVE[W][SIDE[L]]["open"] <= date <= (EFFECTIVE[W][SIDE[L]]["close"] or "9999")) if SIDE.get(L) else 1,
                    "first_event": min([e["start"][11:16] for e in mine] or [""]),

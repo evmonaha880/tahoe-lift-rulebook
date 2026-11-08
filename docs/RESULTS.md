@@ -47,6 +47,8 @@ Only 2021-22, 2022-23, 2023-24, 2024-25 have enough expected lift-days to mean m
 
 **Coverage.** Lift-level rules are fitted on the 1,092 of 1,636 side-days (67%) whose schedule post names the lifts, mostly 2021-22 to 2023-24. The side-days left out are windier: 59% have a crest gust of 60 mph or more, against 41% of the named ones. A sensitivity run that infers rosters where a stated lift count allows it (`docs/SENSITIVITY.md`) is data-limited and moves the pooled scores by about 0.01.
 
+**Morning versus full-day wind.** The day-level line above uses the strongest gust of the whole day (06:00 to 16:00), which includes hours after a hold. Using only the gust known by 9am (05:00 to 09:00) gives a pooled F1 of 0.762 against 0.811 for the full day, with a learned line of 47.2 to 55.4 mph. The full-day numbers describe a day; the morning numbers are what a call at opening could have used.
+
 **Simple rules against per-lift rules at lift level.**
 - One learned wind line scores a pooled F1 of 0.547, against 0.58 for per-lift rules (any pass) and 0.575 for per-lift rules at 50% odds: fitting each lift separately adds +0.033 of F1.
 - The 25 mph rule has the highest recall (0.981) but very low precision (0.229), so its pooled F1 is the lowest (0.371). It tops the F1 table in 3 of 7 winters, but those are the tiny ones.
