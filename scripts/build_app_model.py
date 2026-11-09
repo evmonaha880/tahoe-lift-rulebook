@@ -17,20 +17,6 @@ if os.path.exists(_f):
     for _r in _csv.DictReader(open(_f)):
         if _r["confident"] == "1": INF[(_r["winter"], _r["date"], _r["lift"])] = {"wind": "w", "patrol": "p", "mechanical": "m", "weather": "x"}[_r["cause_inferred"]]
 S = [r for r in rows if r["fit_ok"]]
-def f1(tp,fp,fn): return 2*tp/(2*tp+fp+fn) if tp else 0.0
-def fit(rs, y, feats):
-    best=None
-    for f in feats:
-        sub=[r for r in rs if r[f] is not None]
-        vals=sorted({r[f] for r in sub})
-        if len(vals)<3: continue
-        step=max(1,len(vals)//40)
-        P=sum(1 for r in sub if r[y])
-        for t in vals[::step]:
-            tp=sum(1 for r in sub if r[f]>=t and r[y]); fp=sum(1 for r in sub if r[f]>=t and not r[y]); fn=P-tp
-            s=f1(tp,fp,fn)
-            if best is None or s>best[0]: best=(s,f,t)
-    return best
 def rule_for(tr, L):
     b = fit(tr,"held",FEATS)
     if not b: return None
