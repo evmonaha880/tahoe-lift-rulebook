@@ -13,7 +13,8 @@ import os, csv, json, datetime, collections
 import numpy as np
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 RAW = os.path.join(ROOT, "data", "raw")
-WINTERS = [f"{y}-{str(y + 1)[2:]}" for y in range(2015, 2026)]
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import WINTERS
 def fl(x):
     try: return float(x)
     except Exception: return None
@@ -71,9 +72,9 @@ def trk(W):
             if v is not None: out[k][(t.date(), t.hour)].append(v * 1.15078)
     return out
 DROPOUT = set(); q = os.path.join(ROOT, "data", "derived", "weather_qc.csv")
-if os.path.exists(q):
-    for r in csv.DictReader(open(q)):
-        if r["dropout"] == "1": DROPOUT.add((r["date"], r["station"]))
+if not os.path.exists(q): raise SystemExit("data/derived/weather_qc.csv is missing: run scripts/weather_qc.py first (without it dropout days would stay in the weather table)")
+for r in csv.DictReader(open(q)):
+    if r["dropout"] == "1": DROPOUT.add((r["date"], r["station"]))
 rows = []
 for W in WINTERS:
     E, ES, SN, S, T = era5(W), era5s(W), snotel(W), wwg(W), trk(W)

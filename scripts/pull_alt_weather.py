@@ -5,13 +5,15 @@
  2. Iowa Environmental Mesonet ASOS, Truckee-Tahoe airport (TRK): temperature, wind, gust with the time zone STATED (America/Los_Angeles) -> data/raw/iem_asos/TRK_<winter>.csv. A valley site, used for clock checks, not as a crest-wind source.
 Open-Meteo needs HTTP/1.1 from curl (its HTTP/2 connection failed here).   usage: python3 -I scripts/pull_alt_weather.py"""
 import os, json, time, subprocess
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import YEARS
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "raw")
 def curl(url, http11=False): return subprocess.run(["curl", "-s", "-m", "180"] + (["--http1.1"] if http11 else []) + [url], capture_output=True, text=True).stdout
 os.makedirs(f"{ROOT}/openmeteo", exist_ok=True); os.makedirs(f"{ROOT}/iem_asos", exist_ok=True)
-for y in range(2015, 2026):
+for y in YEARS:
     W = f"{y}-{str(y + 1)[2:]}"
     jobs = [(f"{ROOT}/openmeteo/era5_{W}.json", f"https://archive-api.open-meteo.com/v1/archive?latitude=39.18&longitude=-120.27&start_date={y}-10-01&end_date={y + 1}-05-31&hourly=wind_gusts_10m,wind_speed_10m,wind_speed_700hPa,wind_speed_800hPa,temperature_2m&wind_speed_unit=mph&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles&models=era5")]
-    if True: jobs.append((f"{ROOT}/openmeteo/era5snow_{W}.json", f"https://archive-api.open-meteo.com/v1/archive?latitude=39.19&longitude=-120.27&start_date={y}-10-01&end_date={y + 1}-05-31&hourly=snowfall,precipitation,surface_pressure,freezing_level_height&precipitation_unit=inch&timezone=America%2FLos_Angeles&models=era5"))
+    jobs.append((f"{ROOT}/openmeteo/era5snow_{W}.json", f"https://archive-api.open-meteo.com/v1/archive?latitude=39.19&longitude=-120.27&start_date={y}-10-01&end_date={y + 1}-05-31&hourly=snowfall,precipitation,surface_pressure,freezing_level_height&precipitation_unit=inch&timezone=America%2FLos_Angeles&models=era5"))
     for fn, url in jobs:
         if os.path.exists(fn): continue
         j = json.loads(curl(url, True))

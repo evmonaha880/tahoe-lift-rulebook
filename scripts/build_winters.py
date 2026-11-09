@@ -3,7 +3,8 @@ Writes rules/winters.json. Used by scripts/check_architecture.py, which fails if
 import os, sys, json, glob, csv, re
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 P = lambda *a: os.path.join(ROOT, *a)
-WINTERS = [f"{y}-{str(y + 1)[2:]}" for y in range(2015, 2026)]
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import WINTERS
 def winter_of(d):
     y, m = int(d[:4]), int(d[5:7]); return f"{y}-{str(y + 1)[2:]}" if m >= 8 else f"{y - 1}-{str(y)[2:]}"
 def jl(path):

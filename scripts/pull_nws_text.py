@@ -1,6 +1,8 @@
 """Pull NWS Reno (WFO REV) text products from the Iowa Environmental Mesonet AFOS archive (free, no key): the Area Forecast Discussion (AFDREV, 4+ a day) and Public Information Statements (PNSREV: snowfall and peak-gust reports, some for Palisades and Alpine).
 Raw to data/raw/nws_text/<PIL>_<winter>.txt, Oct 1 to May 31, winters 2015-16 to 2025-26. Existing files are not re-downloaded; nothing is written on an error.  usage: python3 -I scripts/pull_nws_text.py"""
 import os, subprocess
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import YEARS, YEARS
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "raw", "nws_text"); os.makedirs(OUT, exist_ok=True)
 for pil in ("AFDREV", "PNSREV"):
     for y in range(2015, 2026):
