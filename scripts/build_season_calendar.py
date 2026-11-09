@@ -3,7 +3,7 @@ Inputs: reader files out_A_<n>.json and out_B_<n>.json (events with kind, side, 
 A fact is AGREED when both readers give the same (kind, side, lift, date); otherwise it is single-reader and flagged. Every row keeps its post id and quote (<= 25 words).
 DERIVED BY MODEL FROM TEXT: stored in rules/season_calendar.json, never merged into observed tweet data. Nothing here changes season_windows.json; disagreements are listed for a human.
 usage: python3 -I scripts/build_season_calendar.py <reader_dir>   -> rules/season_calendar.json, data/derived/season_calendar_review.csv"""
-import os, sys, json, glob, csv, re, collections, datetime, html
+import os, sys, json, glob, csv, re, collections, html
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 src = sys.argv[1] if len(sys.argv) > 1 else sys.exit("usage: python3 -I scripts/build_season_calendar.py <reader_dir>")
 def winter(d):

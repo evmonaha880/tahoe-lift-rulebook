@@ -1,7 +1,6 @@
 """Data checks for the parsed events and the lift-day table. Run after every build (scripts/run_all.sh does).
 Fails (exit 1) on any hard error; prints warnings for soft ones.  usage: python3 -I scripts/check_data.py"""
 import os, sys, json, csv, glob, re, collections
-from datetime import date
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 sys.path.insert(0, os.path.join(root, "scripts"))
 from parse_posts import LIFTS, PARSER_VERSION

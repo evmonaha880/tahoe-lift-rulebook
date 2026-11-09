@@ -1,7 +1,7 @@
 """Check the third blog reader's (C) after-the-fact first-run statements and compare them with data/derived/first_run.csv.
 Each quote must occur in its post (first 8 words, punctuation ignored); events that fail are dropped. Then each event is matched to the first-run record for the same winter and lift.
 usage: python3 -I scripts/compare_blog_confirm.py   -> prints counts and data/derived/blog_confirm_C/compare.csv"""
-import os, sys, re, json, csv, glob, html, collections, datetime
+import os, re, json, csv, glob, html, collections, datetime
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ns = {}; exec("\n".join(open(os.path.join(ROOT, "scripts", "parse_posts.py")).read().split("\n")[:93]), ns); find = ns["find_lifts"]
 def squash(t):

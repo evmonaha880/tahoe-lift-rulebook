@@ -1,5 +1,5 @@
 """Pull the free sources in full: SNOTEL 784 hourly (Oct 1 - May 31, every winter) and the ENSO indices."""
-import os, urllib.request, urllib.error, csv, io, time
+import os, urllib.request, urllib.error, csv, time
 RAW = os.path.join(os.path.dirname(__file__), "..", "data", "raw")
 def get(url, timeout=120):
     req = urllib.request.Request(url, headers={"User-Agent": "tahoe-lift-rulebook/0.1"})

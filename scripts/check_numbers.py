@@ -1,6 +1,6 @@
 """Numbers registry check. docs/numbers.json lists, for each headline number, the files that must quote it; this script recomputes the current value
 from the data and fails when a listed file does not contain it (a stale copy), or when a retired value still appears.   usage: python3 -I scripts/check_numbers.py"""
-import os, sys, re, csv, json, glob, subprocess, collections
+import os, sys, re, csv, json, glob, subprocess
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 os.chdir(root)
 reg = json.load(open("docs/numbers.json"))

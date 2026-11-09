@@ -1,7 +1,7 @@
 """Sensitivity run: days whose schedule post gives only a lift COUNT (no names). Infer the schedule from the typical roster of nearby days,
 accept a day only when the stated count is within 2 of the inferred roster, refit the per-lift rules on the augmented table in a scratch copy,
 and report how far the thresholds and scores move. Never replaces the main numbers.   usage: python3 -I scripts/sensitivity_rosters.py"""
-import os, sys, csv, json, re, shutil, subprocess, collections, statistics as st
+import os, csv, json, re, shutil, subprocess, collections
 from datetime import date, datetime, timedelta
 root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 PY = os.environ.get("PY", os.path.expanduser("~/DataLake/.venv/bin/python"))

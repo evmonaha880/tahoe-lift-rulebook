@@ -3,7 +3,7 @@ Every number the app shows is written here (rules, odds, per-winter scores, read
 usage: python3 -I scripts/build_app_model.py   (run after build_dataset.py, recover_rules.py and baselines.py)"""
 import json, os, collections, glob, statistics, html, re, subprocess, sys
 from zoneinfo import ZoneInfo
-from datetime import datetime, timezone
+from datetime import datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from ruleslib import ROOT, rows, FEATS, WINTERS, f1, fit        # the project's one definition of how rules are fitted

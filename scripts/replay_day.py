@@ -1,7 +1,7 @@
 """Replay one day: every post in order, what the parser read from it, and how each lift ended up in the dataset.
 usage: python3 -I scripts/replay_day.py 2024-12-21 [--rows]     (posts are read from data/derived, never printed to a file)"""
 import os, sys, json, csv, collections
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "derived")
 day = sys.argv[1]; y = int(day[:4]); W = f"{y}-{str(y+1)[2:]}" if int(day[5:7]) >= 8 else f"{y-1}-{str(y)[2:]}"
 posts, ev = {}, collections.defaultdict(list)

@@ -1,6 +1,6 @@
 """Winter registry: for each winter, which sources cover it and how much. Generated from the files on disk (never hand-edited) so it cannot disagree with them.
 Writes rules/winters.json. Used by scripts/check_architecture.py, which fails if the saved file is stale.   usage: python3 -I scripts/build_winters.py [--check]"""
-import os, sys, json, glob, csv, collections, re
+import os, sys, json, glob, csv, re
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 P = lambda *a: os.path.join(ROOT, *a)
 WINTERS = [f"{y}-{str(y + 1)[2:]}" for y in range(2015, 2026)]

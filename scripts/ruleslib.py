@@ -1,7 +1,7 @@
 """Shared rule-fitting code: the one place the project defines how a rule is fitted and scored.
 Used by baselines.py and build_app_model.py (recover_rules.py defines the same functions; keep them identical).
 Loads data/derived/lift_days.csv, which build_dataset.py writes."""
-import os, csv, json, collections
+import os, csv
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "derived", "lift_days.csv"))))
 NUM = ["early_gust", "early_spd", "day_gust", "day_spd", "fnt_day_gust", "temp_base", "avy", "swe24", "swe6", "prec24s", "new_snow24", "depth"]

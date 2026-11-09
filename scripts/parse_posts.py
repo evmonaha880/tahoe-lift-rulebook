@@ -3,7 +3,7 @@ Observed = the post states it. Nothing here infers from weather; that happens la
 usage: python3 -I scripts/parse_posts.py 2023 [train|heldout|all]   -> data/derived/<winter>_<split>_events.json
 Rules ledger is exported to rules/ledger_<winter>.json (data, so other mountains can reuse the method)."""
 import os, re, sys, json, collections
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 # ---- lift vocabulary (canonical name -> regex alias). Lift->mountain mapping is NOT done here (modeling decision later).

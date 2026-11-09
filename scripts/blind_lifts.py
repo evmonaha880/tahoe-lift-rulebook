@@ -1,6 +1,6 @@
 """Blind check of WHICH lifts and WHAT cause. Muse reads a held-out post cold and lists the lifts that are held/closed/delayed and the cause.
 Compared with the parser's hold_start/closed_day/delay events for that post. usage: python3 -I scripts/blind_lifts.py 2023 2024 2025"""
-import os, sys, json, re, urllib.request
+import os, sys, json, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parse_posts import find_lifts, parse_post

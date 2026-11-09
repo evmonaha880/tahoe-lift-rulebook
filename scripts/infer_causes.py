@@ -3,7 +3,7 @@ Observed and inferred stay separate: this writes data/derived/cause_inferred.csv
 Method: one-vs-rest logistic regression per cause family, trained on holds whose post names exactly one family (wind, patrol/avalanche, mechanical, weather),
 scored leave-one-winter-out so every accuracy figure is on a winter the model never saw. Needs numpy (python3 -I with the project's venv).
 usage: python3 -I scripts/infer_causes.py   (run after build_dataset.py)"""
-import csv, os, math, collections
+import csv, os, collections
 import numpy as np
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "derived", "lift_days.csv"))))

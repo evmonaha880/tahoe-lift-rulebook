@@ -9,7 +9,7 @@ Sources, each available (or honestly blank) in every winter:
   gust_best_*     the station value where the station has one, else gust_est_*; gust_src says which. Early = hours 5-8 (known by 9 am), day = hours 6-15.
 Times are local clock hours. Station and ERA5 hours are Pacific; SNOTEL is read at its 09:00 stamp (NRCS local standard time, DST not verified, same assumption as build_dataset.py).
 usage: python3 -I scripts/build_weather_common.py  -> data/derived/weather_common.csv, results/weather_common.json (how good the estimate is, by winter)"""
-import os, re, csv, json, glob, datetime, collections
+import os, csv, json, datetime, collections
 import numpy as np
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 RAW = os.path.join(ROOT, "data", "raw")
