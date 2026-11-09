@@ -1,0 +1,35 @@
+{
+ "_about": "Season edges settled by hand from the two readers' output (rules/season_calendar.json) and the post text, 2026-11-08. Each date is what the operations blog ANNOUNCED or reported, with its post id; 'announced' means a plan, not proof it happened. The operators' own tweet rosters still decide the real first and last operating day (decision 29 union). Conflicts between readers were settled by taking the latest post that states the date and is not cancelled. 'vs_season_windows' says how it compares with rules/season_windows.json (same / new / differs).",
+ "rule": "latest non-cancelled statement wins; a retrospective statement beats an earlier plan; single-reader facts are marked",
+ "winters": {
+  "2015-16": {"alpine": {"close": "2016-05-08", "basis": "announced", "post": 1774, "vs_season_windows": "new (winter not in file)"}, "palisades": {"close": "2016-05-30", "basis": "announced, 'weather and conditions permitting'", "post": 1774, "vs_season_windows": "new"}},
+  "2016-17": {"both": {"open": "2016-11-23", "basis": "announced; an earlier Nov 11-18 early opening was cancelled", "post": 1766, "vs_season_windows": "new"},
+             "palisades": {"close": "2017-07-15", "basis": "retrospective: a Nov 16 2017 post says it had been 4 months and 1 day since 'we closed on July 15' (single reader); the plans were June 4 then July 4", "post": 1312, "vs_season_windows": "new", "check": "single reader; confirm against the 2017 tweets"}},
+  "2017-18": {"palisades": {"open": "2017-11-17", "basis": "announced the day before", "post": 1312, "vs_season_windows": "new"}, "alpine": {"open": "2017-11-18", "basis": "announced (Kangaroo, 9am)", "post": 1312, "vs_season_windows": "new"}},
+  "2018-19": {"palisades": {"close": "2019-07-07", "basis": "announced (Fourth of July weekend, July 3-7)", "post": 569, "vs_season_windows": "same"}},
+  "2019-20": {"note": "only 4 operations posts that winter; no edge dates found in the blog"},
+  "2020-21": {"both": {"open": "2020-11-24", "basis": "announced the day before", "post": 5975, "vs_season_windows": "same"},
+             "palisades": {"close": "2021-05-16", "basis": "announced; an earlier May 31 target was dropped", "post": 6634, "vs_season_windows": "same"}},
+  "2021-22": {"both": {"open": "2021-10-29", "basis": "happened (reported Nov 18); the Nov 24 daily-skiing date was cancelled", "post": 6872, "vs_season_windows": "same for Palisades; Alpine open still unknown"},
+             "alpine": {"close": "2022-04-17", "basis": "announced", "post": 8015, "vs_season_windows": "same"},
+             "palisades": {"close": "2022-05-30", "basis": "announced; moved May 1 to May 15 (post 8134) to May 30 (post 8173)", "post": 8173, "vs_season_windows": "same"}},
+  "2022-23": {"palisades": {"open": "2022-11-18", "basis": "announced four days early (post 8642); earlier target was Nov 22", "post": 8642, "vs_season_windows": "new (file had null)", "close": "2023-05-29", "close_post": 10780},
+             "alpine": {"open": "2022-11-22", "basis": "target only, not confirmed as the real day", "post": 8642, "vs_season_windows": "new (file had null)", "close": "2023-07-04", "close_post": 10780}},
+  "2023-24": {"palisades": {"open": "2023-11-22", "basis": "targeting ('most likely')", "post": 11312, "vs_season_windows": "same", "close": "2024-05-27", "close_post": 12750},
+             "alpine": {"open": "2023-11-25", "basis": "Treeline Cirque mid-station only, daily 9-4 from Saturday Nov 25 (single reader); full Alpine opening date not found", "post": 11340, "vs_season_windows": "new (file had null)", "close": "2024-04-28", "close_post": 12750},
+             "link": {"open": "2023-12-08", "basis": "'likely for the season' (single reader, low confidence)", "post": 11340}},
+  "2024-25": {"both": {"open": "2024-11-22", "basis": "announced the day before", "post": 13634, "vs_season_windows": "same"},
+             "alpine": {"close": "2025-04-27", "basis": "announced", "post": 14813, "vs_season_windows": "new (file had null)"},
+             "palisades": {"close": "2025-05-26", "basis": "'until Memorial Day' (not a stated date)", "post": 14739, "vs_season_windows": "same"}},
+  "2025-26": {"palisades": {"open": "2025-12-06", "basis": "limited carpet-only start 'this Saturday, December 6' (single reader)", "post": 15830, "vs_season_windows": "differs: file says 2025-12-05 in its open field and 12-06 in its own note", "close": "2026-05-23", "close_basis": "targeting closing weekend May 23-24 (post 17105); earlier targets May 17 (post 17089) and May 25 (cancelled, post 16918)", "close_vs_season_windows": "differs: file says 2026-05-25"},
+             "alpine": {"open": "2025-12-27", "basis": "targeting", "post": 16005, "vs_season_windows": "same", "close": "2026-03-29", "close_post": 16918, "close_vs": "same"},
+             "link": {"close": "2026-03-29", "basis": "closes after Alpine's last day", "post": 16918}},
+  "2026-27": {"palisades": {"open": "2026-11-25", "basis": "announced Opening Day (tram expected to open)", "post": 18680, "vs_season_windows": "new"}}
+ },
+ "open_items": [
+  "Check the two Palisades 2025-26 differences (open 12-05 vs 12-06; close 05-25 vs 05-23/24) against the ops tweets",
+  "2016-17 Palisades close 2017-07-15 rests on one reader: confirm",
+  "Alpine open dates for 2021-22, 2022-23 and 2023-24 are still partial or targets; the tweets decide",
+  "2019-20 and 2018-19 have almost no operations posts, so edges there stay with the tweets"
+ ]
+}
