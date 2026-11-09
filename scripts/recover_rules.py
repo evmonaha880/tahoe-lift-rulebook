@@ -141,7 +141,7 @@ for W in WINTERS:
     pred = lambda r: r[f] >= t and sens.get(r["lift"], 0) >= 0.35
     sc = score(te, pred, YO); bs = score(te, BASE, YO)
     print(f"{W:16} | {sc['f1']:12.2f} {sc['precision'] or 0:6.2f} {sc['recall'] or 0:6.2f} | {bs['f1']:12.2f} | {len(te)}, {sc['base_rate']:.1%}   rule: {f} >= {t}")
-    res["two_stage"][W] = dict(rule=f"{f} >= {t}", learned=sc, baseline=bs, lift_sensitivity={k: round(v, 2) for k, v in sorted(sens.items(), key=lambda kv: -kv[1])})
+    res["two_stage"][W] = dict(rule=f"{f} >= {t}", learned=sc, baseline=bs, lift_sensitivity={k: round(v, 2) for k, v in sorted(sens.items(), key=lambda kv: (-kv[1], kv[0]))})
 json.dump(res, open(os.path.join(ROOT, "results", "loo_results" + ("" if YO == "held" else "_" + YO) + ".json"), "w"), indent=1)
 # observed vs inferred: for hold-days with NO stated cause, does the learned wind rule fire?
 s, f, t = fit(D, "held_wind")
