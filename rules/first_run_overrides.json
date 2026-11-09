@@ -1,0 +1,7 @@
+{"_about": "Hand-settled corrections to data/derived/first_run.csv. Each needs a quote-level source. Applied by scripts/build_first_run.py; the original computed date is kept in computed_first_run.",
+ "overrides": [
+  {"winter": "2022-23", "lift": "Red Dog", "first_run": "2023-01-15", "confidence": "confirmed_by_blog",
+   "note": "New six-pack replaced the triple; the Dec 12 'targeting' date slipped. Blog: 'finally opened for the 2022-23 winter season on January 15th'; rules/lift_history.json says first used January 2023.", "source": "blog reader C (data/derived/blog_confirm_C) + lift_history"},
+  {"winter": "2022-23", "lift": "Tram", "skiing_start": "2022-12-02",
+   "note": "Open for sightseeing from the first schedule; skiing access began Dec 2. Blog: 'The Aerial Tram opened for skiing access (it was already open for sightseeing)'.", "source": "blog reader C (data/derived/blog_confirm_C)"}
+ ]}

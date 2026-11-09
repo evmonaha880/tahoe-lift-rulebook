@@ -1,0 +1,129 @@
+{
+ "about": "Leave-one-winter-out accuracy of the Siberia gust estimate built from ERA5 and SNOTEL only (days with a station reading).",
+ "estimate": {
+  "early": {
+   "2016-17": {
+    "days": 243,
+    "mae_mph": 10.0,
+    "r2": 0.7,
+    "era5_alone_mae_mph": 27.4
+   },
+   "2017-18": {
+    "days": 243,
+    "mae_mph": 6.6,
+    "r2": 0.84,
+    "era5_alone_mae_mph": 23.6
+   },
+   "2018-19": {
+    "days": 214,
+    "mae_mph": 9.5,
+    "r2": 0.75,
+    "era5_alone_mae_mph": 27.5
+   },
+   "2019-20": {
+    "days": 214,
+    "mae_mph": 7.9,
+    "r2": 0.74,
+    "era5_alone_mae_mph": 21.3
+   },
+   "2020-21": {
+    "days": 235,
+    "mae_mph": 7.6,
+    "r2": 0.81,
+    "era5_alone_mae_mph": 23.8
+   },
+   "2021-22": {
+    "days": 243,
+    "mae_mph": 8.9,
+    "r2": 0.79,
+    "era5_alone_mae_mph": 25.7
+   },
+   "2022-23": {
+    "days": 243,
+    "mae_mph": 9.6,
+    "r2": 0.8,
+    "era5_alone_mae_mph": 27.8
+   },
+   "2023-24": {
+    "days": 239,
+    "mae_mph": 9.4,
+    "r2": 0.76,
+    "era5_alone_mae_mph": 24.7
+   },
+   "2024-25": {
+    "days": 230,
+    "mae_mph": 9.2,
+    "r2": 0.81,
+    "era5_alone_mae_mph": 26.5
+   },
+   "2025-26": {
+    "days": 215,
+    "mae_mph": 8.5,
+    "r2": 0.75,
+    "era5_alone_mae_mph": 17.8
+   }
+  },
+  "day": {
+   "2016-17": {
+    "days": 243,
+    "mae_mph": 11.5,
+    "r2": 0.66,
+    "era5_alone_mae_mph": 27.5
+   },
+   "2017-18": {
+    "days": 243,
+    "mae_mph": 8.6,
+    "r2": 0.74,
+    "era5_alone_mae_mph": 22.2
+   },
+   "2018-19": {
+    "days": 216,
+    "mae_mph": 10.1,
+    "r2": 0.78,
+    "era5_alone_mae_mph": 27.9
+   },
+   "2019-20": {
+    "days": 215,
+    "mae_mph": 9.3,
+    "r2": 0.7,
+    "era5_alone_mae_mph": 21.6
+   },
+   "2020-21": {
+    "days": 235,
+    "mae_mph": 8.8,
+    "r2": 0.75,
+    "era5_alone_mae_mph": 23.2
+   },
+   "2021-22": {
+    "days": 242,
+    "mae_mph": 9.9,
+    "r2": 0.75,
+    "era5_alone_mae_mph": 26.1
+   },
+   "2022-23": {
+    "days": 243,
+    "mae_mph": 9.7,
+    "r2": 0.82,
+    "era5_alone_mae_mph": 29.3
+   },
+   "2023-24": {
+    "days": 239,
+    "mae_mph": 10.1,
+    "r2": 0.78,
+    "era5_alone_mae_mph": 25.1
+   },
+   "2024-25": {
+    "days": 230,
+    "mae_mph": 9.9,
+    "r2": 0.8,
+    "era5_alone_mae_mph": 28.1
+   },
+   "2025-26": {
+    "days": 216,
+    "mae_mph": 10.9,
+    "r2": 0.63,
+    "era5_alone_mae_mph": 17.1
+   }
+  }
+ }
+}
