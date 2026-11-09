@@ -381,19 +381,19 @@
    "role": "outcome",
    "asof": "post-derived",
    "source": "ops posts",
-   "note": "no reopening post is read as no reopening 0 means no reopening was posted: the hold's end is unknown, not 'did not reopen' (decision 63)."
+   "note": "1 = a post says the lift reopened that day; 0 = held with no reopening post, so the hold's end is unknown, not 'did not reopen' (decision 63); blank = no hold."
   },
   "hold_minutes": {
    "role": "outcome",
    "asof": "post-derived",
    "source": "ops posts",
-   "note": "no reopening post is read as no reopening"
+   "note": "minutes from the start of the hold (09:00 if the lift began the day on hold) to the posted reopening; blank when no reopening was posted (end unknown, decision 63)"
   },
   "first_event": {
    "role": "outcome",
    "asof": "post-derived",
    "source": "ops posts",
-   "note": "no reopening post is read as no reopening"
+   "note": "clock time (HH:MM, Los Angeles) of the first post event for the lift that day; blank if none"
   },
   "day_avy_control": {
    "role": "label_text",
