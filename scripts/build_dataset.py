@@ -341,7 +341,7 @@ for Y in YEARS:
                    "held_mech": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "mechanical" for e in mine)),
                    "held_weather": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "weather" for e in mine)),
                    "held_unstated": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and not e["cause"] for e in mine)),
-                   "closed_all_basis": ("roster" if (L in sched and any(x["event_type"] == "closed_day" for x in mine)) else exp_basis.get(L, "own_posts")) if any(x["event_type"] == "closed_day" and x["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE") for x in mine) else "",
+                   "closed_all_basis": ("roster" if (L in sched and any(x["event_type"] == "closed_day" for x in mine)) else exp_basis.get(L, "own_posts")) if any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine) else "",
                    "closed_all": int(any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine)),
                    "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
                    **closure_conf([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], RL, f),
