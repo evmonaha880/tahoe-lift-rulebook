@@ -381,15 +381,9 @@
    "role": "outcome",
    "asof": "post-derived",
    "source": "ops posts",
-   "note": "no reopening post is read as no reopening"
+   "note": "no reopening post is read as no reopening 0 means no reopening was posted: the hold's end is unknown, not 'did not reopen' (decision 63)."
   },
   "hold_minutes": {
-   "role": "outcome",
-   "asof": "post-derived",
-   "source": "ops posts",
-   "note": "no reopening post is read as no reopening"
-  },
-  "reopen_assumed_none": {
    "role": "outcome",
    "asof": "post-derived",
    "source": "ops posts",
@@ -523,6 +517,12 @@
    "unit": "wind / patrol / mechanical / weather / unstated",
    "source": "ops posts",
    "note": "cause named by the earliest hold, delay or closure event of the lift that day (the first reason it stopped); held_wind etc. are true if ANY event that day named that cause, so a lift held first for avalanche control and later for wind has cause_first=patrol and held_wind=1"
+  },
+  "closed_all_basis": {
+   "role": "quality_flag",
+   "asof": "n/a",
+   "unit": "",
+   "note": "on a whole-side closure day: 'roster' = the lift was on that day's own posts; 'window' = added because the lift had opened and not yet closed for the season (first and last day with evidence it was running or meant to run, plus 3 days); 'typical_roster_no_window' = added from the winter's typical roster because that side has too few named rosters to know the lift's window (decision 65). Blank on other days"
   }
  }
 }

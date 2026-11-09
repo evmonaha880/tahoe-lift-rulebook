@@ -59,15 +59,15 @@ Each closure day is graded by two independent checks: whether the two blind AI r
 
 ## After a hold: did it reopen?
 
-A hold or closure counts as **reopened** only when a post says the lift (or its group) is open again later the same day. **Assumption (Evan, 2026-11-07): no reopening post that day means the lift did not reopen.** It is stored as `reopen_assumed_none`, kept apart from the observed `reopen_posted`, so it can be switched off.
+A hold or closure counts as **reopened** only when a post says the lift (or its group) is open again later the same day. When no reopening is posted the end of the hold is **unknown**; nothing is assumed (decision 63, which replaced the earlier assumption that no post meant no reopening). `reopen_posted` is 1 only when a post says so.
 
 | Crest gust | Hold or closure lift-days | Reopening posted | Median minutes to the posted reopening |
 |---|---|---|---|
-| under 40 | 598 | 44% | 46 |
-| 40 to 60 | 683 | 46% | 52 |
-| 60 to 80 | 1191 | 37% | 57 |
-| 80 to 100 | 1129 | 23% | 64 |
-| 100 or more | 2097 | 16% | 44 |
+| under 40 | 539 | 49% | 46 |
+| 40 to 60 | 642 | 49% | 52 |
+| 60 to 80 | 1168 | 38% | 57 |
+| 80 to 100 | 1121 | 24% | 64 |
+| 100 or more | 2025 | 17% | 44 |
 
 How to read it: the harder the wind, the less often a reopening is posted, and when one is posted it comes later. Under 40 mph about four in ten holds have a posted reopening, so some of the "assumed none" holds there were probably short holds whose end went unposted; at 100 mph and above the assumption is much safer.
 

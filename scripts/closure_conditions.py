@@ -58,7 +58,7 @@ md += ["", "## How sure we are that each closure is real", "",
        f"- High {conf['high']}, medium {conf['medium']}, low {conf['low']} (of {sum(conf.values())} closure days). `closure_conf` is a column in `lift_days.csv` so any analysis can drop the weaker ones.",
        "- This checks the closures the parser found. It does not find closures the parser missed; the hand check found closure scope errors and a few missed closures (see `docs/PARSING_RULES.md`).", "",
        "## After a hold: did it reopen?", "",
-       "A hold or closure counts as **reopened** only when a post says the lift (or its group) is open again later the same day. **Assumption (Evan, 2026-11-07): no reopening post that day means the lift did not reopen.** It is stored as `reopen_assumed_none`, kept apart from the observed `reopen_posted`, so it can be switched off.", "",
+       "A hold or closure counts as **reopened** only when a post says the lift (or its group) is open again later the same day. When no reopening is posted the end of the hold is **unknown**; nothing is assumed (decision 63, which replaced the earlier assumption that no post meant no reopening). `reopen_posted` is 1 only when a post says so.", "",
        "| Crest gust | Hold or closure lift-days | Reopening posted | Median minutes to the posted reopening |", "|---|---|---|---|"]
 H = [r for r in rows if r["in_season"] == "1" and r["reopen_posted"] != ""]
 for lab, lo, hi in (("under 40", 0, 40), ("40 to 60", 40, 60), ("60 to 80", 60, 80), ("80 to 100", 80, 100), ("100 or more", 100, 999)):

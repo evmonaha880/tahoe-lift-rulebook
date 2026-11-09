@@ -174,6 +174,24 @@ def typical_roster(ev):
     for l, c in n.items():
         if c >= 8: r[SIDE[l]].add(l)
     return r
+LAST_MARGIN_DAYS = 3        # a closure day up to 3 days after a lift's last day of evidence still counts it (the season end may fall between the last roster and the closure)
+MIN_ROSTER_DAYS = 20        # a side needs at least this many days with a roster naming 3+ of its lifts in the winter before per-lift windows are trusted
+def lift_windows(ev):
+    """Staged openings and closings (decision 65). Per lift, the first and last day with evidence that it was running or meant to run: named on a roster, reopened, run partially, delayed, or put on hold.
+    A lift-specific 'off schedule' post is not evidence of operation. Returns ({lift: (first_day, last_day)}, {side: number of days with a roster naming 3+ of its lifts})."""
+    win, rdays = {}, {"palisades": collections.defaultdict(set), "alpine": collections.defaultdict(set)}
+    for e in ev:
+        l = e["lift"]
+        if l in SIDE and e["event_type"] in ("scheduled_opening", "reopen", "partial", "delay", "hold_start"):
+            d = e["start"][:10]; a = win.get(l)
+            win[l] = (d, d) if a is None else (min(a[0], d), max(a[1], d))
+        if l in SIDE and SIDE[l] in rdays and e["event_type"] == "scheduled_opening": rdays[SIDE[l]][e["start"][:10]].add(l)
+    return win, {sd: sum(1 for ls in dd.values() if len(ls) >= 3) for sd, dd in rdays.items()}
+def in_window(win, l, date):
+    w = win.get(l)
+    if w is None: return False
+    last = (datetime.fromisoformat(w[1]) + timedelta(days=LAST_MARGIN_DAYS)).strftime("%Y-%m-%d")
+    return w[0] <= date <= last
 def closure_kind(es, date):
     """why a whole-side closure happened, from the post tags and the date: storm (wind, snow, avalanche, visibility, ice) / lightning / infrastructure (power, flooding) / schedule (no cause named, April to June, announced before 10am, e.g. 'Alpine is closed today' on a spring schedule) / unstated"""
     if not es: return ""
@@ -219,13 +237,13 @@ def closure_conf(es, RL, f):
 OPEN_TIME = "09:00"      # typical opening; a hold posted earlier means the lift began the day on hold
 def began_on_hold(mine): return any(e["event_type"] in ("hold_start", "delay") and (e["start"][11:16] < OPEN_TIME or e.get("begins_day_on_hold")) for e in mine)
 def reopen_cols(mine, es, L):
-    """Observed: a reopening post for this lift (or its group) after the hold began the same day. Assumed (Evan, 2026-11-07): no reopening post that day means it did not reopen."""
+    """Observed only: a reopening post for this lift (or its group) after the hold began the same day. No reopening post means the end of the hold is UNKNOWN (decision 63); nothing is assumed."""
     h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day", "delay")]          # a delayed opening has a duration too
-    if not h: return {"reopen_posted": "", "hold_minutes": "", "reopen_assumed_none": ""}
+    if not h: return {"reopen_posted": "", "hold_minutes": ""}
     t0 = min(e["start"] for e in h); t00 = t0
     if began_on_hold(mine) and t0[11:16] != OPEN_TIME: t0 = t0[:11] + OPEN_TIME + t0[16:]       # Evan 2026-11-07: a lift that begins the day on hold is held from the opening time until its reopening post
     ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t00 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
-    return {"reopen_posted": int(bool(ro)), "hold_minutes": max(0, minutes(t0, ro[0])) if ro else "", "reopen_assumed_none": int(not ro)}
+    return {"reopen_posted": int(bool(ro)), "hold_minutes": max(0, minutes(t0, ro[0])) if ro else ""}
 def covid_era(W, date):
     if W == "2019-20" and date >= "2020-03-01": return "pre_closure"           # the resort suspended operations on 2020-03-15; posts end 2020-03-14
     if W == "2020-21": return "restricted"                                     # reservations, capacity limits and health protocols all season
@@ -233,6 +251,7 @@ def covid_era(W, date):
 def minutes(a, b):
     return round((datetime.fromisoformat(b) - datetime.fromisoformat(a)).total_seconds() / 60)
 YEARS = list(map(int, sys.argv[1:]))
+WROWS = []
 EFFECTIVE = {}
 WEATHER = {Y: load_weather(Y) for Y in YEARS}
 def fit_funitel():
@@ -278,7 +297,7 @@ for Y in YEARS:
     for sp in ("train", "heldout"):
         for e in json.load(open(os.path.join(R, "derived", f"{W}_{sp}_events.json"))): e["split"] = sp; ev.append(e)
         for _p in json.load(open(os.path.join(R, "derived", f"{W}_{sp}.json"))): POSTSIDE[_p["id"]] = post_side(_p["text"])
-    EFFECTIVE[W] = effective_windows(W, ev); ROSTER = typical_roster(ev); DF, NPOSTS = day_flags(W); RL = reader_labels(W)
+    EFFECTIVE[W] = effective_windows(W, ev); ROSTER = typical_roster(ev); WIN, RDAYS = lift_windows(ev); WIN = {l_: (max(a_[0], EFFECTIVE[W][SIDE[l_]]["open"] or a_[0]), min(a_[1], EFFECTIVE[W][SIDE[l_]]["close"] or a_[1])) for l_, a_ in WIN.items()}; WROWS.extend((W, SIDE[l_], l_, a_[0], a_[1], int(RDAYS.get(SIDE[l_], 0) >= MIN_ROSTER_DAYS) if SIDE[l_] in RDAYS else 1) for l_, a_ in sorted(WIN.items())); DF, NPOSTS = day_flags(W); RL = reader_labels(W)
     by = collections.defaultdict(list)
     for e in ev: by[e["start"][:10]].append(e)
     for date, es in sorted(by.items()):
@@ -292,7 +311,14 @@ for Y in YEARS:
         cl = [e for e in es if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")]
         cl_scope = set()
         for e in cl: cl_scope |= {"palisades", "alpine"} if e["lift"] == "ALL" else {"palisades"} if e["lift"] == "ALL_PALISADES" else {"alpine"}
-        for sd in cl_scope: lifts = set(lifts) | ROSTER[sd] | (ROSTER["link"] if cl_scope == {"palisades", "alpine"} else set())
+        exp_basis = {}
+        for sd in cl_scope:
+            cand = set(ROSTER[sd]) | (set(ROSTER["link"]) if cl_scope == {"palisades", "alpine"} else set())
+            trusted = sd in RDAYS and RDAYS[sd] >= MIN_ROSTER_DAYS         # enough named rosters this winter to know when each lift opened and closed
+            for l_ in cand:
+                if l_ in lifts: continue                                   # already a row from that day's own posts
+                if (SIDE[l_] == "link" and l_ not in WIN) or (SIDE[l_] != "link" and not trusted): exp_basis[l_] = "typical_roster_no_window"; lifts = set(lifts) | {l_}
+                elif in_window(WIN, l_, date): exp_basis[l_] = "window"; lifts = set(lifts) | {l_}
         if not lifts: continue
         f = feats(weather, date, SN)
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
@@ -315,6 +341,7 @@ for Y in YEARS:
                    "held_mech": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "mechanical" for e in mine)),
                    "held_weather": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and e["cause"] == "weather" for e in mine)),
                    "held_unstated": int(any(e["event_type"] in ("hold_start", "closed_day", "delay") and not e["cause"] for e in mine)),
+                   "closed_all_basis": ("roster" if (L in sched and any(x["event_type"] == "closed_day" for x in mine)) else exp_basis.get(L, "own_posts")) if any(x["event_type"] == "closed_day" and x["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE") for x in mine) else "",
                    "closed_all": int(any(e["event_type"] == "closed_day" and (e["lift"] == "ALL" or (e["lift"] == "ALL_PALISADES" and SIDE.get(L) == "palisades") or (e["lift"] == "ALL_ALPINE" and SIDE.get(L) == "alpine")) for e in mine)),
                    "closure_kind": closure_kind([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], date),
                    **closure_conf([e for e in mine if e["event_type"] == "closed_day" and e["lift"] in ("ALL", "ALL_PALISADES", "ALL_ALPINE")], RL, f),
@@ -335,6 +362,8 @@ out = os.path.join(R, "derived", "lift_days.csv")
 with open(out, "w", newline="") as fh:
     w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
 json.dump(EFFECTIVE, open(os.path.join(R, "derived", "season_windows_effective.json"), "w"), indent=1)
+with open(os.path.join(R, "derived", "lift_windows.csv"), "w", newline="") as fh:        # staged openings: when each lift first and last had evidence of running (decision 65); trusted = the side had enough named rosters that winter
+    w2 = csv.writer(fh); w2.writerow(["winter", "side", "lift", "first_day", "last_day", "side_trusted"]); w2.writerows(WROWS)
 n = len(rows); print(f"{n} lift-days -> {out}")
 for W in sorted({r['winter'] for r in rows}):
     x = [r for r in rows if r['winter'] == W]
