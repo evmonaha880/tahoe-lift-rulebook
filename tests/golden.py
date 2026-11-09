@@ -66,7 +66,7 @@ CASES = [
   [(H, "Base to Base Gondola", "wind"), (H, "Summit", "wind"), (H, "Roundhouse", "wind"), (C, "Scott", None)], [(S, None)]),
  ("For Alpine, we expect Roundhouse, Summit, Subway at 9am. All other scheduled lifts are on delay due to icing. #palisadesops",
   [(D, "ALL_OTHER", "weather")], []),
- ("The Base to Base Gondola is now on a stage 2 wind alert. Please return to the base area you plan to depart from.", [(W, "Base to Base Gondola", "wind")], [(H, None)]),
+ ("The Base to Base Gondola is now on a stage 2 wind alert. Please return to the base area you plan to depart from.", [(P, "Base to Base Gondola", "wind")], [(H, None), (W, "Base to Base Gondola")]),      # 2026-11-08: a stage is an operating status (partial), no longer a warning
  ("Sherwood is on delay and Treeline Cirque will be open to mid-station until Sherwood goes.", [(D, "Sherwood", None), (P, "Treeline Cirque", None)], []),
  ("Palisades Open at 9am: Base to Base Tram Funitel KT Red Dog Resort Wind Hold: Solitude Bailey's Delayed: Wa She Shu Gold Coast",
   [(S, "Tram", None), (H, "Solitude", "wind"), (H, "Bailey's Beach", "wind"), (D, "Wa She Shu", None), (D, "Gold Coast", None)], [(H, "Tram")]),
@@ -277,6 +277,22 @@ CASES = [
  ("The following lifts at Alpine Meadows are now closed and off schedule for the remainder of the day:\n\n- Summit\n- Sherwood\n- Yellow", [(C, "Summit", None), (C, "Sherwood", None)], []),
  ("Due to increasing winds the following lifts will start the day on wind hold:\n\n- Headwall\n- Emigrant\n- Silverado\n\nExhibition has been added to the schedule for today. Check back for updates! #squawlifts", [(H, "Headwall", "wind"), (H, "Silverado", "wind"), (S, "Exhibition", None)], [(H, "Exhibition")]),
  ("Good Morning,\n\nThe following lifts will begin today on a wind hold:\nAerial Tram\nGranite Chief\nSiberia\nHeadwall\n\nFar East is now on the schedule.\n#palisadesops", [(H, "Tram", "wind"), (H, "Headwall", "wind"), (S, "Far East", None)], [(H, "Far East")]),
+ ('The Base to Base Gondola is now in a Stage 2 Wind alert. This means that guests may only use the Gondola to return to the base area they originated from. Please return to the base area where you started your day. #palisadesops', [(P, "Base to Base Gondola", "wind")], [(W, "Base to Base Gondola")]),
+ ('The Base to Base Gondola is on wind alert, and may go on wind hold. We encourage you to go back to the base area that you plan to depart from. Granite Chief is off the schedule for the remainder of the day.  #palisadesops #ptdispatch', [(P, "Base to Base Gondola", "wind"), (W, "Base to Base Gondola", "wind"), (C, "Granite Chief", None)], []),
+ ('The Base to Base Gondola is now on stage 1 wind alert. Please return to the side you plan to depart from.   #palisadesops', [(P, "Base to Base Gondola", "wind")], [(W, "Base to Base Gondola")]),
+ ('Winds are decreasing and the Base to Base Gondola is back on a Stage 1 wind alert, running at normal speed.', [(P, "Base to Base Gondola", "wind")], [(W, "Base to Base Gondola"), (H, "Base to Base Gondola")]),
+ ("Palisades \n\nOpen at 9am: \nBase to Base (Stage 1 Wind Alert)\nTram\nFunitel\nKT\nRed Dog\nResort\nWa She Shu\nFirst Venture &amp; Carpet\nHeadwall\nGold Coast \nEmigrant\nBelmont\nBailey's\nMtn Meadow\nHigh Camp Carpet (10am Opening)\nBig Blue\nShirley\nSolitude\nGranite\n\nHold: \nSiberia", [(P, "Base to Base Gondola", "wind")], [(W, "Base to Base Gondola")]),
+ # Squaw-era wording (2015-18), all from training posts
+ ("Summit, Lakeview, Scott, Sherwood anticipated start time of 10am. Everything else at 9am. Enjoy the powder! #alpinelifts", [(D, "Summit", None), (D, "Lakeview", None)], [(S, "Summit")]),
+ ("Summit, Roundhouse, Yellow and Kangaroo are now projected for 9:30am #alpinelifts", [(D, "Roundhouse", None), (D, "Kangaroo", None)], [(S, "Roundhouse")]),
+ ("Open now: KT22, Exhibition, Red Dog, Far East, Squaw Creek, First Venture, Tucker Carpet, Tram, Baileys Beach, Silverado #squawlifts", [(R, "Tram", None), (R, "Silverado", None)], []),
+ ("Upper Mtn starts on windhold. Come ski or ride lower Mtn- Red Dog, Far East, Squaw Creek, Exhibition, First Venture &amp; carpets #squawlifts", [(H, "UPPER_MOUNTAIN", "wind")], []),
+ ("Granite Chief has been added to tomorrow's schedule! #squawlifts", [(S, "Granite Chief", None)], []),
+ ("Roundhouse and Yellow Chair joined the wind hold list for the morning #alpinelifts", [(H, "Roundhouse", "wind"), (H, "Yellow", "wind")], []),
+ ("KT-22, Red Dog, Squaw Creek, Far East, Exhibition &amp; First Venture will stay open until 4:30pm #squawlifts", [(S, "KT-22", None)], [(R, "KT-22")]),
+ ("Bailey's Beach and Mountain Meadow open for the season at 12PM! #squawlifts", [(D, "Bailey's Beach", None)], [(S, "Bailey's Beach")]),
+ ("We have officially closed Red Dog, Squaw Creek and Far East for the day. #squawlifts", [(C, "Red Dog", None)], []),
+ ("Crest winds: 44mph, gust 60mph. WIND HOLDS except Funitel, Exhibition, Far East, beginner area (9am) https://t.co/HX3IY0SRwN #squawlifts", [(H, "ALL_OTHER", "wind")], []),
 ]
 b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
 fails = 0

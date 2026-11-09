@@ -162,7 +162,10 @@ def roster_with_sections(t, add, rule, body_start=0):
         if pl: add("P-070", "partial", pl[-1:], None, detail="mid_station_only")
     for m in re.finditer(r"\(([^)]*wind alert[^)]*)\)", roster, re.I):
         pl = find_lifts(roster[max(0, m.start() - 40): m.start()])
-        if pl: add("P-012", "warning", pl[-1:], "wind")
+        if pl and pl[-1] == "Base to Base Gondola":
+            _st = re.search(r"stage (\d)", m.group(1), re.I)
+            add("P-071", "partial", pl[-1:], "wind", detail=f"wind_alert_stage_{_st.group(1)}" if _st else "wind_alert")      # a gondola wind alert is an operating status, not a hedge (2026-11-08)
+        elif pl: add("P-012", "warning", pl[-1:], "wind")
     return roster
 
 def fill_causes(t, ev):
@@ -277,7 +280,7 @@ def whole_closure(t, dt=None):
             else: fut = bool(_WC_FUTURE.search(sent)) and not re.search(r"\btoday\b|\bthis (?:morning|afternoon|evening)\b", sent, re.I)
             out.append((_wc_scope(sent), sent, fut))
     return out
-PARSER_VERSION = "2026.11.07.16"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
+PARSER_VERSION = "2026.11.08.2"      # bump on every behaviour change; written into every event so a number can be traced to the parser that made it
 TAGS = [("wind", r"\bwinds?\b|gusts?"), ("avalanche", r"avalanche|snow safety|control work|mitigation|hazard reduction"), ("snow", r"\bsnow|storm|blizzard|shovel|powder"),
         ("patrol", r"patrol"), ("mechanical", r"mechanical|maintenance|hose|electrical|technical|repair|winch"), ("ice", r"\bicy\b|\bice\b|icing|rime|freezing"),
         ("visibility", r"visibility|\bfog\b|whiteout|white-out|low vis"), ("lightning", r"lightning|thunder"), ("power", r"power (?:outage|failure|loss)|outage"),
@@ -874,6 +877,16 @@ def _parse_post(p):
             add("P-060" if re.search(r"totals|forecast|chance", sl) else "P-090", "other", [], None); continue
         if re.search(r"\blot\b.*\bfull\b|hidden valley|deer park", sl):
             add("P-050", "parking", [], None); continue
+        if re.search(r"stage \d+ wind alert|wind alert", sl):
+            # P-071 (2026-11-08): the Base to Base Gondola's wind alert stages are an operating status ladder (stage 1 runs at normal speed, stage 2 lets riders only return to where they started, then wind hold), recorded as a partial operation, not a hedge.
+            # For any other lift "on wind alert" is only a heads-up that it may go on hold: that stays a warning (P-012).
+            _lifts = find_lifts(s) or last_lifts; _g = [l for l in _lifts if l == "Base to Base Gondola"]; _o = [l for l in _lifts if l != "Base to Base Gondola"]; _st = re.search(r"stage (\d)", sl)
+            if _g:
+                add("P-071", "partial", _g, "wind", detail=f"wind_alert_stage_{_st.group(1)}" if _st else "wind_alert")
+                if re.search(r"\bmay (?:go|close|be)\b|\blikely to\b|expected to go|could go|\bmight\b", sl): add("P-012", "warning", _g, "wind")      # 'and may go on wind hold' is still a hedge about the next step
+                if _o: add("P-012", "warning", _o, "wind")
+            else: add("P-012", "warning", find_lifts(s), "wind")
+            continue
         if re.search(r"(?:\bon|put on|added to|to the list of) (?:an? |the )?(?:\w+ )?(?:wind |mechanical |patrol |maintenance )?holds?\b", sl) and find_lifts(s) and not re.search(r"expected to go|may go|could go|will be put", sl):
             hm = re.search(r"(wind|mechanical|patrol|maintenance|electrical|icing|lightning)\s+holds?", sl)
             hc = {"maintenance": "mechanical", "electrical": "mechanical", "icing": "weather"}.get(hm.group(1), hm.group(1)) if hm else None
@@ -897,7 +910,6 @@ def _parse_post(p):
             add("P-001", "scheduled_opening", find_lifts(s), None); add("P-040", "reopen", find_lifts(s), None); continue
         if re.search(r"added to (?:today.s |the )?schedule|are not open|not open\.", sl) and find_lifts(s):
             add("P-001" if "added" in sl else "P-020", "scheduled_opening" if "added" in sl else "closed_day", find_lifts(s), None); continue
-        if re.search(r"stage \d+ wind alert|wind alert", sl): add("P-012", "warning", find_lifts(s), "wind"); continue
         if re.search(r"back up and running|up and running", sl) and not re.search(r"should be|will be|about an hour", sl): add("P-040", "reopen", find_lifts(s), None); continue
         if re.search(r"will be delayed|may be delayed|delayed start|with a delay|delayed (?:to|open)|(?:a few|\d+) minutes late|open(?:ing)? late|expect (?:some )?delays|snow safety delays|delayed opening|delays and closures are possible", sl):
             add("P-030", "delay", find_lifts(s), cause_in(s) or ("patrol" if "snow safety" in sl else None)); continue
@@ -953,6 +965,68 @@ def _parse_post(p):
         if re.search(r"\b(?:is|are)\s+(?:now\s+|also\s+)?open\b|re-?opened|\balso open\b|\bnow open\b|^[\w\s’'&,.-]+ open!?$", sl) and not re.search(r"\broad\b|open at|will open|opening (?:tomorrow|soon)|\bwhen\b|as soon as|\bonce\b|update you", sl):
             subj = re.split(r"\b(?:is|are|has)\b|, also|\bopen\b|\balso\b", s, maxsplit=1, flags=re.I)[0]
             add("P-040", "reopen", find_lifts(subj) or find_lifts(s), None); continue
+    if ev: return ev
+    # ---- Squaw-era wording (2015-18) that none of the rules above reads. Reached only when the post produced no event, so 2018+ results change only for posts that were unmatched.
+    #      Written from training posts only. P-081 start-time forms, P-082 'open now' rosters, P-083 'joined the hold list', P-084 'added to (tomorrow's) schedule', P-085 upper mountain on wind hold, P-086 'experiencing ... issues'
+    _tm = r"(\d{1,2})(?::(\d\d))?\s*(am|pm|a|p)?\b"
+    def _late(m):
+        h, mi, ap = int(m.group(1)), int(m.group(2) or 0), (m.group(3) or "am")[0].lower()
+        if ap == "p" and h < 12: h += 12
+        return h * 60 + mi > 9 * 60
+    _prev = []
+    for s in split_sentences(re.sub(r"#\w+", " ", t)):
+        sl = s.lower()
+        m = re.search(r"(?:now\s+)?(?:anticipated|projected|projecting|scheduled|expected)\s+(?:(?:start|opening|open|lift openings?)\s+)?(?:time\s+)?(?:of\s+|for\s+|at\s+)?" + _tm + r"\s*(?:open(?:ing)?)?\s*(:)?", s, re.I)
+        if m and not re.search(r"\bwill open\b.*\bwhen\b|\bsnow\b", sl):
+            ls = find_lifts(s[m.end():]) if m.group(4) else find_lifts(s[:m.start()])
+            if not ls and m.group(4): ls = find_lifts(s[:m.start()])
+            if ls: add("P-081", "delay" if _late(m) else "scheduled_opening", ls, None, note="start_time"); continue
+        m = re.search(r"(?:late|delayed)\s+opening\b[^.]*?\b" + _tm, s, re.I)
+        if m and find_lifts(s): add("P-081", "delay", find_lifts(s[:m.start()]) or find_lifts(s), None, note="late_opening"); continue
+        m = re.search(r"\bopen(?:s|ing)?\s+at\s+" + _tm, s, re.I)
+        if m and find_lifts(s[:m.start()]) and not re.search(r"\bwill\b.*\bwhen\b|\bif\b", sl): add("P-081", "delay" if _late(m) else "scheduled_opening", find_lifts(s[:m.start()]), None, note="open_at"); continue
+        m = re.search(r"\bscheduled\s+opening\s+" + _tm, s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-081", "delay" if _late(m) else "scheduled_opening", find_lifts(s[:m.start()]), None, note="scheduled_opening"); continue
+        m = re.search(r"\b(?:open\s+lifts|open\s+now|lifts\s+open|now\s+open)\s*:\s*(.+)", s, re.I) or re.search(r"\boperations\s+at\s+" + _tm + r"[^.]*?\bwill\s+be\s+(.+)", s, re.I)
+        if m and find_lifts(m.group(m.lastindex)):
+            add("P-082", "scheduled_opening" if re.match(r"operations", s, re.I) else "reopen", find_lifts(m.group(m.lastindex)), None, note="roster"); continue
+        m = re.search(r"\b(?:joined|join|added to)\s+the\s+(?:wind\s+|mechanical\s+)?hold\s+list", s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-083", "hold_start", find_lifts(s[:m.start()]), "wind" if "wind" in sl else cause_in(s), note="joined_hold_list"); continue
+        m = re.search(r"\b(?:has|have)\s+been\s+added\s+to\s+(?:tomorrow.s|the)\s+schedule", s, re.I)
+        if m and find_lifts(s[:m.start()]):
+            add("P-084", "scheduled_opening", find_lifts(s[:m.start()]), None, note="added_to_schedule")
+            if re.search(r"tomorrow", s, re.I):
+                for e in ev[-len(find_lifts(s[:m.start()])):]: e["start"] = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0).isoformat(timespec="minutes"); e["note"] = "announced_prior_day"
+            continue
+        if re.search(r"\bupper\s+(?:mtn|mountain)\.?\s+(?:starts?\s+(?:the\s+day\s+)?on|is\s+on|on)\s+(?:a\s+)?wind\s*hold", s, re.I): add("P-085", "hold_start", ["UPPER_MOUNTAIN"], "wind", note="upper_mountain"); continue
+        m = re.search(r"\b(?:is|are)\s+experiencing\s+(\w+)\s+issues", s, re.I)
+        if m and find_lifts(s[:m.start()]) and m.group(1).lower() in ("electrical", "mechanical", "technical", "power"): add("P-086", "hold_start", find_lifts(s[:m.start()]), "mechanical", note="experiencing_issues"); continue
+        m = re.search(r"\b(?:open|opened)\s+to\s+(?:the\s+)?public\b", s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-040", "reopen", find_lifts(s[:m.start()]), None, note="open_to_public"); continue
+        # second batch, also from training posts: P-087 closing, P-088 bare 'X open', P-089 holds and late starts that name the lift in the sentence before, P-08a 'wind holds except ...', P-08b per-lift start times
+        m = re.search(r"\b(?:wind|mechanical|patrol)\s+holds?\s+except\s+(.+)", s, re.I)
+        if m and find_lifts(m.group(1)): add("P-08a", "hold_start", ["ALL_OTHER"], cause_in(s) or "wind", **{"except": find_lifts(m.group(1)), "note": "all_but_listed"}); continue
+        m = re.search(r"\b(?:now\s+)?on\s+(wind|mechanical|patrol)\s+closure\b|\bofficially\s+closed\b|\bclosed\b[^.]{0,40}\bfor\s+the\s+day\b|\b(?:will\s+)?(?:all\s+)?close\s+at\s+\d", s, re.I)
+        if m and find_lifts(s): add("P-087", "closed_day", find_lifts(s), (m.group(1) or "").lower() or cause_in(s), note="closure"); continue
+        m = re.search(r"\b(?:will\s+)?(?:all\s+)?stay\s+open\s+until\b", s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-081", "scheduled_opening", find_lifts(s[:m.start()]), None, note="stay_open_until"); continue
+        m = re.match(r"\s*([^.:!?]*?)(?:\s+(?:lift|chair))?\s+open\s*!?\s*$", s, re.I)
+        if m and find_lifts(m.group(1)) and not re.search(r"\b(?:stay|will|to|would|can)\s+open\s*!?\s*$", s, re.I): add("P-088", "reopen", find_lifts(m.group(1)), None, note="bare_open"); continue
+        if m and re.search(r"\bstay\s+open\s*!?\s*$", s, re.I) and find_lifts(s): add("P-081", "scheduled_opening", find_lifts(s), None, note="stay_open_until"); continue
+        m = re.search(r"\b(?:brief\s+|short\s+)?(wind|mechanical|patrol)\s+hold\s+(?:on|for)\s+(.+)", s, re.I)
+        if m and find_lifts(m.group(2)): add("P-089", "hold_start", find_lifts(m.group(2)), m.group(1).lower(), note="hold_on"); continue
+        m = re.search(r"\b(?:will\s+)?start\s+(?:the\s+)?(?:morning|day)\s+on\s+(?:a\s+)?(wind|mechanical|patrol)\s*hold", s, re.I)
+        if m and (find_lifts(s) or _prev): add("P-089", "hold_start", find_lifts(s) or _prev, m.group(1).lower(), note="starts_day_on_hold"); continue
+        m = re.search(r"\b(?:looks?\s+to\s+open\s+around|hoping\s+to\s+(?:have\s+\w+\s+)?open\s+by|hoping\s+to\s+have\s+(?:\w+\s+)?open\s+by)\s+" + _tm, s, re.I)
+        if m and (find_lifts(s) or _prev): add("P-089", "delay", find_lifts(s) or _prev, None, note="hoped_start"); continue
+        _pairs = re.findall(r"([A-Za-z][A-Za-z\- ']*?)\s+at\s+(\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p))\b", s, re.I)
+        if _pairs and not re.search(r"\b(?:open|close)\s+at\b", s, re.I):
+            _done = False
+            for nm, tm in _pairs:
+                _l = find_lifts(nm) if re.search(r"\bopen\b", nm, re.I) else find_lifts(nm.split(" and ")[-1].split(",")[-1].strip())
+                if _l: add("P-08b", "delay" if _late(re.match(_tm, tm, re.I)) else "scheduled_opening", _l, None, note="lift_at_time"); _done = True
+            if _done: continue
+        if find_lifts(s): _prev = find_lifts(s)
     if ev: return ev
     if re.match(r"^(?:palisades|alpine)\b[^:]{0,15}:|^snow and weather|^today.s weather|^update:.*operating plan", t, re.I):
         add("P-060", "other", [], None); return ev
