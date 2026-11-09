@@ -5,7 +5,7 @@ root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 os.chdir(root)
 reg = json.load(open("docs/numbers.json"))
 rows = list(csv.DictReader(open("data/derived/lift_days.csv")))
-ev = sum(len(json.load(open(f))) for f in glob.glob("data/derived/*_events.json"))
+ev = sum(len(json.load(open(f))) for f in glob.glob("data/derived/*_events.json") if os.path.basename(f)[:4] >= "2018")      # the analysed winters; 2015-18 events are parsed but not counted in the headline yet
 tests = int(re.search(r"(\d+)/\d+ golden", subprocess.run([sys.executable, "-I", "tests/golden.py"], capture_output=True, text=True).stdout).group(1))
 st = subprocess.run([sys.executable, "-I", "scripts/parser_status.py"], capture_output=True, text=True).stdout.strip().split("\n")[-1]
 unmatched = re.search(r"([\d,]+) \(([\d.]+)%\)", st); posts = re.search(r"total\s+([\d,]+)", st).group(1)

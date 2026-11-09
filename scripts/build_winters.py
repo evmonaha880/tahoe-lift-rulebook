@@ -1,0 +1,73 @@
+"""Winter registry: for each winter, which sources cover it and how much. Generated from the files on disk (never hand-edited) so it cannot disagree with them.
+Writes rules/winters.json. Used by scripts/check_architecture.py, which fails if the saved file is stale.   usage: python3 -I scripts/build_winters.py [--check]"""
+import os, sys, json, glob, csv, collections, re
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+P = lambda *a: os.path.join(ROOT, *a)
+WINTERS = [f"{y}-{str(y + 1)[2:]}" for y in range(2015, 2026)]
+def winter_of(d):
+    y, m = int(d[:4]), int(d[5:7]); return f"{y}-{str(y + 1)[2:]}" if m >= 8 else f"{y - 1}-{str(y)[2:]}"
+def jl(path):
+    try: return json.load(open(path))
+    except Exception: return None
+def build():
+    out = {w: {} for w in WINTERS}
+    for w in WINTERS:
+        o = out[w]; f = P("data", "raw", "x", w + ".json"); d = jl(f)
+        o["ops_tweets_raw"] = len(d) if d else 0
+        ev = [jl(P("data", "derived", f"{w}_{sp}_events.json")) for sp in ("train", "heldout")]
+        o["ops_tweets_parsed"] = bool(ev[0] and ev[1]); o["events"] = (len(ev[0]) + len(ev[1])) if o["ops_tweets_parsed"] else 0
+        h = jl(P("data", "derived", f"{w}_heldout.json")); o["heldout_posts"] = len(h) if h else 0
+        o["x_forecaster_originals"] = len(jl(P("data", "raw", "x_tahoeweather", w + ".json")) or [])
+        for iv in ("60min", "15min"):
+            fs = glob.glob(P("data", "raw", "wwg", iv, "*.csv"))
+            o["wwg_" + iv + "_months"] = sum(1 for x in fs if winter_of(os.path.basename(x)[:7] + "-01") == w and os.path.getsize(x) > 1000)      # files with only a header are 22 bytes
+        o["snotel"] = os.path.exists(P("data", "raw", "snotel", f"784_hourly_{w}.csv"))
+        o["era5_wind"] = os.path.exists(P("data", "raw", "openmeteo", f"era5_{w}.json")); o["era5_snow"] = os.path.exists(P("data", "raw", "openmeteo", f"era5snow_{w}.json"))
+        o["trk_airport"] = os.path.exists(P("data", "raw", "iem_asos", f"TRK_{w}.csv"))
+        o["nws_afd_issuances"] = len(re.findall(r"\nFXUS65 KREV", open(P("data", "raw", "nws_text", f"AFDREV_{w}.txt")).read())) if os.path.exists(P("data", "raw", "nws_text", f"AFDREV_{w}.txt")) else 0
+        o["nws_pns_issuances"] = len(re.findall(r"\nNOUS45 KREV", open(P("data", "raw", "nws_text", f"PNSREV_{w}.txt")).read())) if os.path.exists(P("data", "raw", "nws_text", f"PNSREV_{w}.txt")) else 0
+    bp = P("data", "derived", "blog_posts.csv")
+    if os.path.exists(bp):
+        for r in csv.DictReader(open(bp)):
+            w = winter_of(r["date"][:10])
+            if w in out:
+                cats = r["categories"].split("|"); k = "blog_operations" if "operations" in cats else "blog_weather" if "weather" in cats else "blog_other"
+                out[w][k] = out[w].get(k, 0) + 1
+    for w in WINTERS:
+        for k in ("blog_operations", "blog_weather", "blog_other"): out[w].setdefault(k, 0)
+    fp = P("data", "derived", "blog_forecast.csv")
+    for w in WINTERS: out[w]["blog_forecast_days_by_0900_with_gust"] = 0
+    if os.path.exists(fp):
+        seen = set()
+        for r in csv.DictReader(open(fp)):
+            if r["horizon"] == "0" and r["asof_by_0900"] == "1" and r["fc_gust_hi"] and r["tgt_date"] not in seen:
+                seen.add(r["tgt_date"]); out[winter_of(r["tgt_date"])]["blog_forecast_days_by_0900_with_gust"] += 1
+    lp = P("data", "derived", "lift_days.csv")
+    for w in WINTERS: out[w]["lift_day_rows"] = 0; out[w]["lift_day_rows_scheduled"] = 0
+    if os.path.exists(lp):
+        for r in csv.DictReader(open(lp)):
+            w = r["winter"]
+            if w in out:
+                out[w]["lift_day_rows"] += 1; out[w]["lift_day_rows_scheduled"] += r["scheduled"] == "True"
+    for fn in sorted(glob.glob(P("results", "validation_sample_ids*.json"))):
+        d = jl(fn)
+        for w, ids in d["ids_by_winter"].items():
+            if w in out: out[w]["frozen_validation_posts"] = len(ids); out[w]["frozen_validation_file"] = os.path.basename(fn)
+    cp = P("rules", "season_calendar.json")
+    for w in WINTERS: out[w]["calendar_facts"] = 0
+    if os.path.exists(cp):
+        for e in jl(cp)["events"]:
+            if e["winter"] in out: out[e["winter"]]["calendar_facts"] += 1
+    for w in WINTERS:
+        o = out[w]; o["lift_level_fit_eligible"] = bool(o["ops_tweets_parsed"] and w != "2020-21")      # 2020-21 ran under COVID operating rules (decision 38)
+        o["station_wind"] = "15min" if o["wwg_15min_months"] >= 7 else "15min from midwinter (hourly before)" if o["wwg_15min_months"] >= 1 and o["wwg_60min_months"] >= 6 else "hourly" if o["wwg_60min_months"] >= 6 else "none (estimate only)"
+        o["forecast_column"] = "blog" if o["blog_forecast_days_by_0900_with_gust"] >= 50 else "none"
+    return out
+if __name__ == "__main__":
+    new = build(); path = P("rules", "winters.json")
+    doc = {"_about": "Per-winter source coverage, generated by scripts/build_winters.py from the files on disk. Do not edit by hand; scripts/check_architecture.py fails if this file is stale.", "winters": new}
+    if "--check" in sys.argv:
+        old = jl(path); sys.exit(0 if old and old.get("winters") == new else 1)
+    json.dump(doc, open(path + ".tmp", "w"), indent=1); os.replace(path + ".tmp", path)
+    print(f"{'winter':8} {'ops':>5} {'parsed':>6} {'wind':>20} {'forecast':>8} {'blog ops/wx':>11} {'AFD':>4} {'frozen':>6}")
+    for w, o in new.items(): print(f"{w:8} {o['ops_tweets_raw']:5} {str(o['ops_tweets_parsed']):>6} {o['station_wind']:>20} {o['blog_forecast_days_by_0900_with_gust']:8} {str(o['blog_operations'])+'/'+str(o['blog_weather']):>11} {o['nws_afd_issuances']:4} {o.get('frozen_validation_posts', 0):6}")

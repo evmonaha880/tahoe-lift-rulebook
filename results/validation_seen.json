@@ -1,0 +1,119 @@
+{
+ "_about": "Frozen validation posts that were in sets Claude reviewed while analysing assumptions on 2026-11-08 (hedged wording, gondola wind alerts, possible missed reopenings). They were in the review sets and some were displayed; no parser rule has been written from them. Per the frozen-sample protocol (a fix prompted by frozen posts needs a new sample), these ids are EXCLUDED from any grading of the frozen samples, and no parser change may cite them. The frozen sample files themselves are untouched.",
+ "recorded": "2026-11-08",
+ "ids": {
+  "1096057222784634880": {
+   "winter": "2018-19",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1104040029674864641": {
+   "winter": "2018-19",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1224725405568917504": {
+   "winter": "2019-20",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1352637537903235073": {
+   "winter": "2020-21",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1503001483532374021": {
+   "winter": "2021-22",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1759587682731393433": {
+   "winter": "2023-24",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1900177970314305732": {
+   "winter": "2024-25",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1907423437217530111": {
+   "winter": "2024-25",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "2024488884042944543": {
+   "winter": "2025-26",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "2031429107574255670": {
+   "winter": "2025-26",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08",
+    "gondola wind-alert posts reviewed 2026-11-08"
+   ]
+  },
+  "2042242392535994811": {
+   "winter": "2025-26",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "hedge (warning) posts reviewed 2026-11-08"
+   ]
+  },
+  "1471219433284636672": {
+   "winter": "2021-22",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "reopen-candidate posts reviewed 2026-11-08"
+   ]
+  },
+  "1860023414444163166": {
+   "winter": "2024-25",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "reopen-candidate posts reviewed 2026-11-08"
+   ]
+  },
+  "1752736458866327567": {
+   "winter": "2023-24",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "reopen-candidate posts reviewed 2026-11-08"
+   ]
+  },
+  "1614683786872229888": {
+   "winter": "2022-23",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "reopen-candidate posts reviewed 2026-11-08"
+   ]
+  },
+  "1375128868386836484": {
+   "winter": "2020-21",
+   "sample_file": "validation_sample_ids.json",
+   "reasons": [
+    "reopen-candidate posts reviewed 2026-11-08"
+   ]
+  }
+ }
+}
