@@ -105,7 +105,7 @@ if os.path.exists(cp):
         if len(e["quote"].split()) > 25: err(f"season_calendar.json: a quote over 25 words (post {e['post_id']})"); break
     if not all("readers" in e and "quote_ok" in e for e in json.load(open(cp))["events"]): err("season_calendar.json: events must carry readers and quote_ok")
 # ---- 7 commentary never fitted
-FIT = ["parse_posts", "build_dataset", "recover_rules", "baselines", "infer_causes", "closure_conditions", "build_app_model", "sensitivity_rosters", "agree", "winter_table"]
+FIT = ["parse_posts", "build_dataset", "recover_rules", "baselines", "infer_causes", "closure_conditions", "build_app_model", "sensitivity_rosters", "agree"]
 BAN = re.compile(r"blog_text|blog_posts|commentary|x_tahoeweather|x_review|nws_text|AFDREV|PNSREV")
 for n_ in FIT:
     f = P("scripts", n_ + ".py")

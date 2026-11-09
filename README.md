@@ -50,7 +50,7 @@ Hook photo: r/palisadestahoe.
 | National Weather Service Reno office alerts (Iowa Environmental Mesonet archive) | Winter Storm, Blizzard, High Wind and flood alerts for the Greater Lake Tahoe Area zone, 2018 onward | `scripts/pull_nws.py` (free, no key) |
 | Season dates found on the web | Opening and closing days per side and winter | `rules/season_windows.json` (evidence file, with confirmed and unconfirmed marked) |
 
-`scripts/pull_probe*.py`, `scripts/wwg_*.py` are the exploration scripts used to find each source's depth and request format.
+The scripts used once to find each source's depth and request format (probe scripts for the X and weather APIs) were removed on 2026-11-09 after their findings were written into this file; they remain in the git history.
 
 ## Data architecture
 

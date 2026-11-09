@@ -13,7 +13,7 @@ def current():
     files = sorted({p for pat in PATTERNS for p in glob.glob(os.path.join(root, pat))})
     def body(p):
         b = open(p, "rb").read()
-        return re.sub(rb'"built": ?"[^"]*"', b'"built":""', b) if p.endswith("model.js") else b   # the app model stamps its build time; ignore only that field
+        return re.sub(rb'"(built|commit)": ?"[^"]*"', rb'"\1":""', b) if p.endswith("model.js") else b   # the app model stamps its build time and the git commit; ignore only those two fields
     return {os.path.relpath(p, root): hashlib.sha256(body(p)).hexdigest()[:16] for p in files}
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else ""
