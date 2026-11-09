@@ -7,9 +7,9 @@ Training posts only (heldout posts are never read here). DERIVED, stored apart f
 usage: python3 -I scripts/build_first_run.py   -> data/derived/first_run.csv"""
 import os, re, json, csv, glob, html, datetime, collections
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-src = open(os.path.join(ROOT, "scripts", "parse_posts.py")).read().split("\n")
-ns = {}; exec("\n".join(src[:93]), ns)          # LIFTS table, LIFT_RE, find_lifts (the first 93 lines are definitions only)
-find = ns["find_lifts"]
+import sys; sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import lifts as ns_lifts
+find = ns_lifts.find_lifts
 CUE = re.compile(r"new terrain|terrain expansion|\badded?\b(?! to the closed)|adding|will open|opening (?:tomorrow|today|saturday|sunday|friday|monday|this)|open(?:s|ing)? (?:tomorrow|on)|first time this season|opening day|\bnow open\b", re.I)
 NEG = re.compile(r"closed list|wind hold|on hold|will be closed|remain closed|closed (?:today|for)|not (?:open|expected)|do not expect|cancel", re.I)
 WD = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6}
@@ -22,7 +22,7 @@ def target(sentence, d0):
     if "this weekend" in s: return d0 + datetime.timedelta(days=(5 - d0.weekday()) % 7)
     return d0
 def side_of(lift):
-    return "alpine" if lift in ns["ALPINE_ONLY"] or lift in ("Alpine Meadow", "Alpine Carpets") else "palisades"
+    return "alpine" if lift in ns_lifts.ALPINE_ONLY or lift in ("Alpine Meadow", "Alpine Carpets") else "palisades"
 def winter_of(d): return f"{d.year if d.month >= 8 else d.year - 1}-{str(d.year + (1 if d.month >= 8 else 0))[2:]}"
 cal = json.load(open(os.path.join(ROOT, "rules", "season_calendar.json")))["events"]
 blog = collections.defaultdict(list)
@@ -47,7 +47,7 @@ for tp in sorted(glob.glob(os.path.join(ROOT, "data", "derived", "20??-??_train.
         by_day[(e["lift"], day)][e["event_type"]].add(e["parse_rule_id"])
         if e["event_type"] in ("scheduled_opening", "reopen"): sched.setdefault(e["lift"], day)
     for l in sorted(set(sched) | set(ann) | {k[1] for k in blog if k[0] == w}):
-        if l == "ALL" or l not in ns["LIFTS"] and l not in ("Alpine Meadow", "Alpine Carpets", "Palisades Carpets"): continue
+        if l == "ALL" or l not in ns_lifts.LIFTS and l not in ("Alpine Meadow", "Alpine Carpets", "Palisades Carpets"): continue
         a = ann.get(l); b = sorted(blog.get((w, l), []))
         a_d = str(a[0]) if a and winter_of(a[0]) == w else None; b_d = b[0][0] if b else None; s_d = sched.get(l)
         D = datetime.date.fromisoformat
