@@ -5,6 +5,8 @@ COMMENTARY IS NEVER FITTED OR SCORED: it is evidence for a human. Quotes are cut
 usage: python3 -I scripts/commentary.py 2024-03-02 [--lift "KT-22"] [--days 1]"""
 import os, sys, re, json, csv, glob, html
 from datetime import date, timedelta, datetime
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import LA
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 args = sys.argv[1:]
 if not args or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", args[0]): raise SystemExit('usage: python3 -I scripts/commentary.py YYYY-MM-DD [--lift "KT-22"] [--days 1]')
@@ -53,7 +55,7 @@ for fn in glob.glob(os.path.join(ROOT, "data", "raw", "x_tahoeweather", "*.json"
     d = json.load(open(fn))
     for q in (d if isinstance(d, list) else [x for j in d.values() if isinstance(j, dict) for x in j.get("data", [])]):
         if "created_at" not in q: continue
-        t = datetime.fromisoformat(q["created_at"].replace("Z", "+00:00")) - timedelta(hours=8)
+        t = datetime.fromisoformat(q["created_at"].replace("Z", "+00:00")).astimezone(LA)
         if abs((t.date() - day).days) <= 0: tw.append((t, q["text"]))
 if tw:
     hdr("@TahoeWeather (forecaster) posts that day")

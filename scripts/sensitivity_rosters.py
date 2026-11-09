@@ -3,6 +3,8 @@ accept a day only when the stated count is within 2 of the inferred roster, refi
 and report how far the thresholds and scores move. Never replaces the main numbers.   usage: python3 -I scripts/sensitivity_rosters.py"""
 import os, csv, json, re, shutil, subprocess, collections
 from datetime import date, datetime, timedelta
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import LA
 root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 PY = os.environ.get("PY", os.path.expanduser("~/DataLake/.venv/bin/python"))
 rows = list(csv.DictReader(open(os.path.join(root, "data/derived/lift_days.csv")))); cols = list(rows[0].keys())
@@ -15,7 +17,7 @@ for y in range(2018, 2026):
     W = f"{y}-{str(y+1)[2:]}"
     for sp in ("train", "heldout"):
         for p in json.load(open(os.path.join(root, f"data/derived/{W}_{sp}.json"))):
-            d = (datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")) - timedelta(hours=8)).date().isoformat(); t = re.sub(r"#\w+|https?://\S+", " ", p["text"])
+            d = datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(LA).date().isoformat(); t = re.sub(r"#\w+|https?://\S+", " ", p["text"])
             for m in re.finditer(r"(\d{1,2})\s+(?:\w+\s+)?lifts?\b", t, re.I):
                 ctx = t[max(0, m.start() - 60):m.end() + 40].lower(); n = int(m.group(1))
                 if not re.search(r"schedul|spinning|9a|9 ?am|on the schedule|operat", ctx) or not 3 <= n <= 45: continue

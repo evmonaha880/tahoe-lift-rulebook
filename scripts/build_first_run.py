@@ -9,6 +9,7 @@ import os, re, json, csv, glob, html, datetime, collections
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 import sys; sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import lifts as ns_lifts
+from config import LA
 find = ns_lifts.find_lifts
 CUE = re.compile(r"new terrain|terrain expansion|\badded?\b(?! to the closed)|adding|will open|opening (?:tomorrow|today|saturday|sunday|friday|monday|this)|open(?:s|ing)? (?:tomorrow|on)|first time this season|opening day|\bnow open\b", re.I)
 NEG = re.compile(r"closed list|wind hold|on hold|will be closed|remain closed|closed (?:today|for)|not (?:open|expected)|do not expect|cancel", re.I)
@@ -37,7 +38,7 @@ for tp in sorted(glob.glob(os.path.join(ROOT, "data", "derived", "20??-??_train.
     if ev is None: continue                                   # 2015-18 train posts not parsed yet
     ann = {}; sched = {}; by_day = collections.defaultdict(lambda: collections.defaultdict(set))
     for t in sorted(json.load(open(tp)), key=lambda t: t["created_at"]):
-        d0 = datetime.datetime.fromisoformat(t["created_at"].replace("Z", "+00:00")).astimezone(datetime.timezone(datetime.timedelta(hours=-8))).date()
+        d0 = datetime.datetime.fromisoformat(t["created_at"].replace("Z", "+00:00")).astimezone(LA).date()
         for s in re.split(r"(?<=[.!?])\s+|\n", html.unescape(t["text"])):
             if CUE.search(s) and not NEG.search(s):
                 for l in find(s): ann.setdefault(l, (target(s, d0), re.sub(r"\s+", " ", s)[:90]))

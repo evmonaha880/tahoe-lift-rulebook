@@ -2,6 +2,8 @@
 usage: python3 -I scripts/replay_day.py 2024-12-21 [--rows]     (posts are read from data/derived, never printed to a file)"""
 import os, sys, json, csv, collections
 from datetime import datetime, timedelta
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
+from config import LA
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "derived")
 day = sys.argv[1]; y = int(day[:4]); W = f"{y}-{str(y+1)[2:]}" if int(day[5:7]) >= 8 else f"{y-1}-{str(y)[2:]}"
 posts, ev = {}, collections.defaultdict(list)
@@ -9,7 +11,7 @@ for sp in ("train", "heldout"):
     for p in json.load(open(os.path.join(R, f"{W}_{sp}.json"))): p["split"] = sp; posts[p["id"]] = p
     for e in json.load(open(os.path.join(R, f"{W}_{sp}_events.json"))): ev[e["source_post_id"]].append(e)
 def local(p):  # the parser's own local time is on its events; fall back to UTC-8
-    es = ev.get(p["id"]); return es[0]["start"] if es else (datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")) - timedelta(hours=8)).strftime("%Y-%m-%dT%H:%M")
+    es = ev.get(p["id"]); return es[0]["start"] if es else datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(LA).strftime("%Y-%m-%dT%H:%M")
 day_posts = sorted([p for p in posts.values() if local(p)[:10] == day], key=lambda p: local(p))
 print(f"=== {day}  ({W})  {len(day_posts)} posts ===")
 for p in day_posts:
