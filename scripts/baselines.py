@@ -107,7 +107,7 @@ for W in WINTERS:
     md.append(f"| {W} | {x['line_mph']} | {a['precision']} / {a['recall']} / **{a['f1']}** | {b['precision']} / {b['recall']} / {b['f1']} |")
 a, b = DL["pooled"]["learned"], DL["pooled"]["mph25"]
 md += [f"| **Pooled** | | {a['precision']} / {a['recall']} / **{a['f1']}** | {b['precision']} / {b['recall']} / {b['f1']} |", "",
-       f"**Where the simple rule wins at day level: nowhere.** The learned line (about 60 mph gusts, stable across winters) beats the 25 mph rule in {DL['winters_learned_beats_25mph']} winters. "
+       f"**Where the simple rule wins at day level: {'nowhere' if dw == len(WINTERS) else 'in ' + str(len(WINTERS) - dw) + ' of ' + str(len(WINTERS)) + ' winters'}.** The learned line (about 60 mph gusts, stable across winters) beats the 25 mph rule in {DL['winters_learned_beats_25mph']} winters. "
        f"The 25 mph rule catches nearly every hold (recall about 1.0) only because it calls almost every windy day a hold (pooled precision {b['precision']}).", "",
        "## Lift level, headline: expected lift-days only", "",
        f"{L['pooled']['n_lift_days']:,} expected lift-days scored. Expected means a roster post named the lift as meant to run that day, or the whole side was closed that day and the lift normally runs (whole-mountain closures count as holds), so these are fair denominators.", "",
