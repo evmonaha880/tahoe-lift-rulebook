@@ -1,1 +1,2 @@
 numpy==2.5.0
+scikit-learn==1.9.1      # only for scripts/models.py (models 1 and 2); not needed for run_all.sh

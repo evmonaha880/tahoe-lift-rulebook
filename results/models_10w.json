@@ -1,0 +1,406 @@
+{
+ "view": "10 winters (2016-17 to 2025-26; no estimated wind)",
+ "rows": 13465,
+ "winters": [
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20",
+  "2020-21",
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26"
+ ],
+ "inputs": [
+  "early_gust",
+  "early_spd",
+  "avy",
+  "temp_base",
+  "swe24",
+  "swe6",
+  "prec24s",
+  "new_snow24",
+  "month",
+  "side_palisades",
+  "lift (one-hot)"
+ ],
+ "pooled": {
+  "model1_boosted_trees": {
+   "tp": 3073,
+   "fp": 1636,
+   "fn": 1442,
+   "precision": 0.653,
+   "recall": 0.681,
+   "f1": 0.666
+  },
+  "model2_tree_depth3": {
+   "tp": 2669,
+   "fp": 1411,
+   "fn": 1846,
+   "precision": 0.654,
+   "recall": 0.591,
+   "f1": 0.621
+  },
+  "single_early_gust_line": {
+   "tp": 3321,
+   "fp": 2106,
+   "fn": 1194,
+   "precision": 0.612,
+   "recall": 0.736,
+   "f1": 0.668
+  },
+  "mph25_early_gust": {
+   "tp": 4325,
+   "fp": 7214,
+   "fn": 190,
+   "precision": 0.375,
+   "recall": 0.958,
+   "f1": 0.539
+  }
+ },
+ "by_winter": {
+  "2016-17": {
+   "model1_boosted_trees": {
+    "tp": 430,
+    "fp": 129,
+    "fn": 94,
+    "precision": 0.769,
+    "recall": 0.821,
+    "f1": 0.794
+   },
+   "model2_tree_depth3": {
+    "tp": 224,
+    "fp": 46,
+    "fn": 300,
+    "precision": 0.83,
+    "recall": 0.427,
+    "f1": 0.564
+   },
+   "single_early_gust_line": {
+    "tp": 399,
+    "fp": 115,
+    "fn": 125,
+    "precision": 0.776,
+    "recall": 0.761,
+    "f1": 0.769
+   },
+   "mph25_early_gust": {
+    "tp": 498,
+    "fp": 193,
+    "fn": 26,
+    "precision": 0.721,
+    "recall": 0.95,
+    "f1": 0.82
+   }
+  },
+  "2017-18": {
+   "model1_boosted_trees": {
+    "tp": 103,
+    "fp": 41,
+    "fn": 90,
+    "precision": 0.715,
+    "recall": 0.534,
+    "f1": 0.611
+   },
+   "model2_tree_depth3": {
+    "tp": 67,
+    "fp": 13,
+    "fn": 126,
+    "precision": 0.838,
+    "recall": 0.347,
+    "f1": 0.491
+   },
+   "single_early_gust_line": {
+    "tp": 135,
+    "fp": 23,
+    "fn": 58,
+    "precision": 0.854,
+    "recall": 0.699,
+    "f1": 0.769
+   },
+   "mph25_early_gust": {
+    "tp": 184,
+    "fp": 78,
+    "fn": 9,
+    "precision": 0.702,
+    "recall": 0.953,
+    "f1": 0.809
+   }
+  },
+  "2018-19": {
+   "model1_boosted_trees": {
+    "tp": 440,
+    "fp": 73,
+    "fn": 189,
+    "precision": 0.858,
+    "recall": 0.7,
+    "f1": 0.771
+   },
+   "model2_tree_depth3": {
+    "tp": 442,
+    "fp": 62,
+    "fn": 187,
+    "precision": 0.877,
+    "recall": 0.703,
+    "f1": 0.78
+   },
+   "single_early_gust_line": {
+    "tp": 504,
+    "fp": 71,
+    "fn": 125,
+    "precision": 0.877,
+    "recall": 0.801,
+    "f1": 0.837
+   },
+   "mph25_early_gust": {
+    "tp": 624,
+    "fp": 114,
+    "fn": 5,
+    "precision": 0.846,
+    "recall": 0.992,
+    "f1": 0.913
+   }
+  },
+  "2019-20": {
+   "model1_boosted_trees": {
+    "tp": 101,
+    "fp": 23,
+    "fn": 94,
+    "precision": 0.815,
+    "recall": 0.518,
+    "f1": 0.633
+   },
+   "model2_tree_depth3": {
+    "tp": 140,
+    "fp": 32,
+    "fn": 55,
+    "precision": 0.814,
+    "recall": 0.718,
+    "f1": 0.763
+   },
+   "single_early_gust_line": {
+    "tp": 163,
+    "fp": 38,
+    "fn": 32,
+    "precision": 0.811,
+    "recall": 0.836,
+    "f1": 0.823
+   },
+   "mph25_early_gust": {
+    "tp": 192,
+    "fp": 84,
+    "fn": 3,
+    "precision": 0.696,
+    "recall": 0.985,
+    "f1": 0.815
+   }
+  },
+  "2020-21": {
+   "model1_boosted_trees": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   },
+   "model2_tree_depth3": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   },
+   "single_early_gust_line": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   },
+   "mph25_early_gust": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   }
+  },
+  "2021-22": {
+   "model1_boosted_trees": {
+    "tp": 328,
+    "fp": 341,
+    "fn": 90,
+    "precision": 0.49,
+    "recall": 0.785,
+    "f1": 0.603
+   },
+   "model2_tree_depth3": {
+    "tp": 290,
+    "fp": 287,
+    "fn": 128,
+    "precision": 0.503,
+    "recall": 0.694,
+    "f1": 0.583
+   },
+   "single_early_gust_line": {
+    "tp": 345,
+    "fp": 442,
+    "fn": 73,
+    "precision": 0.438,
+    "recall": 0.825,
+    "f1": 0.573
+   },
+   "mph25_early_gust": {
+    "tp": 408,
+    "fp": 1629,
+    "fn": 10,
+    "precision": 0.2,
+    "recall": 0.976,
+    "f1": 0.332
+   }
+  },
+  "2022-23": {
+   "model1_boosted_trees": {
+    "tp": 925,
+    "fp": 418,
+    "fn": 521,
+    "precision": 0.689,
+    "recall": 0.64,
+    "f1": 0.663
+   },
+   "model2_tree_depth3": {
+    "tp": 764,
+    "fp": 299,
+    "fn": 682,
+    "precision": 0.719,
+    "recall": 0.528,
+    "f1": 0.609
+   },
+   "single_early_gust_line": {
+    "tp": 1019,
+    "fp": 731,
+    "fn": 427,
+    "precision": 0.582,
+    "recall": 0.705,
+    "f1": 0.638
+   },
+   "mph25_early_gust": {
+    "tp": 1357,
+    "fp": 2486,
+    "fn": 89,
+    "precision": 0.353,
+    "recall": 0.938,
+    "f1": 0.513
+   }
+  },
+  "2023-24": {
+   "model1_boosted_trees": {
+    "tp": 547,
+    "fp": 523,
+    "fn": 199,
+    "precision": 0.511,
+    "recall": 0.733,
+    "f1": 0.602
+   },
+   "model2_tree_depth3": {
+    "tp": 558,
+    "fp": 578,
+    "fn": 188,
+    "precision": 0.491,
+    "recall": 0.748,
+    "f1": 0.593
+   },
+   "single_early_gust_line": {
+    "tp": 520,
+    "fp": 593,
+    "fn": 226,
+    "precision": 0.467,
+    "recall": 0.697,
+    "f1": 0.559
+   },
+   "mph25_early_gust": {
+    "tp": 726,
+    "fp": 2380,
+    "fn": 20,
+    "precision": 0.234,
+    "recall": 0.973,
+    "f1": 0.377
+   }
+  },
+  "2024-25": {
+   "model1_boosted_trees": {
+    "tp": 149,
+    "fp": 67,
+    "fn": 134,
+    "precision": 0.69,
+    "recall": 0.527,
+    "f1": 0.597
+   },
+   "model2_tree_depth3": {
+    "tp": 163,
+    "fp": 84,
+    "fn": 120,
+    "precision": 0.66,
+    "recall": 0.576,
+    "f1": 0.615
+   },
+   "single_early_gust_line": {
+    "tp": 189,
+    "fp": 75,
+    "fn": 94,
+    "precision": 0.716,
+    "recall": 0.668,
+    "f1": 0.691
+   },
+   "mph25_early_gust": {
+    "tp": 264,
+    "fp": 202,
+    "fn": 19,
+    "precision": 0.567,
+    "recall": 0.933,
+    "f1": 0.705
+   }
+  },
+  "2025-26": {
+   "model1_boosted_trees": {
+    "tp": 50,
+    "fp": 21,
+    "fn": 31,
+    "precision": 0.704,
+    "recall": 0.617,
+    "f1": 0.658
+   },
+   "model2_tree_depth3": {
+    "tp": 21,
+    "fp": 10,
+    "fn": 60,
+    "precision": 0.677,
+    "recall": 0.259,
+    "f1": 0.375
+   },
+   "single_early_gust_line": {
+    "tp": 47,
+    "fp": 18,
+    "fn": 34,
+    "precision": 0.723,
+    "recall": 0.58,
+    "f1": 0.644
+   },
+   "mph25_early_gust": {
+    "tp": 72,
+    "fp": 48,
+    "fn": 9,
+    "precision": 0.6,
+    "recall": 0.889,
+    "f1": 0.716
+   }
+  }
+ },
+ "model2_rules_all_winters": "|--- early_gust <= 71.00\n|   |--- new_snow24 <= 4.05\n|   |   |--- early_gust <= 59.45\n|   |   |   |--- class: 0\n|   |   |--- early_gust >  59.45\n|   |   |   |--- class: 0\n|   |--- new_snow24 >  4.05\n|   |   |--- temp_base <= 29.92\n|   |   |   |--- class: 0\n|   |   |--- temp_base >  29.92\n|   |   |   |--- class: 1\n|--- early_gust >  71.00\n|   |--- avy <= 3.50\n|   |   |--- new_snow24 <= 1.95\n|   |   |   |--- class: 1\n|   |   |--- new_snow24 >  1.95\n|   |   |   |--- class: 1\n|   |--- avy >  3.50\n|   |   |--- prec24s <= 4.10\n|   |   |   |--- class: 1\n|   |   |--- prec24s >  4.10\n|   |   |   |--- class: 1\n"
+}

@@ -1,0 +1,336 @@
+{
+ "view": "the 8 core winters (2018-19 to 2025-26), named-roster lift-days only",
+ "rows": 11905,
+ "winters": [
+  "2018-19",
+  "2019-20",
+  "2020-21",
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26"
+ ],
+ "inputs": [
+  "early_gust",
+  "early_spd",
+  "avy",
+  "temp_base",
+  "swe24",
+  "swe6",
+  "prec24s",
+  "new_snow24",
+  "month",
+  "side_palisades",
+  "lift (one-hot)"
+ ],
+ "pooled": {
+  "model1_boosted_trees": {
+   "tp": 1978,
+   "fp": 1432,
+   "fn": 1319,
+   "precision": 0.58,
+   "recall": 0.6,
+   "f1": 0.59
+  },
+  "model2_tree_depth3": {
+   "tp": 1817,
+   "fp": 1123,
+   "fn": 1480,
+   "precision": 0.618,
+   "recall": 0.551,
+   "f1": 0.583
+  },
+  "single_early_gust_line": {
+   "tp": 2357,
+   "fp": 1943,
+   "fn": 940,
+   "precision": 0.548,
+   "recall": 0.715,
+   "f1": 0.621
+  },
+  "mph25_early_gust": {
+   "tp": 3156,
+   "fp": 6943,
+   "fn": 141,
+   "precision": 0.313,
+   "recall": 0.957,
+   "f1": 0.471
+  }
+ },
+ "by_winter": {
+  "2018-19": {
+   "model1_boosted_trees": {
+    "tp": 352,
+    "fp": 68,
+    "fn": 226,
+    "precision": 0.838,
+    "recall": 0.609,
+    "f1": 0.705
+   },
+   "model2_tree_depth3": {
+    "tp": 334,
+    "fp": 36,
+    "fn": 244,
+    "precision": 0.903,
+    "recall": 0.578,
+    "f1": 0.705
+   },
+   "single_early_gust_line": {
+    "tp": 461,
+    "fp": 71,
+    "fn": 117,
+    "precision": 0.867,
+    "recall": 0.798,
+    "f1": 0.831
+   },
+   "mph25_early_gust": {
+    "tp": 573,
+    "fp": 114,
+    "fn": 5,
+    "precision": 0.834,
+    "recall": 0.991,
+    "f1": 0.906
+   }
+  },
+  "2019-20": {
+   "model1_boosted_trees": {
+    "tp": 96,
+    "fp": 19,
+    "fn": 98,
+    "precision": 0.835,
+    "recall": 0.495,
+    "f1": 0.621
+   },
+   "model2_tree_depth3": {
+    "tp": 83,
+    "fp": 17,
+    "fn": 111,
+    "precision": 0.83,
+    "recall": 0.428,
+    "f1": 0.565
+   },
+   "single_early_gust_line": {
+    "tp": 163,
+    "fp": 38,
+    "fn": 31,
+    "precision": 0.811,
+    "recall": 0.84,
+    "f1": 0.825
+   },
+   "mph25_early_gust": {
+    "tp": 191,
+    "fp": 84,
+    "fn": 3,
+    "precision": 0.695,
+    "recall": 0.985,
+    "f1": 0.814
+   }
+  },
+  "2020-21": {
+   "model1_boosted_trees": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   },
+   "model2_tree_depth3": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   },
+   "single_early_gust_line": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   },
+   "mph25_early_gust": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": 0.0
+   }
+  },
+  "2021-22": {
+   "model1_boosted_trees": {
+    "tp": 246,
+    "fp": 313,
+    "fn": 117,
+    "precision": 0.44,
+    "recall": 0.678,
+    "f1": 0.534
+   },
+   "model2_tree_depth3": {
+    "tp": 238,
+    "fp": 262,
+    "fn": 125,
+    "precision": 0.476,
+    "recall": 0.656,
+    "f1": 0.552
+   },
+   "single_early_gust_line": {
+    "tp": 291,
+    "fp": 455,
+    "fn": 72,
+    "precision": 0.39,
+    "recall": 0.802,
+    "f1": 0.525
+   },
+   "mph25_early_gust": {
+    "tp": 353,
+    "fp": 1629,
+    "fn": 10,
+    "precision": 0.178,
+    "recall": 0.972,
+    "f1": 0.301
+   }
+  },
+  "2022-23": {
+   "model1_boosted_trees": {
+    "tp": 708,
+    "fp": 500,
+    "fn": 497,
+    "precision": 0.586,
+    "recall": 0.588,
+    "f1": 0.587
+   },
+   "model2_tree_depth3": {
+    "tp": 726,
+    "fp": 480,
+    "fn": 479,
+    "precision": 0.602,
+    "recall": 0.602,
+    "f1": 0.602
+   },
+   "single_early_gust_line": {
+    "tp": 819,
+    "fp": 731,
+    "fn": 386,
+    "precision": 0.528,
+    "recall": 0.68,
+    "f1": 0.595
+   },
+   "mph25_early_gust": {
+    "tp": 1123,
+    "fp": 2486,
+    "fn": 82,
+    "precision": 0.311,
+    "recall": 0.932,
+    "f1": 0.467
+   }
+  },
+  "2023-24": {
+   "model1_boosted_trees": {
+    "tp": 410,
+    "fp": 450,
+    "fn": 226,
+    "precision": 0.477,
+    "recall": 0.645,
+    "f1": 0.548
+   },
+   "model2_tree_depth3": {
+    "tp": 257,
+    "fp": 261,
+    "fn": 379,
+    "precision": 0.496,
+    "recall": 0.404,
+    "f1": 0.445
+   },
+   "single_early_gust_line": {
+    "tp": 392,
+    "fp": 554,
+    "fn": 244,
+    "precision": 0.414,
+    "recall": 0.616,
+    "f1": 0.496
+   },
+   "mph25_early_gust": {
+    "tp": 616,
+    "fp": 2380,
+    "fn": 20,
+    "precision": 0.206,
+    "recall": 0.969,
+    "f1": 0.339
+   }
+  },
+  "2024-25": {
+   "model1_boosted_trees": {
+    "tp": 151,
+    "fp": 71,
+    "fn": 111,
+    "precision": 0.68,
+    "recall": 0.576,
+    "f1": 0.624
+   },
+   "model2_tree_depth3": {
+    "tp": 166,
+    "fp": 57,
+    "fn": 96,
+    "precision": 0.744,
+    "recall": 0.634,
+    "f1": 0.685
+   },
+   "single_early_gust_line": {
+    "tp": 192,
+    "fp": 76,
+    "fn": 70,
+    "precision": 0.716,
+    "recall": 0.733,
+    "f1": 0.725
+   },
+   "mph25_early_gust": {
+    "tp": 243,
+    "fp": 202,
+    "fn": 19,
+    "precision": 0.546,
+    "recall": 0.927,
+    "f1": 0.687
+   }
+  },
+  "2025-26": {
+   "model1_boosted_trees": {
+    "tp": 15,
+    "fp": 11,
+    "fn": 44,
+    "precision": 0.577,
+    "recall": 0.254,
+    "f1": 0.353
+   },
+   "model2_tree_depth3": {
+    "tp": 13,
+    "fp": 10,
+    "fn": 46,
+    "precision": 0.565,
+    "recall": 0.22,
+    "f1": 0.317
+   },
+   "single_early_gust_line": {
+    "tp": 39,
+    "fp": 18,
+    "fn": 20,
+    "precision": 0.684,
+    "recall": 0.661,
+    "f1": 0.672
+   },
+   "mph25_early_gust": {
+    "tp": 57,
+    "fp": 48,
+    "fn": 2,
+    "precision": 0.543,
+    "recall": 0.966,
+    "f1": 0.695
+   }
+  }
+ },
+ "model2_rules_all_winters": "|--- early_gust <= 71.00\n|   |--- swe24 <= 0.95\n|   |   |--- new_snow24 <= 4.05\n|   |   |   |--- class: 0\n|   |   |--- new_snow24 >  4.05\n|   |   |   |--- class: 0\n|   |--- swe24 >  0.95\n|   |   |--- prec24s <= 4.75\n|   |   |   |--- class: 1\n|   |   |--- prec24s >  4.75\n|   |   |   |--- class: 1\n|--- early_gust >  71.00\n|   |--- early_gust <= 84.80\n|   |   |--- early_gust <= 83.20\n|   |   |   |--- class: 1\n|   |   |--- early_gust >  83.20\n|   |   |   |--- class: 0\n|   |--- early_gust >  84.80\n|   |   |--- temp_base <= 28.89\n|   |   |   |--- class: 1\n|   |   |--- temp_base >  28.89\n|   |   |   |--- class: 1\n"
+}
