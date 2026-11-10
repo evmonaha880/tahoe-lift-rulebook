@@ -6,3 +6,5 @@ WINTERS = [f"{y}-{str(y + 1)[2:]}" for y in YEARS]
 
 from zoneinfo import ZoneInfo
 LA = ZoneInfo("America/Los_Angeles")   # the project clock: posts are stamped in Los Angeles time, daylight saving included
+CORE_FIRST_YEAR = 2018                                   # the 8 core winters (2018-19 to 2025-26) are the headline; 2015-18 are scored separately as the 11-winter view
+CORE_WINTERS = [w for w in WINTERS if int(w[:4]) >= CORE_FIRST_YEAR]

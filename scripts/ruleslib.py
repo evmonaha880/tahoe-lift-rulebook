@@ -3,7 +3,9 @@ Used by baselines.py and build_app_model.py (recover_rules.py defines the same f
 Loads data/derived/lift_days.csv, which build_dataset.py writes."""
 import os, csv
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "derived", "lift_days.csv"))))
+LIFT_DAYS = os.environ.get("LIFT_DAYS", "lift_days")             # "lift_days" = the 8 core winters (headline); LIFT_DAYS=lift_days_11w scores all 11 winters (outputs get an _11w suffix)
+SUF = "" if LIFT_DAYS == "lift_days" else "_11w"
+rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "derived", LIFT_DAYS + ".csv"))))
 NUM = ["early_gust", "early_spd", "day_gust", "day_spd", "fnt_day_gust", "temp_base", "avy", "swe24", "swe6", "prec24s", "new_snow24", "depth"]
 for r in rows:
     for k in NUM: r[k] = float(r[k]) if r[k] != "" else None

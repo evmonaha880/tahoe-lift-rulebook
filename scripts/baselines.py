@@ -76,7 +76,7 @@ out["lift_level_without_began_on_hold"]["row_set"] = "expected lift-days, minus 
 out["lift_level"]["row_set"] = "expected lift-days only (scheduled, plus lifts that normally run on a whole-side closure day)"; out["lift_level_all_named"]["row_set"] = "all lift-days incl. unscheduled lifts named only in hold/delay posts (selection-biased)"
 dw = sum(1 for W in WINTERS if out["day_level"][W]["learned"]["f1"] > out["day_level"][W]["mph25"]["f1"])
 out["day_level"]["winters_learned_beats_25mph"] = f"{dw} of {len(WINTERS)}"
-json.dump(out, open(os.path.join(ROOT, "results", "baselines.json"), "w"), indent=1)
+json.dump(out, open(os.path.join(ROOT, "results", f"baselines{SUF}.json"), "w"), indent=1)
 # ---------------- print
 print("DAY LEVEL (learned day-gust line vs 25 mph)")
 for W in WINTERS + ["pooled"]:
@@ -120,13 +120,13 @@ for W in WINTERS:
     if W in L: md.append(f"| {W} | {L[W]['n_lift_days']:,} | " + " | ".join(str(L[W][m]['f1']) for m in names) + " |")
 big = [W for W in WINTERS if W in L and L[W]["n_lift_days"] >= 400]
 _sd = collections.defaultdict(list)
-for _r in csv.DictReader(open(os.path.join(ROOT, "data", "derived", "lift_days.csv"))):
+for _r in csv.DictReader(open(os.path.join(ROOT, "data", "derived", LIFT_DAYS + ".csv"))):
     if _r["side"] in ("palisades", "alpine") and _r["in_season"] == "1" and _r["covid_era"] == "": _sd[(_r["date"], _r["side"])].append(_r)
 _named = {k for k, rs in _sd.items() if any(x["scheduled"] == "True" for x in rs)}
 def _hi(keys):
     g = [float(x[0]["day_gust"]) for k, x in _sd.items() if k in keys and x[0]["day_gust"] not in ("", None)]; return (sum(v >= 60 for v in g) / len(g)) if g else 0
 out["coverage"] = {"side_days": len(_sd), "named_side_days": len(_named), "named_share": round(len(_named) / max(len(_sd), 1), 3), "gust60_named": round(_hi(_named), 3), "gust60_left_out": round(_hi(set(_sd) - _named), 3)}
-json.dump(out, open(os.path.join(ROOT, "results", "baselines.json"), "w"), indent=1)
+json.dump(out, open(os.path.join(ROOT, "results", f"baselines{SUF}.json"), "w"), indent=1)
 _cov = (f"**Coverage.** Lift-level rules are fitted on the {len(_named):,} of {len(_sd):,} side-days ({100*len(_named)/max(len(_sd),1):.0f}%) whose schedule post names the lifts, mostly 2021-22 to 2023-24. "
         f"The side-days left out are windier: {100*_hi(set(_sd)-_named):.0f}% have a crest gust of 60 mph or more, against {100*_hi(_named):.0f}% of the named ones. A sensitivity run that infers rosters where a stated lift count allows it (`docs/SENSITIVITY.md`) is data-limited and moves the pooled scores by about 0.01.")
 md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; the other winters score under 60 lift-days each because most of their posts give a count (\"32 lifts scheduled\") rather than names.", "",
@@ -149,5 +149,5 @@ md += ["", f"On this set the 25 mph rule has the best F1 in {LA['winters_won_by_
        "- Per-lift results rest mainly on three winters (2021-22 to 2023-24) that list lifts by name on most days.",
        "- Wind features are crest sensors (Siberia, Alpine Summit); the Funitel-top wind is partly an estimate, and the avalanche and new-snow fixes are described in DATA_SOURCES.md.",
        "- No rule here is a forecast of tomorrow: day-level inputs use that day's own maximum gust."]
-open(os.path.join(ROOT, "docs", "RESULTS.md"), "w").write("\n".join(md) + "\n")
-print("wrote docs/RESULTS.md and results/baselines.json")
+open(os.path.join(ROOT, "docs", f"RESULTS{SUF}.md"), "w").write("\n".join(md) + "\n")
+print(f"wrote docs/RESULTS{SUF}.md and results/baselines{SUF}.json")

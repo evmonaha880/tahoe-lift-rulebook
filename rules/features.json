@@ -109,6 +109,12 @@
    "unit": "",
    "note": "'measured' or 'estimated' (regression on Siberia and Belmont) for fnt_day_gust"
   },
+  "gust_src_early": {
+   "role": "quality_flag",
+   "asof": "morning (known by 9am)",
+   "unit": "",
+   "note": "where early_gust came from: 'station' (15-minute ridge stations), 'estimate' (2015-18 winters without station files: ERA5 and SNOTEL regression from weather_common.csv, misses by about 7 to 11 mph), or blank (no gust)"
+  },
   "sib_h40": {
    "role": "feature",
    "asof": "full-day hindsight",

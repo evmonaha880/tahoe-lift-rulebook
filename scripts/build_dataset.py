@@ -117,6 +117,9 @@ def hour_feats(W, date, t):
     h = int(t[:2]); g = lambda hh, k: [x for x in W.get((date, hh), {}).get("Siberia", {}).get(k, [])]
     now = g(h, "gust"); pri = [x for hh in range(h - 3, h + 1) for x in g(hh, "gust")]; sp = g(h, "spd")
     return {"gust_at_event": max(now) if now else "", "gust_prior3h": max(pri) if pri else "", "spd_at_event": max(sp) if sp else ""}
+WEATHER_COMMON = {}                                               # date -> row of data/derived/weather_common.csv (one weather table for all 11 winters; scripts/build_weather_common.py)
+_wcp = os.path.join(R, "derived", "weather_common.csv")
+if os.path.exists(_wcp): WEATHER_COMMON = {_r["date"]: _r for _r in csv.DictReader(open(_wcp))}
 DROPOUT = set()                                                    # (date, station) where the sensor read 0.0 while another ridge station gusted over 20 mph (scripts/weather_qc.py)
 _qc = os.path.join(R, "derived", "weather_qc.csv")
 if os.path.exists(_qc):
@@ -321,6 +324,12 @@ for Y in YEARS:
                 elif in_window(WIN, l_, date): exp_basis[l_] = "window"; lifts = set(lifts) | {l_}
         if not lifts: continue
         f = feats(weather, date, SN)
+        f["gust_src_early"] = "station" if f["early_gust"] is not None else ""
+        if Y < 2018 and date in WEATHER_COMMON:                      # 2015-18: no 15-minute station files in this loader; take the known-by-9am gust from the common weather table (station where it has one, else the ERA5+SNOTEL estimate), and say which
+            _wc = WEATHER_COMMON[date]
+            for _k, _c in (("early_gust", "gust_best_early"), ("day_gust", "gust_best_day")):
+                if f[_k] is None and _wc[_c] != "": f[_k] = float(_wc[_c])
+            if f["early_gust"] is not None: f["gust_src_early"] = _wc["gust_src_early"]
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
         f["new_snow24"] = depth_gain(DEPTH, date)                   # Alpine base depth sensor, dropout-filtered
         f["fnt_measured"] = f["fnt_day_gust"]                         # raw station reading (blank when the station was off)
@@ -359,12 +368,14 @@ for Y in YEARS:
                    "in_heldout_posts": int(any(e["split"] == "heldout" for e in mine))}
             rows.append(row)
 out = os.path.join(R, "derived", "lift_days.csv")
-with open(out, "w", newline="") as fh:
-    w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); from config import CORE_WINTERS
+for _path, _rs in ((out, [r for r in rows if r["winter"] in CORE_WINTERS]), (os.path.join(R, "derived", "lift_days_11w.csv"), rows)):    # lift_days.csv = the 8 core winters (the headline, unchanged); lift_days_11w.csv = all winters passed, including 2015-18
+    with open(_path, "w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(_rs)
 json.dump(EFFECTIVE, open(os.path.join(R, "derived", "season_windows_effective.json"), "w"), indent=1)
 with open(os.path.join(R, "derived", "lift_windows.csv"), "w", newline="") as fh:        # staged openings: when each lift first and last had evidence of running (decision 65); trusted = the side had enough named rosters that winter
     w2 = csv.writer(fh); w2.writerow(["winter", "side", "lift", "first_day", "last_day", "side_trusted"]); w2.writerows(WROWS)
-n = len(rows); print(f"{n} lift-days -> {out}")
+n = len([r for r in rows if r["winter"] in CORE_WINTERS]); print(f"{n} lift-days -> {out} (and {len(rows)} in lift_days_11w.csv)")
 for W in sorted({r['winter'] for r in rows}):
     x = [r for r in rows if r['winter'] == W]
     print(W, len(x), "lift-days;", sum(r['held'] for r in x), "held;", sum(r['held_wind'] for r in x), "wind-stated;",
