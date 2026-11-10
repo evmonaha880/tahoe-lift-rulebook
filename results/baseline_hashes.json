@@ -34,8 +34,8 @@
 "docs/app/model.js": "32e73e4207fe6261",
 "results/baselines.json": "13107e042e95ab36",
 "results/forecast_value.json": "a9fdb96b2cbc2425",
-"results/loo_results.json": "35a75840ce4819c0",
+"results/loo_results.json": "1bf33589a1a829af",
 "results/weather_common.json": "0e57cdfdb987896d",
-"rules/rulebook_palisades.json": "77d674bea7d47c06",
+"rules/rulebook_palisades.json": "9dff1dde963a3583",
 "rules/winters.json": "f9f6f8b5e1b279d8"
 }

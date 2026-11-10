@@ -31,7 +31,7 @@ def fit(rs, y, feats=FEATS, ge=True):
         step = max(1, len(vals) // 40)
         for t in vals[::step]:
             s = score([r for r in rs if r[f] is not None], lambda r: r[f] >= t, y)
-            if best is None or s["f1"] > best[0]["f1"]: best = (s, f, t)
+            if best is None or f1(s["tp"], s["fp"], s["fn"]) > f1(best[0]["tp"], best[0]["fp"], best[0]["fn"]): best = (s, f, t)   # exact F1, as in ruleslib.fit (the rounded value let near-ties pick the earlier threshold)
     return best
 BASE = lambda r: r["day_gust"] is not None and r["day_gust"] >= 25
 res = {"day_level": {}, "lift_level": {}}
