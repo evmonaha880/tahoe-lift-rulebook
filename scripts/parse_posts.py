@@ -15,7 +15,7 @@ def cause_in(s):
         if re.search(p, s, re.I): return c
     return None
 
-# ---- RULES: id, event_type, description. The code below applies them in this order; first matching rule claims the sentence.
+# ---- RULES: the ledger of every rule id the parser emits (id, event_type, description); scripts/check_data.py fails if an emitted id is missing here. Which rule claims a sentence is decided by the order of the code below, not by the order of this list.
 RULES = [
     ("P-001", "scheduled_opening", "Post starts 'Palisades'/'Alpine' and gives 'N lifts', 'Open at <time>' or 'lifts scheduled for'"),
     ("P-002", "scheduled_opening", "'Open:' / 'Now open:' / 'Operating Update' lift roster (status snapshot, lifts listed with no verb)"),
@@ -35,6 +35,31 @@ RULES = [
     ("P-070", "partial", "Downloads only / mid-station only / sightseeing only / closing at <time> for maintenance"),
     ("P-060", "other", "Weather report: starts 'Palisades:' / 'Alpine:' / 'Snow and Weather:' with no lift roster (filtered)"),
     ("P-090", "other", "Road status, promotions, safety message, events (filtered)"),
+    # ---- Variant and fallback rules, listed so every emitted rule id is in this ledger (added 2026-11-10; they were missing before).
+    ("P-001a", "scheduled_opening", "Roster with asterisks ('noted with * below: Tram*, Funitel'): each lift is a scheduled opening"),
+    ("P-001p", "scheduled_opening", "'We plan to spin/run/open ...' morning plan: a reopening read becomes a scheduled opening"),
+    ("P-001s", "scheduled_opening", "Scheduled opening by substitution ('X will run today instead of Y') or from a status-list roster"),
+    ("P-010w", "hold_start", "Whole-side wording with no lift named: 'all operations ... on hold', 'the scheduled lifts are on hold' (lift = the side)"),
+    ("P-012a", "warning", "Asterisked lift in an asterisk roster: a wind warning for that lift"),
+    ("P-014e", "hold_start", "Group scope with named exceptions ('all upper mountain lifts except ...' on hold, or closed): lift = the group, exceptions listed"),
+    ("P-014h", "closed_day", "'All lifts on hold will be closed for the remainder of the day' (lift = ALL_ON_HOLD, with exceptions)"),
+    ("P-014o", "hold_start", "Whole-side hold or delay with the lifts that are still running as exceptions ('only X is open')"),
+    ("P-020o", "closed_day", "'<lifts> are off (of) the schedule' after the same lifts were rostered earlier in the post: the roster is replaced by closures"),
+    ("P-020s", "closed_day", "The lift that was swapped out in an 'X instead of Y' substitution, or an excluded lift in a roster"),
+    ("P-030w", "delay", "Whole-side delay wording ('all lifts delayed', 'all scheduled lifts will be delayed') (lift = the side)"),
+    ("P-071", "partial", "Gondola wind alert stage (Base to Base): an operating status, not a hedge"),
+    ("P-081", "delay", "Squaw-era (2015-18): start-time wording ('anticipated start time of 10am', 'projected for 9:30') or late opening; delay if later than 9am, else scheduled"),
+    ("P-082", "reopen", "Squaw-era: 'Open now: <lifts>' / 'Operations: <lifts>' roster (scheduled when the post says 'operations')"),
+    ("P-083", "hold_start", "Squaw-era: '<lifts> joined the wind hold list'"),
+    ("P-084", "scheduled_opening", "Squaw-era: '<lifts> added to tomorrow's/today's schedule'"),
+    ("P-085", "hold_start", "Squaw-era: 'Upper Mtn starts on windhold' (lift = UPPER_MOUNTAIN)"),
+    ("P-086", "hold_start", "Squaw-era: '<lifts> experiencing electrical/mechanical/technical issues' (mechanical hold)"),
+    ("P-087", "closed_day", "Squaw-era: '<lifts> officially closed for the day' closure wording"),
+    ("P-088", "reopen", "Squaw-era: bare '<lifts> open' / 'now open' with no schedule words"),
+    ("P-089", "hold_start", "Squaw-era: '<lifts> on <cause> hold' / 'starts the day on hold'"),
+    ("P-08a", "hold_start", "Squaw-era: 'WIND HOLDS except <lifts>' (lift = ALL_OTHER, the named lifts are exceptions)"),
+    ("P-08b", "delay", "Squaw-era: '<lift> at <time>' (delay if later than 9am, else scheduled opening)"),
+    ("P-099", "scheduled_opening", "Fallback: a lift named in a status sentence no earlier rule claimed; the event type follows the sentence (scheduled, reopen, closed, delay or hold)"),
 ]
 RID = {r[0]: r for r in RULES}
 

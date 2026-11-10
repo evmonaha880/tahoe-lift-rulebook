@@ -160,5 +160,221 @@
    "2015-16"
   ],
   "status": "proposed"
+ },
+ {
+  "rule_id": "P-001a",
+  "event_type": "scheduled_opening",
+  "pattern": "Roster with asterisks ('noted with * below: Tram*, Funitel'): each lift is a scheduled opening",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-001p",
+  "event_type": "scheduled_opening",
+  "pattern": "'We plan to spin/run/open ...' morning plan: a reopening read becomes a scheduled opening",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-001s",
+  "event_type": "scheduled_opening",
+  "pattern": "Scheduled opening by substitution ('X will run today instead of Y') or from a status-list roster",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-010w",
+  "event_type": "hold_start",
+  "pattern": "Whole-side wording with no lift named: 'all operations ... on hold', 'the scheduled lifts are on hold' (lift = the side)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-012a",
+  "event_type": "warning",
+  "pattern": "Asterisked lift in an asterisk roster: a wind warning for that lift",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-014e",
+  "event_type": "hold_start",
+  "pattern": "Group scope with named exceptions ('all upper mountain lifts except ...' on hold, or closed): lift = the group, exceptions listed",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-014h",
+  "event_type": "closed_day",
+  "pattern": "'All lifts on hold will be closed for the remainder of the day' (lift = ALL_ON_HOLD, with exceptions)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-014o",
+  "event_type": "hold_start",
+  "pattern": "Whole-side hold or delay with the lifts that are still running as exceptions ('only X is open')",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-020o",
+  "event_type": "closed_day",
+  "pattern": "'<lifts> are off (of) the schedule' after the same lifts were rostered earlier in the post: the roster is replaced by closures",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-020s",
+  "event_type": "closed_day",
+  "pattern": "The lift that was swapped out in an 'X instead of Y' substitution, or an excluded lift in a roster",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-030w",
+  "event_type": "delay",
+  "pattern": "Whole-side delay wording ('all lifts delayed', 'all scheduled lifts will be delayed') (lift = the side)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-071",
+  "event_type": "partial",
+  "pattern": "Gondola wind alert stage (Base to Base): an operating status, not a hedge",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-081",
+  "event_type": "delay",
+  "pattern": "Squaw-era (2015-18): start-time wording ('anticipated start time of 10am', 'projected for 9:30') or late opening; delay if later than 9am, else scheduled",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-082",
+  "event_type": "reopen",
+  "pattern": "Squaw-era: 'Open now: <lifts>' / 'Operations: <lifts>' roster (scheduled when the post says 'operations')",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-083",
+  "event_type": "hold_start",
+  "pattern": "Squaw-era: '<lifts> joined the wind hold list'",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-084",
+  "event_type": "scheduled_opening",
+  "pattern": "Squaw-era: '<lifts> added to tomorrow's/today's schedule'",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-085",
+  "event_type": "hold_start",
+  "pattern": "Squaw-era: 'Upper Mtn starts on windhold' (lift = UPPER_MOUNTAIN)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-086",
+  "event_type": "hold_start",
+  "pattern": "Squaw-era: '<lifts> experiencing electrical/mechanical/technical issues' (mechanical hold)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-087",
+  "event_type": "closed_day",
+  "pattern": "Squaw-era: '<lifts> officially closed for the day' closure wording",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-088",
+  "event_type": "reopen",
+  "pattern": "Squaw-era: bare '<lifts> open' / 'now open' with no schedule words",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-089",
+  "event_type": "hold_start",
+  "pattern": "Squaw-era: '<lifts> on <cause> hold' / 'starts the day on hold'",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-08a",
+  "event_type": "hold_start",
+  "pattern": "Squaw-era: 'WIND HOLDS except <lifts>' (lift = ALL_OTHER, the named lifts are exceptions)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-08b",
+  "event_type": "delay",
+  "pattern": "Squaw-era: '<lift> at <time>' (delay if later than 9am, else scheduled opening)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
+ },
+ {
+  "rule_id": "P-099",
+  "event_type": "scheduled_opening",
+  "pattern": "Fallback: a lift named in a status sentence no earlier rule claimed; the event type follows the sentence (scheduled, reopen, closed, delay or hold)",
+  "winters": [
+   "2015-16"
+  ],
+  "status": "proposed"
  }
 ]
