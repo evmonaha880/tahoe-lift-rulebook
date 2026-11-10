@@ -260,16 +260,16 @@
  "lift_level": {
   "2018-19": {
    "learned": {
-    "tp": 406,
+    "tp": 402,
     "fp": 42,
-    "fn": 199,
-    "f1": 0.771
+    "fn": 187,
+    "f1": 0.778
    },
    "baseline": {
-    "tp": 603,
+    "tp": 587,
     "fp": 100,
     "fn": 2,
-    "f1": 0.922
+    "f1": 0.92
    }
   },
   "2019-20": {
@@ -302,10 +302,10 @@
   },
   "2022-23": {
    "learned": {
-    "tp": 815,
-    "fp": 385,
-    "fn": 561,
-    "f1": 0.633
+    "tp": 816,
+    "fp": 383,
+    "fn": 560,
+    "f1": 0.634
    },
    "baseline": {
     "tp": 1340,
@@ -316,10 +316,10 @@
   },
   "2023-24": {
    "learned": {
-    "tp": 522,
-    "fp": 457,
-    "fn": 208,
-    "f1": 0.611
+    "tp": 519,
+    "fp": 442,
+    "fn": 211,
+    "f1": 0.614
    },
    "baseline": {
     "tp": 725,
@@ -330,10 +330,10 @@
   },
   "2024-25": {
    "learned": {
-    "tp": 154,
-    "fp": 53,
-    "fn": 97,
-    "f1": 0.672
+    "tp": 153,
+    "fp": 52,
+    "fn": 98,
+    "f1": 0.671
    },
    "baseline": {
     "tp": 245,
@@ -431,24 +431,24 @@
   "2018-19": {
    "rule": "day_gust >= 61.6",
    "learned": {
-    "tp": 451,
+    "tp": 444,
     "fp": 48,
-    "fn": 196,
-    "n": 774,
-    "precision": 0.904,
-    "recall": 0.697,
-    "f1": 0.787,
-    "base_rate": 0.836
+    "fn": 185,
+    "n": 756,
+    "precision": 0.902,
+    "recall": 0.706,
+    "f1": 0.792,
+    "base_rate": 0.832
    },
    "baseline": {
-    "tp": 644,
+    "tp": 626,
     "fp": 119,
     "fn": 3,
-    "n": 774,
-    "precision": 0.844,
+    "n": 756,
+    "precision": 0.84,
     "recall": 0.995,
-    "f1": 0.913,
-    "base_rate": 0.836
+    "f1": 0.911,
+    "base_rate": 0.832
    },
    "lift_sensitivity": {
     "Emigrant": 0.92,
@@ -539,10 +539,10 @@
     "Solitude": 0.64,
     "Silverado": 0.62,
     "Siberia": 0.6,
-    "Hot Wheels": 0.59,
     "Scott": 0.58,
     "Lakeview": 0.58,
-    "Big Blue": 0.54,
+    "Big Blue": 0.53,
+    "Hot Wheels": 0.53,
     "Yellow": 0.5,
     "Ahsoka Carpet": 0.49,
     "Far East": 0.47,
@@ -555,7 +555,7 @@
     "Gold Coast": 0.45,
     "Funitel": 0.44,
     "ALL_ON_HOLD": 0.43,
-    "Roundhouse": 0.39,
+    "Roundhouse": 0.38,
     "KT-22": 0.38,
     "Kaya Carpet": 0.36,
     "Little Carpet": 0.36,
@@ -564,10 +564,10 @@
     "Palisades Carpets": 0.31,
     "Red Dog": 0.31,
     "Treeline Cirque": 0.29,
-    "Subway": 0.28,
     "Resort Chair": 0.28,
-    "Alpine Meadow": 0.24,
+    "Subway": 0.28,
     "Big Carpet": 0.24,
+    "Alpine Meadow": 0.23,
     "Alpine Carpets": 0.22
    }
   },
@@ -612,11 +612,11 @@
     "Olympic Lady": 0.64,
     "Lakeview": 0.64,
     "Scott": 0.64,
-    "Hot Wheels": 0.59,
     "Silverado": 0.56,
-    "Big Blue": 0.56,
     "Yellow": 0.55,
+    "Big Blue": 0.54,
     "Shirley Lake": 0.53,
+    "Hot Wheels": 0.53,
     "Gold Coast": 0.51,
     "Sherwood": 0.51,
     "Wa She Shu": 0.5,
@@ -625,21 +625,21 @@
     "Kangaroo": 0.48,
     "Far East": 0.47,
     "Exhibition": 0.45,
-    "Roundhouse": 0.44,
     "ALL_ON_HOLD": 0.43,
+    "Roundhouse": 0.43,
     "KT-22": 0.41,
     "Little Carpet": 0.39,
     "Kaya Carpet": 0.36,
     "Red Dog": 0.34,
     "SnoVentures": 0.34,
     "First Venture": 0.32,
-    "Subway": 0.31,
     "Resort Chair": 0.3,
     "Treeline Cirque": 0.3,
+    "Subway": 0.3,
     "Palisades Carpets": 0.3,
     "Big Carpet": 0.29,
     "Tucker Carpet": 0.29,
-    "Alpine Meadow": 0.27,
+    "Alpine Meadow": 0.26,
     "Alpine Carpets": 0.24
    }
   },
@@ -680,13 +680,13 @@
     "Belmont": 0.69,
     "Broken Arrow": 0.69,
     "Solitude": 0.66,
-    "Big Blue": 0.64,
     "Scott": 0.63,
+    "Big Blue": 0.62,
     "Olympic Lady": 0.62,
     "Lakeview": 0.62,
-    "Hot Wheels": 0.59,
     "Siberia": 0.59,
     "High Camp Carpet": 0.57,
+    "Hot Wheels": 0.53,
     "Yellow": 0.52,
     "Ahsoka Carpet": 0.49,
     "Wa She Shu": 0.48,
@@ -700,16 +700,16 @@
     "KT-22": 0.38,
     "Little Carpet": 0.37,
     "SnoVentures": 0.36,
-    "Roundhouse": 0.36,
+    "Roundhouse": 0.35,
     "Kaya Carpet": 0.33,
     "Tucker Carpet": 0.33,
     "Red Dog": 0.31,
     "First Venture": 0.3,
     "Resort Chair": 0.26,
     "Treeline Cirque": 0.26,
-    "Subway": 0.26,
     "Palisades Carpets": 0.26,
-    "Alpine Meadow": 0.24,
+    "Subway": 0.25,
+    "Alpine Meadow": 0.22,
     "Big Carpet": 0.22,
     "Alpine Carpets": 0.19
    }
@@ -756,9 +756,9 @@
     "Scott": 0.65,
     "Lakeview": 0.64,
     "Silverado": 0.63,
-    "Hot Wheels": 0.59,
-    "Big Blue": 0.58,
+    "Big Blue": 0.56,
     "Yellow": 0.56,
+    "Hot Wheels": 0.53,
     "Sherwood": 0.52,
     "Wa She Shu": 0.51,
     "Shirley Lake": 0.5,
@@ -775,14 +775,14 @@
     "Palisades Carpets": 0.4,
     "Red Dog": 0.37,
     "Kaya Carpet": 0.36,
-    "Subway": 0.34,
+    "Subway": 0.33,
     "Little Carpet": 0.33,
     "Treeline Cirque": 0.33,
     "Resort Chair": 0.32,
     "SnoVentures": 0.32,
     "Alpine Carpets": 0.3,
-    "Alpine Meadow": 0.29,
     "Tucker Carpet": 0.29,
+    "Alpine Meadow": 0.28,
     "Big Carpet": 0.23
    }
   },
@@ -826,10 +826,10 @@
     "High Camp Carpet": 0.63,
     "Siberia": 0.61,
     "Silverado": 0.6,
-    "Hot Wheels": 0.59,
     "Lakeview": 0.58,
     "Scott": 0.57,
-    "Big Blue": 0.54,
+    "Big Blue": 0.53,
+    "Hot Wheels": 0.53,
     "Ahsoka Carpet": 0.49,
     "Yellow": 0.48,
     "Exhibition": 0.48,
@@ -843,7 +843,7 @@
     "Kangaroo": 0.42,
     "SnoVentures": 0.38,
     "KT-22": 0.38,
-    "Roundhouse": 0.38,
+    "Roundhouse": 0.37,
     "Little Carpet": 0.36,
     "Kaya Carpet": 0.34,
     "Red Dog": 0.32,
@@ -852,10 +852,10 @@
     "Tucker Carpet": 0.29,
     "Treeline Cirque": 0.27,
     "Resort Chair": 0.27,
-    "Subway": 0.26,
+    "Subway": 0.25,
     "Alpine Carpets": 0.22,
-    "Alpine Meadow": 0.22,
-    "Big Carpet": 0.22
+    "Big Carpet": 0.22,
+    "Alpine Meadow": 0.21
    }
   },
   "2025-26": {
@@ -898,10 +898,10 @@
     "High Camp Carpet": 0.62,
     "Siberia": 0.61,
     "Silverado": 0.6,
-    "Hot Wheels": 0.59,
     "Lakeview": 0.59,
     "Scott": 0.59,
-    "Big Blue": 0.54,
+    "Big Blue": 0.53,
+    "Hot Wheels": 0.53,
     "Yellow": 0.5,
     "Wa She Shu": 0.46,
     "Sherwood": 0.46,
@@ -913,7 +913,7 @@
     "Kangaroo": 0.43,
     "ALL_ON_HOLD": 0.43,
     "Funitel": 0.42,
-    "Roundhouse": 0.39,
+    "Roundhouse": 0.38,
     "KT-22": 0.38,
     "SnoVentures": 0.36,
     "Kaya Carpet": 0.34,
@@ -923,10 +923,10 @@
     "Little Carpet": 0.3,
     "Treeline Cirque": 0.29,
     "Tucker Carpet": 0.29,
-    "Subway": 0.28,
+    "Subway": 0.27,
     "Resort Chair": 0.27,
-    "Alpine Meadow": 0.24,
     "Big Carpet": 0.23,
+    "Alpine Meadow": 0.23,
     "Alpine Carpets": 0.21
    }
   }

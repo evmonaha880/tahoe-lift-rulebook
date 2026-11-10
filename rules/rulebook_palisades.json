@@ -99,16 +99,16 @@
  },
  {
   "lift": "Roundhouse",
-  "rule": "early_gust >= 81.0",
+  "rule": "early_gust >= 78.4",
   "tag": "inferred",
-  "scheduled_days": 437,
-  "hold_rate_above": 0.645,
-  "n_above": 93,
-  "hold_rate_below": 0.116,
-  "n_below": 344,
-  "observed_wind_stated_days": 45,
-  "observed_held_days": 100,
-  "unstated_cause_days": 44,
+  "scheduled_days": 434,
+  "hold_rate_above": 0.614,
+  "n_above": 101,
+  "hold_rate_below": 0.105,
+  "n_below": 333,
+  "observed_wind_stated_days": 44,
+  "observed_held_days": 97,
+  "unstated_cause_days": 43,
   "loo": {}
  },
  {
@@ -127,15 +127,15 @@
  },
  {
   "lift": "Alpine Meadow",
-  "rule": "fnt_day_gust >= 43.5",
+  "rule": "fnt_day_gust >= 42.3",
   "tag": "inferred",
-  "scheduled_days": 401,
-  "hold_rate_above": 0.556,
-  "n_above": 54,
-  "hold_rate_below": 0.081,
-  "n_below": 347,
+  "scheduled_days": 398,
+  "hold_rate_above": 0.517,
+  "n_above": 58,
+  "hold_rate_below": 0.074,
+  "n_below": 340,
   "observed_wind_stated_days": 21,
-  "observed_held_days": 58,
+  "observed_held_days": 55,
   "unstated_cause_days": 26,
   "loo": {}
  },
@@ -154,20 +154,6 @@
   "loo": {}
  },
  {
-  "lift": "Subway",
-  "rule": "fnt_day_gust >= 41.6",
-  "tag": "inferred",
-  "scheduled_days": 393,
-  "hold_rate_above": 0.554,
-  "n_above": 65,
-  "hold_rate_below": 0.091,
-  "n_below": 328,
-  "observed_wind_stated_days": 23,
-  "observed_held_days": 66,
-  "unstated_cause_days": 23,
-  "loo": {}
- },
- {
   "lift": "KT-22",
   "rule": "avy >= 3.0",
   "tag": "inferred",
@@ -179,6 +165,20 @@
   "observed_wind_stated_days": 26,
   "observed_held_days": 96,
   "unstated_cause_days": 47,
+  "loo": {}
+ },
+ {
+  "lift": "Subway",
+  "rule": "fnt_day_gust >= 43.2",
+  "tag": "inferred",
+  "scheduled_days": 390,
+  "hold_rate_above": 0.596,
+  "n_above": 57,
+  "hold_rate_below": 0.087,
+  "n_below": 333,
+  "observed_wind_stated_days": 23,
+  "observed_held_days": 63,
+  "unstated_cause_days": 23,
   "loo": {}
  },
  {
@@ -252,20 +252,6 @@
   "loo": {}
  },
  {
-  "lift": "Big Blue",
-  "rule": "day_gust >= 77.3",
-  "tag": "inferred",
-  "scheduled_days": 330,
-  "hold_rate_above": 0.745,
-  "n_above": 98,
-  "hold_rate_below": 0.134,
-  "n_below": 232,
-  "observed_wind_stated_days": 59,
-  "observed_held_days": 104,
-  "unstated_cause_days": 35,
-  "loo": {}
- },
- {
   "lift": "Sherwood",
   "rule": "day_gust >= 90.0",
   "tag": "inferred",
@@ -277,6 +263,20 @@
   "observed_wind_stated_days": 43,
   "observed_held_days": 103,
   "unstated_cause_days": 54,
+  "loo": {}
+ },
+ {
+  "lift": "Big Blue",
+  "rule": "day_gust >= 83.4",
+  "tag": "inferred",
+  "scheduled_days": 323,
+  "hold_rate_above": 0.818,
+  "n_above": 77,
+  "hold_rate_below": 0.138,
+  "n_below": 246,
+  "observed_wind_stated_days": 56,
+  "observed_held_days": 97,
+  "unstated_cause_days": 35,
   "loo": {}
  },
  {

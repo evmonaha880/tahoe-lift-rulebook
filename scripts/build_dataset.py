@@ -169,7 +169,7 @@ def effective_windows(W, ev):
     out["link"] = {"open": min(ov) if ov else None, "close": max(cv) if cv else None, "note": "Base to Base Gondola: in season when either side is"}
     return out
 def typical_roster(ev):
-    n = collections.Counter(e["lift"] for e in ev if e["event_type"] == "scheduled_opening" and e["lift"] in SIDE)
+    n = collections.Counter(l for l, _d in {(e["lift"], e["start"][:10]) for e in ev if e["event_type"] == "scheduled_opening" and e["lift"] in SIDE})   # distinct days a lift was on a roster, not number of posts
     r = {"palisades": set(), "alpine": set(), "link": set()}
     for l, c in n.items():
         if c >= 8: r[SIDE[l]].add(l)

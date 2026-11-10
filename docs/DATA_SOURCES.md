@@ -1,6 +1,6 @@
 # Data sources
 
-Final counts: 7,044 X posts (originals only) across 8 winters, 24,978 parsed events, 15,306 lift-days (12,399 scheduled, of which 2,512 began the day on hold; 883 more are lifts that normally run on a whole-mountain closure day, now counted as expected; 91 fall outside the season windows; 221 expected lift-days in the 2020-21 COVID winter are left out of lift-level fits).
+Final counts: 7,044 X posts (originals only) across 8 winters, 24,978 parsed events, 15,285 lift-days (12,359 scheduled, of which 2,472 began the day on hold; 883 more are lifts that normally run on a whole-mountain closure day, now counted as expected; 91 fall outside the season windows; 221 expected lift-days in the 2020-21 COVID winter are left out of lift-level fits).
 
 New columns in `lift_days.csv` (2026-11-07 evening): `closed_all`, `closed_all_time`, `closure_kind`, `closure_conf`, `closure_readers`, `closure_plausible`, `in_season`, `side` (palisades, alpine or link), `tag_*` multi-label cause words, `day_*` counts of cause words in all of that day's posts (avalanche control, power, lightning, ice, visibility, mechanical, flood or road, COVID), `n_posts_day`, `covid_era`, `reopen_posted`, `hold_minutes`, `reopen_assumed_none`, `sib_h40`, `sib_h60`. Inferred causes are in `data/derived/cause_inferred.csv`, never in `lift_days.csv`. Status key: **VERIFIED** = tested on 2026-11-07. **UNVERIFIED** = read about, not tested. Credentials live outside the repo. Raw data goes in `data/raw/` (git-ignored).
 
