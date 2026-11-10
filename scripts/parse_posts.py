@@ -106,14 +106,12 @@ MARK_RE = re.compile(
     r"|(?P<sched>(?:est(?:imated)?\.?|anticipated|projected)\s+\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p)?\s*(?:open(?:ing)?)?\s*:|(?:scheduled|planned|expected(?:\s+very\s+close\s+to)?|projected)\s+(?:for|at)?\s*\d+(?::\d\d)?\s*(?:am|pm|a|p)?\b\s*[:-]?|\d+\s*(?:am|pm)\s+opening|\d{1,2}\s*(?:am|a)\s+open\s*:|open\s+at\s+\d+\s*(?:am|pm)?\s*:?)"
     r"|(?P<open>(?:the\s+following\s+lifts\s+are\s+)?(?:now\s+)?\bopen\s*:|all\s+open\s+now\s*:|(?:lifts\s+)?(?:have\s+)?re-?opened\s*:)", re.I)
 
-_ADDED = []  # lifts a list section's trailing sentence says were added to the schedule
-_LEFT = []   # prose that followed a list inside sectional(); parsed again by the caller
-def sectional(t, add):
+def sectional(t, add, left):
     """Status posts built from labelled lift lists ('Wind Hold: A B C  Delayed: D  Open: E'). Each list becomes events of its kind.
-    Returns True if it handled the post. Rule ids P-011 hold, P-030 delay, P-020 closed, P-001 scheduled, P-002 open-now."""
+    Returns True if it handled the post. Prose that followed a list is appended to `left` for the caller to parse again. Rule ids P-011 hold, P-030 delay, P-020 closed, P-001 scheduled, P-002 open-now."""
     ms = list(MARK_RE.finditer(t))
     if not ms: return False
-    segs = []; _ADDED.clear()
+    segs = []; added_all = []   # added_all: lifts a list section's trailing sentence says were added to the schedule
     for i, m in enumerate(ms):
         seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else len(t)]
         if not m.group(0).rstrip().endswith(":"):
@@ -122,14 +120,14 @@ def sectional(t, add):
         if m.group(0).rstrip().endswith(":") and m.lastgroup != "sched":
             _cut = re.split(r"(?:\.\s+|\n\s*\n)(?=[A-Z][^.\n]*\b(?:is|are|will|has|have|been|remains?)\b)", seg, maxsplit=1)   # a prose sentence after the list is not part of it
             seg = _cut[0]
-            if len(_cut) > 1: _LEFT.append(_cut[1])
+            if len(_cut) > 1: left.append(_cut[1])
         kind = m.lastgroup if m.lastgroup in ("hold", "delay", "closed", "sched", "open", "warn") else next(k for k in ("hold", "delay", "closed", "sched", "open", "warn") if m.group(k))
         _added = []
         _am = re.search(r"\b(?:has|have)\s+been\s+added\s+to\s+the\s+schedule|\b(?:is|are)\s+now\s+on\s+the\s+schedule", seg, re.I) if kind in ("hold", "delay", "closed", "warn") else None
         if _am:                                                        # 'Silverado  Exhibition has been added to the schedule': that sentence is a roster addition, not part of the list
             _pre = find_lifts(seg[:_am.start()])
             if _pre: _added = _pre[-1:]; seg = seg[:_am.start()]
-        _ADDED.extend(_added)
+        added_all.extend(_added)
         segs.append((kind, m, seg, [l for l in find_lifts(seg) if l not in _added]))
     withlifts = [x for x in segs if x[3]]
     colon = any(x[1].group(0).rstrip().endswith(":") for x in withlifts)
@@ -138,7 +136,7 @@ def sectional(t, add):
     pre = t[:segs[0][1].start()]
     if segs[0][0] in ("hold", "delay", "closed", "warn") and len(find_lifts(pre)) >= 2 and not re.search(r"\bhold|delay|closed|off[- ]schedule|remov|will not|not operate|\bare open\b|now open|spinning", pre, re.I):
         add("P-001", "scheduled_opening", find_lifts(pre), None, note="roster_before_sections")     # 'At Alpine: 13 lifts on the schedule: A B C  Wind hold: D E'
-    if _ADDED: add("P-001", "scheduled_opening", list(_ADDED), None, note="added_to_schedule")
+    if added_all: add("P-001", "scheduled_opening", list(added_all), None, note="added_to_schedule")
     for kind, m, seg, lifts in segs:
         if not lifts: continue
         for pm in re.finditer(r"([\w’' ]{3,30}?)\s*\(([^)]*(?:download|mid-?station|sightseeing)[^)]*)\)", seg, re.I):
@@ -571,10 +569,9 @@ def _parse_post(p):
         add("P-030", "delay", find_lifts(dm.group(1)), None); t = t.replace(dm.group(0), " ")
     om = re.search(r"following lifts(?: at \w+)? (?:are|is)(?: now)? off (?:the )?(wind|mechanical|patrol) hold(?: and open[^:]*)?:", t, re.I)
     if om: add("P-040", "reopen", find_lifts(t[om.end():]), om.group(1).lower(), resolves_hold=True); return ev
-    _LEFT.clear()
-    if sectional(t, add):
-        for extra in list(_LEFT):
-            _LEFT.clear()
+    left = []   # prose that followed a list inside sectional(); parsed again here
+    if sectional(t, add, left):
+        for extra in left:
             ev.extend(_parse_post({**p, "text": extra}))
         return ev
     # P-001 scheduled opening
