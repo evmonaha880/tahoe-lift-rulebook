@@ -11,8 +11,9 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 LIFT_DAYS = os.environ.get("LIFT_DAYS", "lift_days")
 DROP_WINTERS = [w for w in os.environ.get("DROP_WINTERS", "").split(",") if w]
 NAMED_ONLY = os.environ.get("NAMED_ONLY") == "1"
+assert LIFT_DAYS != "lift_days" or not DROP_WINTERS, "DROP_WINTERS needs LIFT_DAYS=lift_days_11w (it would overwrite the headline files)"
 SUF = ("" if LIFT_DAYS == "lift_days" else "_10w" if DROP_WINTERS == ["2015-16"] else "_11w") + ("_named" if NAMED_ONLY else "")
-VIEW = {"": "the 8 core winters (2018-19 to 2025-26)", "_11w": "all 11 winters (2015-16 to 2025-26; 2015-16 wind is an estimate, 2016-18 wind is hourly from two stations)", "_10w": "10 winters (2016-17 to 2025-26; no estimated wind)"}[SUF.replace("_named", "")] + (", named-roster lift-days only" if NAMED_ONLY else "")
+VIEW = {"": "the 8 core winters (2018-19 to 2025-26)", "_11w": "all 11 winters (2015-16 to 2025-26; 2015-16 wind is an estimate, 2016-18 wind is hourly from one station)", "_10w": "10 winters (2016-17 to 2025-26; no estimated wind)"}[SUF.replace("_named", "")] + (", named-roster lift-days only" if NAMED_ONLY else "")
 rows = list(csv.DictReader(open(os.path.join(ROOT, "data", "derived", LIFT_DAYS + ".csv"))))
 NUM = ["early_gust", "early_spd", "day_gust", "day_spd", "fnt_day_gust", "temp_base", "avy", "swe24", "swe6", "prec24s", "new_snow24", "depth"]
 for r in rows:

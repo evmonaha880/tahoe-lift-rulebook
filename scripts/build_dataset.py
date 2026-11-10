@@ -329,7 +329,7 @@ for Y in YEARS:
             _wc = WEATHER_COMMON[date]; _had15 = f["early_gust"] is not None      # 2017-18 has 15-minute files from February: those rows keep station_15min
             for _k, _c in (("early_gust", "gust_best_early"), ("day_gust", "gust_best_day")):
                 if f[_k] is None and _wc[_c] != "": f[_k] = float(_wc[_c])
-            if f["early_gust"] is not None and not _had15: f["gust_src_early"] = {"station": "station_hourly"}.get(_wc["gust_src_early"], _wc["gust_src_early"])      # 2016-18: Siberia and Belmont hourly only; 2015-16: ERA5+SNOTEL estimate
+            if f["early_gust"] is not None and not _had15: f["gust_src_early"] = {"station": "station_hourly"}.get(_wc["gust_src_early"], _wc["gust_src_early"])      # 2016-18: Siberia hourly only; 2015-16: ERA5+SNOTEL estimate
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
         f["new_snow24"] = depth_gain(DEPTH, date)                   # Alpine base depth sensor, dropout-filtered
         f["fnt_measured"] = f["fnt_day_gust"]                         # raw station reading (blank when the station was off)

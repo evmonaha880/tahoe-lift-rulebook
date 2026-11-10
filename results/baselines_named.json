@@ -1440,7 +1440,7 @@
    "per_lift_any_pass": 3,
    "per_lift_called_at_50pct": 3
   },
-  "row_set": "same lift-days as the headline, but every rule (each lift's own, the single wind line, the 25 mph rule) reads only features known by about 9 am: the 05:00-09:00 ridge gust (early_gust), early wind speed, avalanche rating, base temperature and snowfall"
+  "row_set": "same lift-days as the headline, but every rule (each lift's own, the single wind line, the 25 mph rule) reads only features known by about 9 to 10 am: the 05:00-09:00 ridge gust (early_gust), early wind speed, avalanche rating, base temperature and snowfall"
  },
  "coverage": {
   "side_days": 1636,

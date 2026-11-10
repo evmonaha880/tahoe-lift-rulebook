@@ -116,7 +116,7 @@ if os.path.exists(_q):
     if sum(int(r["impossible_values"]) for r in _qr): err("weather_qc: impossible values (gust outside 0-250 or temperature outside -45..110 F) in the weather files")
     warn(f"weather: {len(_qr):,} ridge station-days, {_c['ok']:,} complete, {_c['partial']} partial, {_c['missing']} missing; {sum(int(r['dropout']) for r in _qr)} dropout station-days (blanked in station-specific features)")
 else: warn("weather_qc.csv missing (run scripts/weather_qc.py)")
-_emitted = {e["parse_rule_id"] for f in glob.glob("data/derived/*_events.json") for e in json.load(open(f))}
+_emitted = {e["parse_rule_id"] for f in glob.glob(os.path.join(D, "*_events.json")) for e in json.load(open(f))}
 if _emitted - set(RID): errors.append(f"rule ids emitted by the parser but missing from the RULES ledger in parse_posts.py: {sorted(_emitted - set(RID))}")
 print(f"events: {sum(nev.values())} in {len(nev)} winter files | lift-days: {len(rows)} | parser versions: {dict(versions)}")
 for w in warns: print("WARN ", w)

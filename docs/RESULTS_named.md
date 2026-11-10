@@ -45,15 +45,15 @@ Per winter, lift-level F1:
 | 2024-25 | 637 | 0.683 | 0.708 | 0.641 | 0.588 |
 | 2025-26 | 25 | 0.75 | 0.75 | 0.667 | 0.333 |
 
-Only 2018-19, 2021-22, 2022-23, 2023-24, 2024-25 have enough expected lift-days to mean much; the other winters score under 60 lift-days each because most of their posts give a count ("32 lifts scheduled") rather than names.
+Only 2018-19, 2021-22, 2022-23, 2023-24, 2024-25 have enough expected lift-days to mean much; the other winters score on fewer lift-days (the counts are in the table) because most of their posts give a count ("32 lifts scheduled") rather than names.
 
-**Coverage.** Lift-level rules are fitted on the 1,342 of 1,636 side-days (82%) whose schedule post names the lifts, mostly 2021-22 to 2023-24. The side-days left out are windier: 46% have a crest gust of 60 mph or more, against 48% of the named ones. A sensitivity run that infers rosters where a stated lift count allows it (`docs/SENSITIVITY.md`) is data-limited and moves the pooled scores by about 0.01.
+**Coverage.** Lift-level rules are fitted on the 1,342 of 1,636 side-days (82%) whose schedule post names the lifts, mostly 2021-22 to 2023-24. On the one measure checked, the side-days left out are less windy: 46% have a crest gust of 60 mph or more, against 48% of the named ones. That does not show the selection is harmless: days with no named roster have rows mainly when a whole-side closure creates them (see the named-roster view). A sensitivity run that infers rosters where a stated lift count allows it (`docs/SENSITIVITY.md`) is data-limited and moves the pooled scores by about 0.01.
 
 **Morning versus full-day wind.** The day-level line above uses the strongest gust of the whole day (06:00 to 16:00), which includes hours after a hold. Using only the gust known by 9am (05:00 to 09:00) gives a pooled F1 of 0.772 against 0.801 for the full day, with a learned line of 51.2 to 60.8 mph. The full-day numbers describe a day; the morning numbers are what a call at opening could have used.
 
 **Simple rules against per-lift rules at lift level** (same-day features: the whole-day gust is hindsight; the by-9am version is further down):
 - One learned wind line scores a pooled F1 of 0.59, against 0.64 for per-lift rules (any pass) and 0.637 for per-lift rules at 50% odds: fitting each lift separately adds +0.050 of F1.
-- The 25 mph rule has the highest recall (0.982) but very low precision (0.276), so its pooled F1 is the lowest (0.431). It tops the F1 table in 2 of 7 winters, but those are the tiny ones.
+- The 25 mph rule has the highest recall (0.982) but very low precision (0.276), so its pooled F1 is the lowest (0.431). It tops the F1 table in 2 of 7 winters (2018-19, 2019-20); the learned methods win pooled, not in every winter.
 - Per-lift rules called at 50% odds have the best precision of the learned methods, at the cost of recall: use them if a false alarm is costlier than a miss.
 
 ## Lift level, without the lifts that began the day on hold
@@ -82,7 +82,7 @@ On this set the 25 mph rule has the best F1 in 1 of 8 winters, and the learned m
 
 ## Lift level, using only what is known by 9am
 
-The lift-level tables above let every rule read the whole day's gust (`day_gust`, hindsight: it includes hours after a hold begins) and each lift's own rule may pick other same-day features. This table keeps the same lift-days but lets every method read only what is known by about 9am: the 05:00-09:00 ridge gust, early wind speed, avalanche rating, base temperature and snowfall. It is the fair test of a morning call, and the number to quote if the claim is "predicts the morning of".
+The lift-level tables above let every rule read the whole day's gust (`day_gust`, hindsight: it includes hours after a hold begins) and each lift's own rule may pick other same-day features. This table keeps the same lift-days but lets every method read only what is known by about 9am: the 05:00-09:00 ridge gust, early wind speed, avalanche rating, base temperature (06:00-10:00 mean) and snowfall. Two caveats: the 05:00-09:00 window runs past holds posted earlier in the morning, and lift-days that began on hold (decision 58) are held by construction. It is the fairer test of a morning call, and the number to quote if the claim is "predicts the morning of".
 
 | Method (pooled) | Precision | Recall | F1 |
 |---|---|---|---|
