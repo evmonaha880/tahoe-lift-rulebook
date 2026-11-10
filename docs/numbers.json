@@ -1,72 +1,102 @@
 {
-  "_about": "Headline numbers and the files that must quote them. scripts/check_numbers.py recomputes each value from the data and fails if a listed file lacks it. Add an entry when a number is quoted in a new place; add a value to 'retired' when it is replaced.",
-  "quoted": {
-    "events": [
-      "README.md",
-      "docs/PARSING_RULES.md",
-      "docs/PROJECT.md",
-      "docs/DATA_SOURCES.md"
-    ],
-    "posts": [
-      "README.md",
-      "docs/PARSING_RULES.md",
-      "docs/PROJECT.md",
-      "docs/DATA_SOURCES.md"
-    ],
-    "tests": [
-      "README.md",
-      "docs/PARSING_RULES.md",
-      "docs/PROJECT.md"
-    ],
-    "unmatched_posts": [
-      "README.md",
-      "docs/PARSING_RULES.md",
-      "docs/PROJECT.md"
-    ],
-    "lift_days": [
-      "docs/DATA_SOURCES.md"
-    ],
-    "f1_single_line": [
-      "README.md"
-    ],
-    "f1_per_lift": [
-      "README.md"
-    ],
-    "validation_acc": [
-      "README.md",
-      "docs/VALIDATION.md",
-      "docs/PARSING_RULES.md"
-    ]
-  },
-  "retired": {
-    "23,977": [
-      "README.md",
-      "docs/PARSING_RULES.md",
-      "docs/PROJECT.md",
-      "docs/DATA_SOURCES.md",
-      "docs/app/index.html"
-    ],
-    "24,433": [
-      "README.md",
-      "docs/PARSING_RULES.md",
-      "docs/PROJECT.md",
-      "docs/DATA_SOURCES.md"
-    ],
-    "15,366": [
-      "docs/DATA_SOURCES.md",
-      "README.md"
-    ],
-    "226 regression": [
-      "README.md",
-      "docs/PARSING_RULES.md"
-    ],
-    "229 regression": [
-      "README.md",
-      "docs/PARSING_RULES.md"
-    ],
-    "234 regression": [
-      "README.md",
-      "docs/PARSING_RULES.md"
-    ]
-  }
+ "_about": "Headline numbers and the files that must quote them. scripts/check_numbers.py recomputes each value from the data and fails if a listed file lacks it. Add an entry when a number is quoted in a new place; add a value to 'retired' when it is replaced.",
+ "quoted": {
+  "events": [
+   "README.md",
+   "docs/PARSING_RULES.md",
+   "docs/PROJECT.md",
+   "docs/DATA_SOURCES.md"
+  ],
+  "posts": [
+   "README.md",
+   "docs/PARSING_RULES.md",
+   "docs/PROJECT.md",
+   "docs/DATA_SOURCES.md"
+  ],
+  "tests": [
+   "README.md",
+   "docs/PARSING_RULES.md",
+   "docs/PROJECT.md"
+  ],
+  "unmatched_posts": [
+   "README.md",
+   "docs/PARSING_RULES.md",
+   "docs/PROJECT.md"
+  ],
+  "lift_days": [
+   "docs/DATA_SOURCES.md"
+  ],
+  "f1_single_line": [
+   "README.md"
+  ],
+  "f1_per_lift": [
+   "README.md"
+  ],
+  "validation_acc": [
+   "README.md",
+   "docs/VALIDATION.md",
+   "docs/PARSING_RULES.md"
+  ],
+  "row_core": [
+   "README.md"
+  ],
+  "row_10w": [
+   "README.md"
+  ],
+  "row_11w": [
+   "README.md"
+  ],
+  "row_named": [
+   "README.md"
+  ],
+  "f1_single_line_9am": [
+   "README.md"
+  ],
+  "f1_per_lift_9am": [
+   "README.md"
+  ],
+  "f1_25mph": [
+   "README.md"
+  ],
+  "morning_f1": [
+   "README.md"
+  ],
+  "full_day_f1": [
+   "README.md"
+  ]
+ },
+ "retired": {
+  "23,977": [
+   "README.md",
+   "docs/PARSING_RULES.md",
+   "docs/PROJECT.md",
+   "docs/DATA_SOURCES.md",
+   "docs/app/index.html"
+  ],
+  "24,433": [
+   "README.md",
+   "docs/PARSING_RULES.md",
+   "docs/PROJECT.md",
+   "docs/DATA_SOURCES.md"
+  ],
+  "15,366": [
+   "docs/DATA_SOURCES.md",
+   "README.md"
+  ],
+  "226 regression": [
+   "README.md",
+   "docs/PARSING_RULES.md"
+  ],
+  "229 regression": [
+   "README.md",
+   "docs/PARSING_RULES.md"
+  ],
+  "234 regression": [
+   "README.md",
+   "docs/PARSING_RULES.md"
+  ],
+  "0.48)": [
+   "README.md"
+  ]
+ }
 }

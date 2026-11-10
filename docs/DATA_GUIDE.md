@@ -10,16 +10,16 @@ Written 2026-11-08. One page that answers: what is each dataset, what is it assu
 | **B. Operator statement parsed by rules** | The ops account's own words, read by our parser | Ops tweets to lift-day events (post-level accuracy 87.5%, interval 83.4 to 90.7, frozen sample of 320, graded by three models; row-level fully right on about 72% of replayed days) |
 | **C. Operator statement read by a model** | The resort's blog read by two model readers, quotes checked | Season and lift calendar (672 facts; both readers agree on 43%; 664 of 672 quotes found word for word in their posts); lift history |
 | **D. Derived from text** | A regex or a model reading human text | Blog forecast figures (`regex-v1`): rank correlation 0.72 with Siberia's day max gust over 335 days; 74 forecaster-tweet wind figures (43 usable days); NWS discussion ridge figure: regex 0.43 (not usable), model-read pilot 0.84 on 28 days (promising, small) |
-| **E. Modelled estimate** | A reanalysis or regression standing in for a missing measurement | ERA5 and SNOTEL-based Siberia gust for 2015-16 (R2 0.73, typical error 14 mph); Funitel Top gust where the station was off (R2 0.89, error about 4 mph); ERA5 snowfall for 2015-18 (r 0.87 with base depth gain) |
+| **E. Modelled estimate** | A reanalysis or regression standing in for a missing measurement | ERA5 and SNOTEL-based Siberia gust for 2015-16, fitted leave-one-winter-out (typical error 7 to 10 mph for the 05:00-09:00 gust, 9 to 12 mph for the day gust; `results/weather_common.json`); Funitel Top gust where the station was off (R2 0.89, error about 4 mph); ERA5 snowfall for 2015-18 (r 0.87 with base depth gain) |
 | **F. Narrative** | Human commentary, for spot checks only | Blog posts, forecaster posts, NWS discussions. Never fitted (enforced by `scripts/check_architecture.py`) |
 
 ## 2. Every dataset: meaning, assumptions, gaps, use
 
 | Winter | Ops tweets | Parsed | Station wind | Forecast days (blog, by 9am) | Blog ops / weather posts | Scheduled lift-days | Fit-eligible |
 |---|---|---|---|---|---|---|---|
-| 2015-16 | 729 | no | none (estimate only) | - | 14 / 0 | - | no |
-| 2016-17 | 1,052 | no | hourly | - | 57 / 0 | - | no |
-| 2017-18 | 518 | no | 15min | - | 12 / 0 | - | no |
+| 2015-16 | 729 | yes | none (estimate only) | - | 14 / 0 | 370 | 11-winter view only |
+| 2016-17 | 1,052 | yes | hourly | - | 57 / 0 | 679 | 10- and 11-winter views |
+| 2017-18 | 518 | yes | hourly, 15min from Feb | - | 12 / 0 | 279 | 10- and 11-winter views |
 | 2018-19 | 963 | yes | 15min | - | 4 / 0 | 710 | yes |
 | 2019-20 | 537 | yes | 15min | 2 | 6 / 2 | 296 | yes |
 | 2020-21 | 743 | yes | 15min | 70 | 9 / 120 | 454 | no |
@@ -29,7 +29,7 @@ Written 2026-11-08. One page that answers: what is each dataset, what is it assu
 | 2024-25 | 810 | yes | 15min | 43 | 27 / 136 | 687 | yes |
 | 2025-26 | 452 | yes | 15min | 34 | 37 / 129 | 128 | yes |
 
-(Generated from `rules/winters.json`. 2015-16 to 2017-18 tweets are pulled but not parsed. 2020-21 ran under COVID operating rules, so it stays in the replay but is out of lift-level fits.)
+(Generated from `rules/winters.json`. 2015-16 to 2017-18 tweets are parsed and joined to weather in `lift_days_11w.csv` (the headline `lift_days.csv` is the 8 core winters, 2018-19 on); their wind is hourly or estimated, so they appear only in the 10- and 11-winter views (README). 2020-21 ran under COVID operating rules, so it stays in the replay but is out of lift-level fits.)
 
 ### Outcomes
 | Dataset | What a row means | Assumptions built in | Gaps and errors | Use it for |
@@ -53,7 +53,7 @@ Written 2026-11-08. One page that answers: what is each dataset, what is it assu
 | Avalanche danger (SAC) | Backcountry danger rating, one zone | Used as a signal for patrol holds | Coverage 0 to 88% before 2021; mid-April stop | Patrol and late-open signal |
 | NWS alerts | Watches and warnings in force | `nws_pre_*` = in force at 06:00 | Wind alerts add nothing beyond measured gusts | Storm context |
 | Truckee airport | Labelled-clock observations | Valley site | Correlation 0.62 with Siberia | Clock checks only |
-| ERA5 and SNOTEL combined | Estimated Siberia gust and snowfall | Flagged `estimate` when used | Typical error 14 mph | 2015-16 only, scored apart |
+| ERA5 and SNOTEL combined | Estimated Siberia gust and snowfall | Flagged `estimate` in `gust_src_early` when used | Typical error 7 to 10 mph (early gust), 9 to 12 (day gust); compresses high gusts | 2015-16 only; 2016-17 and early 2017-18 use hourly station values (`station_hourly`); the 10-winter view leaves 2015-16 out |
 
 ### Forecast
 | Dataset | Meaning | Assumptions | Gaps | Use it for |

@@ -23,8 +23,18 @@ Hook photo: r/palisadestahoe.
 | Rulebook | Hold rules for 41 lifts, each tagged *inferred* (from weather) with the *observed* counts kept beside it |
 
 **What the rules show** (leave-one-winter-out; details and every number in [docs/RESULTS.md](docs/RESULTS.md)):
-- A wind line of about 60 mph gusts at the crest predicts which days see a wind hold. It is stable across winters and beats a 25 mph rule in all 8 (day-level F1 0.73 to 0.88 against 0.37 to 0.71).
-- Which lift holds is harder. On expected lift-days (scheduled, plus lifts under a whole-mountain closure), separate per-lift rules do slightly better than one learned wind line (pooled F1 0.66 against 0.63); the 25 mph rule has high recall and very low precision (F1 0.48).
+- A wind line of about 60 mph gusts at the crest separates the days that see a wind hold from the days that do not. It is stable across winters and beats a 25 mph rule in all 8 (day-level F1 0.73 to 0.88 against 0.37 to 0.71). That line reads the whole day's peak gust, which includes hours after a hold begins (hindsight). Using only the gust known by 9am, the pooled day-level F1 is 0.75 (0.81 with the whole-day gust).
+- Which lift holds is harder. On expected lift-days (scheduled, plus lifts under a whole-mountain closure), separate per-lift rules do slightly better than one learned wind line (pooled F1 0.66 against 0.63); the 25 mph rule has high recall and very low precision (F1 0.47). Those use same-day features. Letting every method read only what is known by 9am gives 0.66 for per-lift rules, 0.65 for the single line and 0.49 for the 25 mph rule: the whole-day gust gives no advantage at lift level.
+- **Other winters, other views** (pooled lift-level F1; the headline stays the 8 core winters). The 2015-18 winters were parsed and joined to weather, but their wind is a different measurement: 2018-19 on is the max of six ridge stations every 15 minutes; 2016-17 and early 2017-18 are two stations hourly (`station_hourly`); 2015-16 is an estimate from reanalysis and snow-pillow data that misses by about 7 to 11 mph. The 10-winter view therefore leaves out 2015-16, and 2015-16 never trains a fold there. Named-roster-only drops the lift-days that exist only because a whole-side closure created them.
+
+  | View | Winters | Single wind line | Per-lift rules | 25 mph rule |
+  |---|---|---|---|---|
+  | Headline: 8 core winters | 2018-19 to 2025-26 | 0.63 | 0.66 | 0.47 |
+  | 10 winters (no estimated wind) | 2016-17 to 2025-26 | 0.64 | 0.68 | 0.50 |
+  | 11 winters | 2015-16 to 2025-26 | 0.63 | 0.69 | 0.51 |
+  | 8 core winters, named-roster lift-days only | 2018-19 to 2025-26 | 0.59 | 0.64 | 0.43 |
+
+  The learned line beats the 25 mph rule in every view (`docs/RESULTS_10w.md`, `RESULTS_11w.md`, `RESULTS_named.md`).
 - **"All lifts closed" is an event, and it is predictable** (what counts as a closure, by kind and conditions: [docs/CLOSURES.md](docs/CLOSURES.md)). 51 whole-mountain closure days are counted from the posts (46 graded high confidence, 5 medium). Closures were rare below 100 mph gusts (3 to 6% of days), 20% of days at 100 to 130 mph and 55% at 130 and above. Avalanche danger 4 closed the mountain on 46% of days. National Weather Service Winter Storm and Blizzard Warnings add a little (7 of the 8 days under a Blizzard Warning were closure days), but avalanche danger adds far more beyond wind (see [docs/CLOSURES.md](docs/CLOSURES.md)).
 - **Storm days start late.** With wind under 60 mph, 27% of lifts were held or closed on days with 2+ in of new snow, 1+ in of snow water or avalanche danger 3+, against 7% on other days (55 such days).
 - **Hours beat the peak gust.** With a 60 to 100 mph peak, a Tram or Funitel hold came on 17% of days with 2 hours or less at 60 mph or more, and 62% with more than 5 hours. Wind direction adds nothing once duration is counted; south-west storms simply last longer.
@@ -61,7 +71,7 @@ Start with `docs/DATA_GUIDE.md`: every dataset, how far to trust it, its assumpt
 |---|---|---|
 | Raw | `data/raw/` (git-ignored; counts and hashes in `docs/RAW_INVENTORY.md`) | Never edited. Posts, 15-minute station files, SNOTEL, avalanche forecasts, NWS alerts |
 | Parsed events | `data/derived/*_events.json` | One row per status event, stamped with `parser_version`. Observed `cause` and post-level `cause_tags` |
-| Lift-day table | `data/derived/lift_days.csv` | One row per lift per local day. Outcomes come only from posts; features only from weather. Every column is described in `rules/features.json` (role, when it is known, unit, source) |
+| Lift-day table | `data/derived/lift_days.csv` (8 core winters), `lift_days_11w.csv` (all 11) | One row per lift per local day. Outcomes come only from posts; features only from weather. Every column is described in `rules/features.json` (role, when it is known, unit, source) |
 | Inferred | `data/derived/cause_inferred.csv` | Modelled causes for holds whose post names none. Never mixed into the observed columns |
 | Results | `results/`, `docs/RESULTS.md`, `docs/numbers.json` | Scores are leave-one-winter-out; the quoted numbers are checked against the data |
 | App | `docs/app/model.js` | A pure view of the results; the page recomputes nothing |
@@ -72,6 +82,6 @@ How a change is made safe: the parser carries a version and a golden test per be
 
 ## Re-running
 
-In order: `scripts/parse_posts.py <year> <train|heldout>` for each winter, `scripts/pull_nws.py`, `scripts/build_dataset.py 2018 ... 2025`, `scripts/recover_rules.py`, `scripts/baselines.py`, `scripts/infer_causes.py` and `scripts/closure_conditions.py` (they write docs/CAUSES.md and docs/CLOSURES.md; numpy needed), then `scripts/build_app_model.py` (writes the app's only data file) and `scripts/check_app_model.py` (fails if the app's numbers differ from the results); tests with `python3 -I tests/golden.py`.
+The whole sequence, with every check, is `scripts/run_all.sh` (needs numpy). By hand, in order: `scripts/parse_posts.py <year> <train|heldout>` for each winter 2015 to 2025, `scripts/pull_nws.py`, `scripts/weather_qc.py`, `scripts/build_weather_common.py` (the one weather table for all 11 winters; it must run before the next step), `scripts/build_dataset.py 2015 ... 2025` (writes `lift_days.csv`, the 8 core winters, and `lift_days_11w.csv`, all 11), `scripts/recover_rules.py`, `scripts/baselines.py` (the headline; add `LIFT_DAYS=lift_days_11w` for the 11-winter view, plus `DROP_WINTERS=2015-16` for 10, or `NAMED_ONLY=1` for named-roster-only; see the top of `scripts/ruleslib.py`), `scripts/infer_causes.py` and `scripts/closure_conditions.py` (they write docs/CAUSES.md and docs/CLOSURES.md; numpy needed), then `scripts/build_app_model.py` (writes the app's only data file) and `scripts/check_app_model.py` (fails if the app's numbers differ from the results); tests with `python3 -I tests/golden.py`.
 
 Raw data goes in `data/raw/` (git-ignored). Scripts read API credentials from files kept outside the repo, never from the repo itself.

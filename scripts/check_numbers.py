@@ -20,6 +20,12 @@ cur = {"events": f"{ev:,}", "posts": posts, "tests": str(tests), "unmatched_post
        "morning_f1": f"{bl['day_level_morning']['pooled']['f1']:.2f}", "full_day_f1": f"{bl['day_level_morning']['full_day_f1']:.2f}",
        "validation_acc": f"{json.load(open('results/validation_results.json'))['majority']['acc']*100:.1f}%",
        "named_share": f"{round(bl['coverage']['named_share'] * 100)}%"}
+def _row(suf):
+    L = json.load(open(f"results/baselines{suf}.json"))["lift_level"]["pooled"]
+    return "| " + " | ".join(f"{L[m]['f1']:.2f}" for m in ("best_single_wind_line", "per_lift_any_pass", "mph25")) + " |"
+cur.update({"row_core": _row(""), "row_10w": _row("_10w"), "row_11w": _row("_11w"), "row_named": _row("_named")})
+_b9 = json.load(open("results/baselines.json"))["lift_level_by_9am"]["pooled"]
+cur.update({"f1_single_line_9am": f"{_b9['best_single_wind_line']['f1']:.2f}", "f1_per_lift_9am": f"{_b9['per_lift_any_pass']['f1']:.2f}", "f1_25mph": f"{json.load(open('results/baselines.json'))['lift_level']['pooled']['mph25']['f1']:.2f}"})
 bad = 1 if bad_core else 0
 if bad_core: print("STALE  lift_days_11w.csv does not hold the same number of core-winter rows as lift_days.csv")
 for key, files in reg["quoted"].items():
