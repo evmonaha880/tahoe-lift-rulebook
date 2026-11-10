@@ -59,35 +59,51 @@ if set(versions) - {PARSER_VERSION}: warn(f"events carry parser versions {dict(v
 lim = json.load(open(os.path.join(root, "results", "baseline_metrics.json"))).get("liftless_status_events", 10**9) if os.path.exists(os.path.join(root, "results", "baseline_metrics.json")) else 10**9
 if len(liftless) > lim: err(f"{len(liftless)} status events have no lift (baseline {lim}); the parser matched a pattern but found no lift")
 else: warn(f"{len(liftless)} status events have no lift (baseline {lim}); they carry no information and are listed for triage in the parser plan")
-# ---- lift-day table
-rows = list(csv.DictReader(open(os.path.join(D, "lift_days.csv"))))
-keys = collections.Counter((r["date"], r["lift"]) for r in rows)
-dups = [k for k, n in keys.items() if n > 1]
-if dups: err(f"lift_days: {len(dups)} duplicate (date, lift) rows, e.g. {dups[:3]}")
-FEATS = json.load(open(os.path.join(root, "rules", "features.json")))["columns"]
-_cols = list(rows[0].keys())
-if [c for c in _cols if c not in FEATS]: err(f"lift_days columns with no entry in rules/features.json (role, as-of, unit): {[c for c in _cols if c not in FEATS]}")
-if [c for c in FEATS if c not in _cols]: err(f"rules/features.json describes columns that are not in lift_days: {[c for c in FEATS if c not in _cols]}")
-fnum = lambda x: float(x) if x not in ("", None) else None
-bywinter = collections.Counter()
-for r in rows:
-    bywinter[r["winter"]] += 1
-    if winter_of(r["date"]) != r["winter"]: err(f"lift_days: {r['date']} labelled {r['winter']}")
-    if r["lift"] not in LIFT_NAMES and r["lift"] not in ("(all other lifts)", "ALL_ON_HOLD"): err(f"lift_days: unknown lift {r['lift']!r}")
-    if r["held"] not in ("0", "1"): err(f"lift_days: held={r['held']!r}")
-    if r["held"] == "0" and any(r[k] == "1" for k in ("held_wind", "held_patrol", "held_mech", "held_weather", "held_unstated")): err(f"lift_days: cause flag set but held=0 ({r['date']} {r['lift']})")
-    if r["held"] == "1" and not any(r[k] == "1" for k in ("held_wind", "held_patrol", "held_mech", "held_weather", "held_unstated")): err(f"lift_days: held=1 with no cause flag ({r['date']} {r['lift']})")
-    if r["closed_all"] == "1" and r["held"] != "1": err(f"lift_days: closed_all without held ({r['date']} {r['lift']})")
-    g = fnum(r["day_gust"])
-    if g is not None and not (0 <= g <= 250): err(f"lift_days: day_gust {g} on {r['date']}")
-    h = fnum(r["sib_h60"])
-    if h is not None and not (0 <= h <= 24): err(f"lift_days: sib_h60 {h} on {r['date']}")
-    hm = fnum(r["hold_minutes"])
-    if hm is not None and not (0 <= hm <= 1440): err(f"lift_days: hold_minutes {hm} on {r['date']} {r['lift']}")
-    a = fnum(r["avy"])
-    if a is not None and a not in (1, 2, 3, 4, 5): err(f"lift_days: avy {a} on {r['date']}")
-    if r["scheduled"] not in ("True", "False"): err(f"lift_days: scheduled={r['scheduled']!r}")
-    if r["reopen_posted"] == "1" and r["held"] != "1" : err(f"lift_days: reopen_posted without held ({r['date']} {r['lift']})")
+# ---- lift-day tables: the 8 core winters (lift_days.csv, the headline) and all 11 (lift_days_11w.csv) get the same checks
+GUST_SRC_EARLY = {"station", "estimate"}      # step 2 splits "station" into station_15min and station_hourly
+core_rows = None
+for LD in ("lift_days", "lift_days_11w"):
+    rows = list(csv.DictReader(open(os.path.join(D, LD + ".csv"))))
+    keys = collections.Counter((r["date"], r["lift"]) for r in rows)
+    dups = [k for k, n in keys.items() if n > 1]
+    if dups: err(f"{LD}: {len(dups)} duplicate (date, lift) rows, e.g. {dups[:3]}")
+    FEATS = json.load(open(os.path.join(root, "rules", "features.json")))["columns"]
+    _cols = list(rows[0].keys())
+    if [c for c in _cols if c not in FEATS]: err(f"{LD} columns with no entry in rules/features.json (role, as-of, unit): {[c for c in _cols if c not in FEATS]}")
+    if [c for c in FEATS if c not in _cols]: err(f"rules/features.json describes columns that are not in {LD}: {[c for c in FEATS if c not in _cols]}")
+    fnum = lambda x: float(x) if x not in ("", None) else None
+    bywinter = collections.Counter()
+    for r in rows:
+        bywinter[r["winter"]] += 1
+        if winter_of(r["date"]) != r["winter"]: err(f"{LD}: {r['date']} labelled {r['winter']}")
+        if r["lift"] not in LIFT_NAMES and r["lift"] not in ("(all other lifts)", "ALL_ON_HOLD"): err(f"{LD}: unknown lift {r['lift']!r}")
+        if r["held"] not in ("0", "1"): err(f"{LD}: held={r['held']!r}")
+        if r["held"] == "0" and any(r[k] == "1" for k in ("held_wind", "held_patrol", "held_mech", "held_weather", "held_unstated")): err(f"{LD}: cause flag set but held=0 ({r['date']} {r['lift']})")
+        if r["held"] == "1" and not any(r[k] == "1" for k in ("held_wind", "held_patrol", "held_mech", "held_weather", "held_unstated")): err(f"{LD}: held=1 with no cause flag ({r['date']} {r['lift']})")
+        if r["closed_all"] == "1" and r["held"] != "1": err(f"{LD}: closed_all without held ({r['date']} {r['lift']})")
+        g = fnum(r["day_gust"])
+        if g is not None and not (0 <= g <= 250): err(f"{LD}: day_gust {g} on {r['date']}")
+        h = fnum(r["sib_h60"])
+        if h is not None and not (0 <= h <= 24): err(f"{LD}: sib_h60 {h} on {r['date']}")
+        hm = fnum(r["hold_minutes"])
+        if hm is not None and not (0 <= hm <= 1440): err(f"{LD}: hold_minutes {hm} on {r['date']} {r['lift']}")
+        a = fnum(r["avy"])
+        if a is not None and a not in (1, 2, 3, 4, 5): err(f"{LD}: avy {a} on {r['date']}")
+        if r["scheduled"] not in ("True", "False"): err(f"{LD}: scheduled={r['scheduled']!r}")
+        if r["reopen_posted"] == "1" and r["held"] != "1" : err(f"{LD}: reopen_posted without held ({r['date']} {r['lift']})")
+    if LD == "lift_days_11w":
+        _core = {(r["date"], r["lift"]): r for r in core_rows}
+        _cw = {r["winter"] for r in core_rows}
+        _in = [r for r in rows if r["winter"] in _cw]
+        if len(_in) != len(core_rows): err(f"{LD}: {len(_in)} core-winter rows but lift_days.csv has {len(core_rows)}")
+        _bad = next((r for r in _in if _core.get((r["date"], r["lift"])) != r), None)
+        if _bad: err(f"{LD}: a core-winter row differs from lift_days.csv ({_bad['date']} {_bad['lift']})")
+        for r in rows:
+            if r["early_gust"] != "" and r["gust_src_early"] not in GUST_SRC_EARLY: err(f"{LD}: early_gust set but gust_src_early={r['gust_src_early']!r} ({r['date']})"); break
+        for r in rows:
+            if r["early_gust"] == "" and r["gust_src_early"] != "": err(f"{LD}: gust_src_early set with no early_gust ({r['date']})"); break
+    if LD == "lift_days": core_rows = rows
+rows = core_rows
 base = os.path.join(root, "results", "baseline_metrics.json")
 if os.path.exists(base):
     b = json.load(open(base))

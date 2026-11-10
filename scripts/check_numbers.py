@@ -9,6 +9,9 @@ ev = sum(len(json.load(open(f))) for f in glob.glob("data/derived/*_events.json"
 tests = int(re.search(r"(\d+)/\d+ golden", subprocess.run([sys.executable, "-I", "tests/golden.py"], capture_output=True, text=True).stdout).group(1))
 st = subprocess.run([sys.executable, "-I", "scripts/parser_status.py"], capture_output=True, text=True).stdout.strip().split("\n")[-1]
 unmatched = re.search(r"([\d,]+) \(([\d.]+)%\)", st); posts = re.search(r"total\s+([\d,]+)", st).group(1)
+rows11 = list(csv.DictReader(open("data/derived/lift_days_11w.csv")))
+core_w = {r["winter"] for r in rows}
+bad_core = sum(1 for r in rows11 if r["winter"] in core_w) != len(rows)      # the 11-winter file must contain exactly the headline rows for the 8 core winters
 bl = json.load(open("results/baselines.json"))
 sched_in = sum(r["scheduled"] == "True" and r["in_season"] == "1" for r in rows)
 cur = {"events": f"{ev:,}", "posts": posts, "tests": str(tests), "unmatched_posts": unmatched.group(1), "unmatched_pct": unmatched.group(2) + "%", "lift_days": f"{len(rows):,}",
@@ -17,7 +20,8 @@ cur = {"events": f"{ev:,}", "posts": posts, "tests": str(tests), "unmatched_post
        "morning_f1": f"{bl['day_level_morning']['pooled']['f1']:.2f}", "full_day_f1": f"{bl['day_level_morning']['full_day_f1']:.2f}",
        "validation_acc": f"{json.load(open('results/validation_results.json'))['majority']['acc']*100:.1f}%",
        "named_share": f"{round(bl['coverage']['named_share'] * 100)}%"}
-bad = 0
+bad = 1 if bad_core else 0
+if bad_core: print("STALE  lift_days_11w.csv does not hold the same number of core-winter rows as lift_days.csv")
 for key, files in reg["quoted"].items():
     for f in files:
         txt = open(f).read()

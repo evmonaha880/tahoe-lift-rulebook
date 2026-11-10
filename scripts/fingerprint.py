@@ -5,9 +5,9 @@ Run scripts/run_all.sh first. A behaviour-preserving change must leave --check c
 import os, sys, json, glob, hashlib, re
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 OUT = os.path.join(root, "results", "baseline_hashes.json")
-PATTERNS = ["data/derived/*_events.json", "data/derived/lift_days.csv", "data/derived/lift_windows.csv", "data/derived/first_run.csv",
+PATTERNS = ["data/derived/*_events.json", "data/derived/lift_days.csv", "data/derived/lift_days_11w.csv", "data/derived/lift_windows.csv", "data/derived/first_run.csv",
             "data/derived/weather_common.csv", "data/derived/blog_forecast.csv", "data/derived/cause_inferred.csv", "data/derived/weather_qc.csv",
-            "results/baselines.json", "results/loo_results.json", "results/weather_common.json", "results/forecast_value.json",
+            "results/baselines.json", "results/baselines_11w.json", "docs/RESULTS_11w.md", "results/loo_results.json", "results/weather_common.json", "results/forecast_value.json",
             "rules/rulebook_palisades.json", "rules/winters.json", "docs/RESULTS.md", "docs/CAUSES.md", "docs/CLOSURES.md", "docs/app/model.js"]
 def current():
     files = sorted({p for pat in PATTERNS for p in glob.glob(os.path.join(root, pat))})

@@ -111,11 +111,11 @@ for n_ in FIT:
     f = P("scripts", n_ + ".py")
     if os.path.exists(f) and BAN.search(open(f).read()): err(f"scripts/{n_}.py reads a commentary file; commentary is for spot checks, never fitted")
 # ---- 8 lift-day table stays observed + weather
-lp = P("data", "derived", "lift_days.csv")
-if os.path.exists(lp):
-    cols = next(csv.reader(open(lp)))
-    for c in cols:
-        if c.startswith(("fc_", "blog_", "tweet_", "afd_")): err(f"lift_days.csv column {c} is model-read or commentary; keep it in its own file")
+for _n in ("lift_days.csv", "lift_days_11w.csv"):
+    lp = P("data", "derived", _n)
+    if os.path.exists(lp):
+        for c in next(csv.reader(open(lp))):
+            if c.startswith(("fc_", "blog_", "tweet_", "afd_")): err(f"{_n} column {c} is model-read or commentary; keep it in its own file")
 # ---- 9 winter registry fresh
 if subprocess.run([sys.executable, "-I", P("scripts", "build_winters.py"), "--check"]).returncode: err("rules/winters.json is stale; run scripts/build_winters.py")
 for m in notes: print("NOTE ", m)
