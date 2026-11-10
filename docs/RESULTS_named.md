@@ -51,7 +51,7 @@ Only 2018-19, 2021-22, 2022-23, 2023-24, 2024-25 have enough expected lift-days 
 
 **Morning versus full-day wind.** The day-level line above uses the strongest gust of the whole day (06:00 to 16:00), which includes hours after a hold. Using only the gust known by 9am (05:00 to 09:00) gives a pooled F1 of 0.772 against 0.801 for the full day, with a learned line of 51.2 to 60.8 mph. The full-day numbers describe a day; the morning numbers are what a call at opening could have used.
 
-**Simple rules against per-lift rules at lift level.**
+**Simple rules against per-lift rules at lift level** (same-day features: the whole-day gust is hindsight; the by-9am version is further down):
 - One learned wind line scores a pooled F1 of 0.59, against 0.64 for per-lift rules (any pass) and 0.637 for per-lift rules at 50% odds: fitting each lift separately adds +0.050 of F1.
 - The 25 mph rule has the highest recall (0.982) but very low precision (0.276), so its pooled F1 is the lowest (0.431). It tops the F1 table in 2 of 7 winters, but those are the tiny ones.
 - Per-lift rules called at 50% odds have the best precision of the learned methods, at the cost of recall: use them if a false alarm is costlier than a miss.
@@ -79,6 +79,17 @@ Including lift-days where a lift appears only because a post named it as held or
 | 25 mph rule | 0.288 | 0.983 | 0.446 |
 
 On this set the 25 mph rule has the best F1 in 1 of 8 winters, and the learned methods win the rest.
+
+## Lift level, using only what is known by 9am
+
+The lift-level tables above let every rule read the whole day's gust (`day_gust`, hindsight: it includes hours after a hold begins) and each lift's own rule may pick other same-day features. This table keeps the same lift-days but lets every method read only what is known by about 9am: the 05:00-09:00 ridge gust, early wind speed, avalanche rating, base temperature and snowfall. It is the fair test of a morning call, and the number to quote if the claim is "predicts the morning of".
+
+| Method (pooled) | Precision | Recall | F1 |
+|---|---|---|---|
+| Per-lift rules, called at 50% odds | 0.637 | 0.61 | 0.623 |
+| Per-lift rules, called whenever the lift passes its line | 0.61 | 0.662 | 0.635 |
+| Best single wind line (learned on the other winters) | 0.537 | 0.714 | 0.613 |
+| 25 mph rule | 0.301 | 0.955 | 0.457 |
 
 ## Limits
 

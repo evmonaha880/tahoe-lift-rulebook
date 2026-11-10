@@ -35,7 +35,8 @@ for W in WINTERS:
     for d in te: add(poolm, d["g"] >= t, d["held_wind"])
 out["day_level_morning"] = dict(pooled=prf(poolm), line_mph_min=round(min(lines_m), 1), line_mph_max=round(max(lines_m), 1), feature="early_gust: maximum gust 05:00-09:00 at the ridge stations", full_day_f1=out["day_level"]["pooled"]["learned"]["f1"])
 # ---------------- lift level, on two row sets
-def lift_level(S):
+def lift_level(S, feats=None, gust="day_gust"):
+    feats = feats or FEATS      # feats: what each lift's own rule may pick from; gust: the column the single line and the 25 mph rule read
     cnt = collections.Counter(r["lift"] for r in S); LIFTS = sorted(l for l, n in cnt.items() if n >= 40)
     M = ["per_lift_called_at_50pct", "per_lift_any_pass", "best_single_wind_line", "mph25"]
     agg = {W: {m: NEW() for m in M} for W in WINTERS}; nrows = collections.Counter(); lines = {}; fits = {}
@@ -44,19 +45,19 @@ def lift_level(S):
         for W in WINTERS:
             tr = [r for r in full if r["winter"] != W]; te = [r for r in full if r["winter"] == W]
             if len(tr) < 25 or len(te) < 10: continue
-            b = fit(tr, "held", FEATS)
+            b = fit(tr, "held", feats)
             if b: fits[(L, W)] = (b[1], b[2], tr, te)
     for W in WINTERS:
-        trainrows = [r for r in S if r["lift"] in LIFTS and r["winter"] != W and r["day_gust"] is not None]
-        b = fit(trainrows, "held", ["day_gust"]); lines[W] = b[2] if b else None
+        trainrows = [r for r in S if r["lift"] in LIFTS and r["winter"] != W and r[gust] is not None]
+        b = fit(trainrows, "held", [gust]); lines[W] = b[2] if b else None
     for (L, W), (f, t, tr, te) in fits.items():
         above = [r for r in tr if r[f] is not None and r[f] >= t]
         p_hold = sum(r["held"] for r in above) / len(above) if above else 0.0       # the rule's own hit rate on the training winters
         for r in te:
             fire = r[f] is not None and r[f] >= t
             add(agg[W]["per_lift_any_pass"], fire, r["held"]); add(agg[W]["per_lift_called_at_50pct"], fire and p_hold >= 0.5, r["held"])
-            add(agg[W]["mph25"], r["day_gust"] is not None and r["day_gust"] >= 25, r["held"])
-            if lines[W] is not None: add(agg[W]["best_single_wind_line"], r["day_gust"] is not None and r["day_gust"] >= lines[W], r["held"])
+            add(agg[W]["mph25"], r[gust] is not None and r[gust] >= 25, r["held"])
+            if lines[W] is not None: add(agg[W]["best_single_wind_line"], r[gust] is not None and r[gust] >= lines[W], r["held"])
             nrows[W] += 1
     pooled = {m: NEW() for m in M}; res = {}
     for W in WINTERS:
@@ -73,6 +74,9 @@ out["lift_level"] = lift_level(SCHED)                                   # headli
 out["lift_level_all_named"] = lift_level(rows)                          # includes lifts that appear only because a post named them (76% held): inflated, shown to reconcile
 out["lift_level_without_began_on_hold"] = lift_level([r for r in SCHED if r["began_on_hold"] != "1"])   # rows where the lift began the day on hold are held by construction (decision 58): shown without them so the headline is not read alone
 out["lift_level_without_began_on_hold"]["row_set"] = "expected lift-days, minus lifts that began the day on hold (those are held by definition until their reopening post)"
+MORNING_FEATS = [f for f in FEATS if f not in ("day_gust", "day_spd", "fnt_day_gust")]      # only what is known by about 9 am (rules/features.json "asof"); the headline lift-level numbers above may pick same-day features
+out["lift_level_by_9am"] = lift_level(SCHED, MORNING_FEATS, "early_gust")
+out["lift_level_by_9am"]["row_set"] = "same lift-days as the headline, but every rule (each lift's own, the single wind line, the 25 mph rule) reads only features known by about 9 am: the 05:00-09:00 ridge gust (early_gust), early wind speed, avalanche rating, base temperature and snowfall"
 out["lift_level"]["row_set"] = "expected lift-days only (scheduled, plus lifts that normally run on a whole-side closure day)"; out["lift_level_all_named"]["row_set"] = "all lift-days incl. unscheduled lifts named only in hold/delay posts (selection-biased)"
 dw = sum(1 for W in WINTERS if out["day_level"][W]["learned"]["f1"] > out["day_level"][W]["mph25"]["f1"])
 out["day_level"]["winters_learned_beats_25mph"] = f"{dw} of {len(WINTERS)}"
@@ -95,7 +99,7 @@ print("\nday level: learned line beats 25 mph in", out["day_level"]["winters_lea
 def row(label, x): return f"| {label} | {x['precision']} | {x['recall']} | {x['f1']} |"
 _NW = {7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven"}
 def pct(x): return "n/a" if x is None else x
-L = out["lift_level"]; LA = out["lift_level_all_named"]; LB = out["lift_level_without_began_on_hold"]; DL = out["day_level"]
+L = out["lift_level"]; LM = out["lift_level_by_9am"]; LA = out["lift_level_all_named"]; LB = out["lift_level_without_began_on_hold"]; DL = out["day_level"]
 names = {"per_lift_called_at_50pct": "Per-lift rules, called at 50% odds", "per_lift_any_pass": "Per-lift rules, called whenever the lift passes its line",
          "best_single_wind_line": "Best single wind line (learned on the other winters)", "mph25": "25 mph rule"}
 md = ["# Results: do the recovered rules predict winters they never saw?", "",
@@ -134,7 +138,7 @@ _cov = (f"**Coverage.** Lift-level rules are fitted on the {len(_named):,} of {l
 md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; the other winters score under 60 lift-days each because most of their posts give a count (\"32 lifts scheduled\") rather than names.", "",
        _cov, "",
        f"**Morning versus full-day wind.** The day-level line above uses the strongest gust of the whole day (06:00 to 16:00), which includes hours after a hold. Using only the gust known by 9am (05:00 to 09:00) gives a pooled F1 of {out['day_level_morning']['pooled']['f1']} against {DL['pooled']['learned']['f1']} for the full day, with a learned line of {out['day_level_morning']['line_mph_min']} to {out['day_level_morning']['line_mph_max']} mph. The full-day numbers describe a day; the morning numbers are what a call at opening could have used.", "",
-       "**Simple rules against per-lift rules at lift level.**",
+       "**Simple rules against per-lift rules at lift level** (same-day features: the whole-day gust is hindsight; the by-9am version is further down):",
        f"- One learned wind line scores a pooled F1 of {L['pooled']['best_single_wind_line']['f1']}, against {L['pooled']['per_lift_any_pass']['f1']} for per-lift rules (any pass) and {L['pooled']['per_lift_called_at_50pct']['f1']} for per-lift rules at 50% odds: fitting each lift separately adds {L['pooled']['per_lift_any_pass']['f1'] - L['pooled']['best_single_wind_line']['f1']:+.3f} of F1.",
        f"- The 25 mph rule has the highest recall ({L['pooled']['mph25']['recall']}) but very low precision ({L['pooled']['mph25']['precision']}), so its pooled F1 is the lowest ({L['pooled']['mph25']['f1']}). It tops the F1 table in {L['winters_won_by_method'].get('mph25', 0)} of {len([W for W in WINTERS if W in L])} winters, but those are the tiny ones.",
        "- Per-lift rules called at 50% odds have the best precision of the learned methods, at the cost of recall: use them if a false alarm is costlier than a miss.", "",
@@ -146,6 +150,9 @@ md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; 
        "We show it because the demo app may use this set.", "", "| Method (pooled) | Precision | Recall | F1 |", "|---|---|---|---|"]
 for m in names: md.append(row(names[m], LA["pooled"][m]))
 md += ["", f"On this set the 25 mph rule has the best F1 in {LA['winters_won_by_method'].get('mph25', 0)} of {len([W for W in WINTERS if W in LA])} winters, and the learned methods win the rest.", "",
+       "## Lift level, using only what is known by 9am", "",
+       f"The lift-level tables above let every rule read the whole day's gust (`day_gust`, hindsight: it includes hours after a hold begins) and each lift's own rule may pick other same-day features. This table keeps the same lift-days but lets every method read only what is known by about 9am: the 05:00-09:00 ridge gust, early wind speed, avalanche rating, base temperature and snowfall. It is the fair test of a morning call, and the number to quote if the claim is \"predicts the morning of\".", "",
+       "| Method (pooled) | Precision | Recall | F1 |", "|---|---|---|---|"] + [row(names[m], LM["pooled"][m]) for m in names] + ["",
        "## Limits", "",
        "- The outcome is the ops account's posts; a hold nobody posted is invisible, and a post parsed wrongly is a wrong label (about 90% of posts right on a 240-post hand check, plus or minus 5 points).",
        "- Per-lift results rest mainly on three winters (2021-22 to 2023-24) that list lifts by name on most days.",

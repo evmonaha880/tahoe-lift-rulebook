@@ -1140,6 +1140,308 @@
   },
   "row_set": "expected lift-days, minus lifts that began the day on hold (those are held by definition until their reopening post)"
  },
+ "lift_level_by_9am": {
+  "2018-19": {
+   "n_lift_days": 650,
+   "wind_line_mph": 61.9,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 386,
+    "fp": 44,
+    "fn": 156,
+    "precision": 0.898,
+    "recall": 0.712,
+    "f1": 0.794
+   },
+   "per_lift_any_pass": {
+    "tp": 421,
+    "fp": 59,
+    "fn": 121,
+    "precision": 0.877,
+    "recall": 0.777,
+    "f1": 0.824
+   },
+   "best_single_wind_line": {
+    "tp": 431,
+    "fp": 61,
+    "fn": 111,
+    "precision": 0.876,
+    "recall": 0.795,
+    "f1": 0.834
+   },
+   "mph25": {
+    "tp": 538,
+    "fp": 96,
+    "fn": 4,
+    "precision": 0.849,
+    "recall": 0.993,
+    "f1": 0.915
+   }
+  },
+  "2019-20": {
+   "n_lift_days": 163,
+   "wind_line_mph": 59.9,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 102,
+    "fp": 9,
+    "fn": 16,
+    "precision": 0.919,
+    "recall": 0.864,
+    "f1": 0.891
+   },
+   "per_lift_any_pass": {
+    "tp": 104,
+    "fp": 11,
+    "fn": 14,
+    "precision": 0.904,
+    "recall": 0.881,
+    "f1": 0.893
+   },
+   "best_single_wind_line": {
+    "tp": 98,
+    "fp": 14,
+    "fn": 20,
+    "precision": 0.875,
+    "recall": 0.831,
+    "f1": 0.852
+   },
+   "mph25": {
+    "tp": 116,
+    "fp": 36,
+    "fn": 2,
+    "precision": 0.763,
+    "recall": 0.983,
+    "f1": 0.859
+   }
+  },
+  "2021-22": {
+   "n_lift_days": 2289,
+   "wind_line_mph": 59.5,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 241,
+    "fp": 288,
+    "fn": 112,
+    "precision": 0.456,
+    "recall": 0.683,
+    "f1": 0.546
+   },
+   "per_lift_any_pass": {
+    "tp": 257,
+    "fp": 333,
+    "fn": 96,
+    "precision": 0.436,
+    "recall": 0.728,
+    "f1": 0.545
+   },
+   "best_single_wind_line": {
+    "tp": 282,
+    "fp": 434,
+    "fn": 71,
+    "precision": 0.394,
+    "recall": 0.799,
+    "f1": 0.528
+   },
+   "mph25": {
+    "tp": 343,
+    "fp": 1616,
+    "fn": 10,
+    "precision": 0.175,
+    "recall": 0.972,
+    "f1": 0.297
+   }
+  },
+  "2022-23": {
+   "n_lift_days": 4019,
+   "wind_line_mph": 59.2,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 600,
+    "fp": 349,
+    "fn": 548,
+    "precision": 0.632,
+    "recall": 0.523,
+    "f1": 0.572
+   },
+   "per_lift_any_pass": {
+    "tp": 666,
+    "fp": 433,
+    "fn": 482,
+    "precision": 0.606,
+    "recall": 0.58,
+    "f1": 0.593
+   },
+   "best_single_wind_line": {
+    "tp": 773,
+    "fp": 699,
+    "fn": 375,
+    "precision": 0.525,
+    "recall": 0.673,
+    "f1": 0.59
+   },
+   "mph25": {
+    "tp": 1067,
+    "fp": 2405,
+    "fn": 81,
+    "precision": 0.307,
+    "recall": 0.929,
+    "f1": 0.462
+   }
+  },
+  "2023-24": {
+   "n_lift_days": 3566,
+   "wind_line_mph": 59.2,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 374,
+    "fp": 336,
+    "fn": 249,
+    "precision": 0.527,
+    "recall": 0.6,
+    "f1": 0.561
+   },
+   "per_lift_any_pass": {
+    "tp": 389,
+    "fp": 402,
+    "fn": 234,
+    "precision": 0.492,
+    "recall": 0.624,
+    "f1": 0.55
+   },
+   "best_single_wind_line": {
+    "tp": 406,
+    "fp": 584,
+    "fn": 217,
+    "precision": 0.41,
+    "recall": 0.652,
+    "f1": 0.503
+   },
+   "mph25": {
+    "tp": 603,
+    "fp": 2354,
+    "fn": 20,
+    "precision": 0.204,
+    "recall": 0.968,
+    "f1": 0.337
+   }
+  },
+  "2024-25": {
+   "n_lift_days": 637,
+   "wind_line_mph": 59.2,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 138,
+    "fp": 26,
+    "fn": 94,
+    "precision": 0.841,
+    "recall": 0.595,
+    "f1": 0.697
+   },
+   "per_lift_any_pass": {
+    "tp": 159,
+    "fp": 40,
+    "fn": 73,
+    "precision": 0.799,
+    "recall": 0.685,
+    "f1": 0.738
+   },
+   "best_single_wind_line": {
+    "tp": 166,
+    "fp": 67,
+    "fn": 66,
+    "precision": 0.712,
+    "recall": 0.716,
+    "f1": 0.714
+   },
+   "mph25": {
+    "tp": 213,
+    "fp": 187,
+    "fn": 19,
+    "precision": 0.532,
+    "recall": 0.918,
+    "f1": 0.674
+   }
+  },
+  "2025-26": {
+   "n_lift_days": 25,
+   "wind_line_mph": 60.7,
+   "hold_rate": null,
+   "per_lift_called_at_50pct": {
+    "tp": 3,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.6,
+    "f1": 0.75
+   },
+   "per_lift_any_pass": {
+    "tp": 3,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.6,
+    "f1": 0.75
+   },
+   "best_single_wind_line": {
+    "tp": 2,
+    "fp": 1,
+    "fn": 3,
+    "precision": 0.667,
+    "recall": 0.4,
+    "f1": 0.5
+   },
+   "mph25": {
+    "tp": 4,
+    "fp": 10,
+    "fn": 1,
+    "precision": 0.286,
+    "recall": 0.8,
+    "f1": 0.421
+   }
+  },
+  "pooled": {
+   "n_lift_days": 11349,
+   "per_lift_called_at_50pct": {
+    "tp": 1844,
+    "fp": 1052,
+    "fn": 1177,
+    "precision": 0.637,
+    "recall": 0.61,
+    "f1": 0.623
+   },
+   "per_lift_any_pass": {
+    "tp": 1999,
+    "fp": 1278,
+    "fn": 1022,
+    "precision": 0.61,
+    "recall": 0.662,
+    "f1": 0.635
+   },
+   "best_single_wind_line": {
+    "tp": 2158,
+    "fp": 1860,
+    "fn": 863,
+    "precision": 0.537,
+    "recall": 0.714,
+    "f1": 0.613
+   },
+   "mph25": {
+    "tp": 2884,
+    "fp": 6704,
+    "fn": 137,
+    "precision": 0.301,
+    "recall": 0.955,
+    "f1": 0.457
+   }
+  },
+  "winters_won_by_method": {
+   "mph25": 1,
+   "per_lift_any_pass": 3,
+   "per_lift_called_at_50pct": 3
+  },
+  "row_set": "same lift-days as the headline, but every rule (each lift's own, the single wind line, the 25 mph rule) reads only features known by about 9 am: the 05:00-09:00 ridge gust (early_gust), early wind speed, avalanche rating, base temperature and snowfall"
+ },
  "coverage": {
   "side_days": 1636,
   "named_side_days": 1342,
