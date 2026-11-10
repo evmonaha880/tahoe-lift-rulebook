@@ -12,6 +12,7 @@ $PY -I scripts/weather_qc.py | tail -1
 $PY -I scripts/build_weather_common.py > /dev/null      # before build_dataset: the 2015-18 rows take their early gust from this table
 $PY -I scripts/build_dataset.py 2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025 | tail -1
 for s in recover_rules baselines infer_causes closure_conditions build_app_model; do $PY -I scripts/$s.py > /dev/null; done
+LIFT_DAYS=lift_days_11w $PY -I scripts/baselines.py > /dev/null      # the 11-winter view (results/baselines_11w.json, docs/RESULTS_11w.md); the headline files above stay on the 8 core winters
 $PY -I scripts/check_app_model.py | tail -1
 $PY -I scripts/check_data.py | tail -3
 $PY -I scripts/check_numbers.py | tail -3
