@@ -610,17 +610,9 @@ def parse_post(p):
         if k not in seen: seen.add(k); out.append(e)
     return out
 
-def _parse_post(p):
-    raw = p["text"]
-    t = " ".join(raw.replace("&amp;", "&").split())
-    dt = datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles"))
-    base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None}
-    ev = []
-    def add(rule, typ, lifts, cause=None, **kw):
-        cause = {"lightning": "weather", "icing": "weather", "ice": "weather", "icy": "weather"}.get(cause, cause)   # one cause family for lightning / ice / rain
-        for l in (lifts or [None]):
-            ev.append({**base, "lift": l, "event_type": typ, "cause": cause,
-                       "cause_source": "observed" if cause else "unstated", "parse_rule_id": rule, "confidence": 1.0, **kw})
+def _leading_rules(p, t, dt, ev, add):
+    """Rules that read the whole post before the sentence loop: all-lifts-on-hold, whole-mountain closures, 'all other lifts' holds, 'following lifts' holds, delayed-opening roster, off-hold reopen, and labelled list sections.
+    Returns (t, done); done=True means the events in ev are final for this post."""
     t = re.sub(r"\b(wind|mechanical|patrol)hold\b", r"\1 hold", t, flags=re.I)
     t = re.sub(r"\b(wind|mechanical|patrol) old\b", r"\1 hold", t, flags=re.I)     # typo seen in 2018-19
     t = re.sub(r"\boff (?:lift )?maintenance\b", "off maintenance hold", t, flags=re.I)
@@ -637,7 +629,7 @@ def _parse_post(p):
             add("P-022", "warning" if fut else "closed_day", [sc], cause_in(sent) or cause_in(t), **({"note": "announced for a later day"} if fut else {}), **({"except": exc} if exc else {}))
         rest = t
         for _sc, sent, _f in wc: rest = rest.replace(sent, " ")
-        if not find_lifts(rest) and not re.search(r"\bhold\b|\bdelay|\bopen\b|\bopening\b", rest, re.I): return ev      # nothing else in the post to read
+        if not find_lifts(rest) and not re.search(r"\bhold\b|\bdelay|\bopen\b|\bopening\b", rest, re.I): return t, True      # nothing else in the post to read
         t = " ".join(rest.split()); low = t.lower()
     AO = re.compile(r"all other (?:scheduled )?(?:\w+ )?lifts?\b(?! that)(?:[^.!?]*?\b(?:are|remain)\b)?[^.!?]*?\bon (?:an? )?(?:(wind|mechanical|patrol|maintenance|lightning|weather impact|weather|operational) )?(hold|delay|standby)(?: due to ([^.!?]*))?[.!?]?", re.I)
     am = AO.search(t)
@@ -651,17 +643,96 @@ def _parse_post(p):
         tail = re.split(r"(?<=[.!?])\s+", t[fm.end():], maxsplit=1)
         lifts = find_lifts(tail[1] if len(tail) > 1 else "")
         if lifts:
-            add("P-011" if fm.group(2).lower() == "hold" else "P-030", "hold_start" if fm.group(2).lower() == "hold" else "delay", lifts, (fm.group(1) or "").lower() or None); return ev
+            add("P-011" if fm.group(2).lower() == "hold" else "P-030", "hold_start" if fm.group(2).lower() == "hold" else "delay", lifts, (fm.group(1) or "").lower() or None); return t, True
     dm = re.search(r"([^.!?\-•]*?)\bwill have an? (?:slightly )?delayed (?:opening|start)[^.!?]*[.!?]?", t, re.I)
     if dm and re.search(r"lifts?(?: at [\w ]+?)? (?:are|will be) now open|^(?:open at|these lifts are now open)", t, re.I) and find_lifts(dm.group(1)):
         add("P-030", "delay", find_lifts(dm.group(1)), None); t = t.replace(dm.group(0), " ")
     om = re.search(r"following lifts(?: at \w+)? (?:are|is)(?: now)? off (?:the )?(wind|mechanical|patrol) hold(?: and open[^:]*)?:", t, re.I)
-    if om: add("P-040", "reopen", find_lifts(t[om.end():]), om.group(1).lower(), resolves_hold=True); return ev
+    if om: add("P-040", "reopen", find_lifts(t[om.end():]), om.group(1).lower(), resolves_hold=True); return t, True
     left = []   # prose that followed a list inside sectional(); parsed again here
     if sectional(t, add, left):
         for extra in left:
             ev.extend(_parse_post({**p, "text": extra}))
-        return ev
+        return t, True
+    return t, False
+
+def _squaw_era_rules(t, dt, ev, add):
+    """Squaw-era wording (2015-18) that none of the sentence rules reads. Only reached when the post produced no event."""
+    # ---- Squaw-era wording (2015-18) that none of the rules above reads. Reached only when the post produced no event, so 2018+ results change only for posts that were unmatched.
+    #      Written from training posts only. P-081 start-time forms, P-082 'open now' rosters, P-083 'joined the hold list', P-084 'added to (tomorrow's) schedule', P-085 upper mountain on wind hold, P-086 'experiencing ... issues'
+    _tm = r"(\d{1,2})(?::(\d\d))?\s*(am|pm|a|p)?\b"
+    def _late(m):
+        h, mi, ap = int(m.group(1)), int(m.group(2) or 0), (m.group(3) or "am")[0].lower()
+        if ap == "p" and h < 12: h += 12
+        return h * 60 + mi > 9 * 60
+    _prev = []
+    for s in split_sentences(re.sub(r"#\w+", " ", t)):
+        sl = s.lower()
+        m = re.search(r"(?:now\s+)?(?:anticipated|projected|projecting|scheduled|expected)\s+(?:(?:start|opening|open|lift openings?)\s+)?(?:time\s+)?(?:of\s+|for\s+|at\s+)?" + _tm + r"\s*(?:open(?:ing)?)?\s*(:)?", s, re.I)
+        if m and not re.search(r"\bwill open\b.*\bwhen\b|\bsnow\b", sl):
+            ls = find_lifts(s[m.end():]) if m.group(4) else find_lifts(s[:m.start()])
+            if not ls and m.group(4): ls = find_lifts(s[:m.start()])
+            if ls: add("P-081", "delay" if _late(m) else "scheduled_opening", ls, None, note="start_time"); continue
+        m = re.search(r"(?:late|delayed)\s+opening\b[^.]*?\b" + _tm, s, re.I)
+        if m and find_lifts(s): add("P-081", "delay", find_lifts(s[:m.start()]) or find_lifts(s), None, note="late_opening"); continue
+        m = re.search(r"\bopen(?:s|ing)?\s+at\s+" + _tm, s, re.I)
+        if m and find_lifts(s[:m.start()]) and not re.search(r"\bwill\b.*\bwhen\b|\bif\b", sl): add("P-081", "delay" if _late(m) else "scheduled_opening", find_lifts(s[:m.start()]), None, note="open_at"); continue
+        m = re.search(r"\bscheduled\s+opening\s+" + _tm, s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-081", "delay" if _late(m) else "scheduled_opening", find_lifts(s[:m.start()]), None, note="scheduled_opening"); continue
+        m = re.search(r"\b(?:open\s+lifts|open\s+now|lifts\s+open|now\s+open)\s*:\s*(.+)", s, re.I) or re.search(r"\boperations\s+at\s+" + _tm + r"[^.]*?\bwill\s+be\s+(.+)", s, re.I)
+        if m and find_lifts(m.group(m.lastindex)):
+            add("P-082", "scheduled_opening" if re.match(r"operations", s, re.I) else "reopen", find_lifts(m.group(m.lastindex)), None, note="roster"); continue
+        m = re.search(r"\b(?:joined|join|added to)\s+the\s+(?:wind\s+|mechanical\s+)?hold\s+list", s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-083", "hold_start", find_lifts(s[:m.start()]), "wind" if "wind" in sl else cause_in(s), note="joined_hold_list"); continue
+        m = re.search(r"\b(?:has|have)\s+been\s+added\s+to\s+(?:tomorrow.s|the)\s+schedule", s, re.I)
+        if m and find_lifts(s[:m.start()]):
+            add("P-084", "scheduled_opening", find_lifts(s[:m.start()]), None, note="added_to_schedule")
+            if re.search(r"tomorrow", s, re.I):
+                for e in ev[-len(find_lifts(s[:m.start()])):]: e["start"] = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0).isoformat(timespec="minutes"); e["note"] = "announced_prior_day"
+            continue
+        if re.search(r"\bupper\s+(?:mtn|mountain)\.?\s+(?:starts?\s+(?:the\s+day\s+)?on|is\s+on|on)\s+(?:a\s+)?wind\s*hold", s, re.I): add("P-085", "hold_start", ["UPPER_MOUNTAIN"], "wind", note="upper_mountain"); continue
+        m = re.search(r"\b(?:is|are)\s+experiencing\s+(\w+)\s+issues", s, re.I)
+        if m and find_lifts(s[:m.start()]) and m.group(1).lower() in ("electrical", "mechanical", "technical", "power"): add("P-086", "hold_start", find_lifts(s[:m.start()]), "mechanical", note="experiencing_issues"); continue
+        m = re.search(r"\b(?:open|opened)\s+to\s+(?:the\s+)?public\b", s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-040", "reopen", find_lifts(s[:m.start()]), None, note="open_to_public"); continue
+        # second batch, also from training posts: P-087 closing, P-088 bare 'X open', P-089 holds and late starts that name the lift in the sentence before, P-08a 'wind holds except ...', P-08b per-lift start times
+        m = re.search(r"\b(?:wind|mechanical|patrol)\s+holds?\s+except\s+(.+)", s, re.I)
+        if m and find_lifts(m.group(1)): add("P-08a", "hold_start", ["ALL_OTHER"], cause_in(s) or "wind", **{"except": find_lifts(m.group(1)), "note": "all_but_listed"}); continue
+        m = re.search(r"\b(?:now\s+)?on\s+(wind|mechanical|patrol)\s+closure\b|\bofficially\s+closed\b|\bclosed\b[^.]{0,40}\bfor\s+the\s+day\b|\b(?:will\s+)?(?:all\s+)?close\s+at\s+\d", s, re.I)
+        if m and find_lifts(s): add("P-087", "closed_day", find_lifts(s), (m.group(1) or "").lower() or cause_in(s), note="closure"); continue
+        m = re.search(r"\b(?:will\s+)?(?:all\s+)?stay\s+open\s+until\b", s, re.I)
+        if m and find_lifts(s[:m.start()]): add("P-081", "scheduled_opening", find_lifts(s[:m.start()]), None, note="stay_open_until"); continue
+        m = re.match(r"\s*([^.:!?]*?)(?:\s+(?:lift|chair))?\s+open\s*!?\s*$", s, re.I)
+        if m and find_lifts(m.group(1)) and not re.search(r"\b(?:stay|will|to|would|can)\s+open\s*!?\s*$", s, re.I): add("P-088", "reopen", find_lifts(m.group(1)), None, note="bare_open"); continue
+        if m and re.search(r"\bstay\s+open\s*!?\s*$", s, re.I) and find_lifts(s): add("P-081", "scheduled_opening", find_lifts(s), None, note="stay_open_until"); continue
+        m = re.search(r"\b(?:brief\s+|short\s+)?(wind|mechanical|patrol)\s+hold\s+(?:on|for)\s+(.+)", s, re.I)
+        if m and find_lifts(m.group(2)): add("P-089", "hold_start", find_lifts(m.group(2)), m.group(1).lower(), note="hold_on"); continue
+        m = re.search(r"\b(?:will\s+)?start\s+(?:the\s+)?(?:morning|day)\s+on\s+(?:a\s+)?(wind|mechanical|patrol)\s*hold", s, re.I)
+        if m and (find_lifts(s) or _prev): add("P-089", "hold_start", find_lifts(s) or _prev, m.group(1).lower(), note="starts_day_on_hold"); continue
+        m = re.search(r"\b(?:looks?\s+to\s+open\s+around|hoping\s+to\s+(?:have\s+\w+\s+)?open\s+by|hoping\s+to\s+have\s+(?:\w+\s+)?open\s+by)\s+" + _tm, s, re.I)
+        if m and (find_lifts(s) or _prev): add("P-089", "delay", find_lifts(s) or _prev, None, note="hoped_start"); continue
+        _pairs = re.findall(r"([A-Za-z][A-Za-z\- ']*?)\s+at\s+(\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p))\b", s, re.I)
+        if _pairs and not re.search(r"\b(?:open|close)\s+at\b", s, re.I):
+            _done = False
+            for nm, tm in _pairs:
+                _l = find_lifts(nm) if re.search(r"\bopen\b", nm, re.I) else find_lifts(nm.split(" and ")[-1].split(",")[-1].strip())
+                if _l: add("P-08b", "delay" if _late(re.match(_tm, tm, re.I)) else "scheduled_opening", _l, None, note="lift_at_time"); _done = True
+            if _done: continue
+        if find_lifts(s): _prev = find_lifts(s)
+
+def _parse_post(p):
+    raw = p["text"]
+    t = " ".join(raw.replace("&amp;", "&").split())
+    dt = datetime.fromisoformat(p["created_at"].replace("Z", "+00:00")).astimezone(ZoneInfo("America/Los_Angeles"))
+    base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None}
+    ev = []
+    def add(rule, typ, lifts, cause=None, **kw):
+        cause = {"lightning": "weather", "icing": "weather", "ice": "weather", "icy": "weather"}.get(cause, cause)   # one cause family for lightning / ice / rain
+        for l in (lifts or [None]):
+            ev.append({**base, "lift": l, "event_type": typ, "cause": cause,
+                       "cause_source": "observed" if cause else "unstated", "parse_rule_id": rule, "confidence": 1.0, **kw})
+    t, done = _leading_rules(p, t, dt, ev, add)
+    if done: return ev
     # P-001 scheduled opening
     if re.match(r"^(?:palisades|alpine)[^:]{0,20}:", t, re.I) and re.search(r"\b\d+ lifts?\b|open at \d|lifts? (?:are )?(?:scheduled|on the schedule)", t, re.I):
         roster = roster_with_sections(t, add, "P-001", t.index(":") + 1)
@@ -969,67 +1040,7 @@ def _parse_post(p):
             subj = re.split(r"\b(?:is|are|has)\b|, also|\bopen\b|\balso\b", s, maxsplit=1, flags=re.I)[0]
             add("P-040", "reopen", find_lifts(subj) or find_lifts(s), None); continue
     if ev: return ev
-    # ---- Squaw-era wording (2015-18) that none of the rules above reads. Reached only when the post produced no event, so 2018+ results change only for posts that were unmatched.
-    #      Written from training posts only. P-081 start-time forms, P-082 'open now' rosters, P-083 'joined the hold list', P-084 'added to (tomorrow's) schedule', P-085 upper mountain on wind hold, P-086 'experiencing ... issues'
-    _tm = r"(\d{1,2})(?::(\d\d))?\s*(am|pm|a|p)?\b"
-    def _late(m):
-        h, mi, ap = int(m.group(1)), int(m.group(2) or 0), (m.group(3) or "am")[0].lower()
-        if ap == "p" and h < 12: h += 12
-        return h * 60 + mi > 9 * 60
-    _prev = []
-    for s in split_sentences(re.sub(r"#\w+", " ", t)):
-        sl = s.lower()
-        m = re.search(r"(?:now\s+)?(?:anticipated|projected|projecting|scheduled|expected)\s+(?:(?:start|opening|open|lift openings?)\s+)?(?:time\s+)?(?:of\s+|for\s+|at\s+)?" + _tm + r"\s*(?:open(?:ing)?)?\s*(:)?", s, re.I)
-        if m and not re.search(r"\bwill open\b.*\bwhen\b|\bsnow\b", sl):
-            ls = find_lifts(s[m.end():]) if m.group(4) else find_lifts(s[:m.start()])
-            if not ls and m.group(4): ls = find_lifts(s[:m.start()])
-            if ls: add("P-081", "delay" if _late(m) else "scheduled_opening", ls, None, note="start_time"); continue
-        m = re.search(r"(?:late|delayed)\s+opening\b[^.]*?\b" + _tm, s, re.I)
-        if m and find_lifts(s): add("P-081", "delay", find_lifts(s[:m.start()]) or find_lifts(s), None, note="late_opening"); continue
-        m = re.search(r"\bopen(?:s|ing)?\s+at\s+" + _tm, s, re.I)
-        if m and find_lifts(s[:m.start()]) and not re.search(r"\bwill\b.*\bwhen\b|\bif\b", sl): add("P-081", "delay" if _late(m) else "scheduled_opening", find_lifts(s[:m.start()]), None, note="open_at"); continue
-        m = re.search(r"\bscheduled\s+opening\s+" + _tm, s, re.I)
-        if m and find_lifts(s[:m.start()]): add("P-081", "delay" if _late(m) else "scheduled_opening", find_lifts(s[:m.start()]), None, note="scheduled_opening"); continue
-        m = re.search(r"\b(?:open\s+lifts|open\s+now|lifts\s+open|now\s+open)\s*:\s*(.+)", s, re.I) or re.search(r"\boperations\s+at\s+" + _tm + r"[^.]*?\bwill\s+be\s+(.+)", s, re.I)
-        if m and find_lifts(m.group(m.lastindex)):
-            add("P-082", "scheduled_opening" if re.match(r"operations", s, re.I) else "reopen", find_lifts(m.group(m.lastindex)), None, note="roster"); continue
-        m = re.search(r"\b(?:joined|join|added to)\s+the\s+(?:wind\s+|mechanical\s+)?hold\s+list", s, re.I)
-        if m and find_lifts(s[:m.start()]): add("P-083", "hold_start", find_lifts(s[:m.start()]), "wind" if "wind" in sl else cause_in(s), note="joined_hold_list"); continue
-        m = re.search(r"\b(?:has|have)\s+been\s+added\s+to\s+(?:tomorrow.s|the)\s+schedule", s, re.I)
-        if m and find_lifts(s[:m.start()]):
-            add("P-084", "scheduled_opening", find_lifts(s[:m.start()]), None, note="added_to_schedule")
-            if re.search(r"tomorrow", s, re.I):
-                for e in ev[-len(find_lifts(s[:m.start()])):]: e["start"] = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0).isoformat(timespec="minutes"); e["note"] = "announced_prior_day"
-            continue
-        if re.search(r"\bupper\s+(?:mtn|mountain)\.?\s+(?:starts?\s+(?:the\s+day\s+)?on|is\s+on|on)\s+(?:a\s+)?wind\s*hold", s, re.I): add("P-085", "hold_start", ["UPPER_MOUNTAIN"], "wind", note="upper_mountain"); continue
-        m = re.search(r"\b(?:is|are)\s+experiencing\s+(\w+)\s+issues", s, re.I)
-        if m and find_lifts(s[:m.start()]) and m.group(1).lower() in ("electrical", "mechanical", "technical", "power"): add("P-086", "hold_start", find_lifts(s[:m.start()]), "mechanical", note="experiencing_issues"); continue
-        m = re.search(r"\b(?:open|opened)\s+to\s+(?:the\s+)?public\b", s, re.I)
-        if m and find_lifts(s[:m.start()]): add("P-040", "reopen", find_lifts(s[:m.start()]), None, note="open_to_public"); continue
-        # second batch, also from training posts: P-087 closing, P-088 bare 'X open', P-089 holds and late starts that name the lift in the sentence before, P-08a 'wind holds except ...', P-08b per-lift start times
-        m = re.search(r"\b(?:wind|mechanical|patrol)\s+holds?\s+except\s+(.+)", s, re.I)
-        if m and find_lifts(m.group(1)): add("P-08a", "hold_start", ["ALL_OTHER"], cause_in(s) or "wind", **{"except": find_lifts(m.group(1)), "note": "all_but_listed"}); continue
-        m = re.search(r"\b(?:now\s+)?on\s+(wind|mechanical|patrol)\s+closure\b|\bofficially\s+closed\b|\bclosed\b[^.]{0,40}\bfor\s+the\s+day\b|\b(?:will\s+)?(?:all\s+)?close\s+at\s+\d", s, re.I)
-        if m and find_lifts(s): add("P-087", "closed_day", find_lifts(s), (m.group(1) or "").lower() or cause_in(s), note="closure"); continue
-        m = re.search(r"\b(?:will\s+)?(?:all\s+)?stay\s+open\s+until\b", s, re.I)
-        if m and find_lifts(s[:m.start()]): add("P-081", "scheduled_opening", find_lifts(s[:m.start()]), None, note="stay_open_until"); continue
-        m = re.match(r"\s*([^.:!?]*?)(?:\s+(?:lift|chair))?\s+open\s*!?\s*$", s, re.I)
-        if m and find_lifts(m.group(1)) and not re.search(r"\b(?:stay|will|to|would|can)\s+open\s*!?\s*$", s, re.I): add("P-088", "reopen", find_lifts(m.group(1)), None, note="bare_open"); continue
-        if m and re.search(r"\bstay\s+open\s*!?\s*$", s, re.I) and find_lifts(s): add("P-081", "scheduled_opening", find_lifts(s), None, note="stay_open_until"); continue
-        m = re.search(r"\b(?:brief\s+|short\s+)?(wind|mechanical|patrol)\s+hold\s+(?:on|for)\s+(.+)", s, re.I)
-        if m and find_lifts(m.group(2)): add("P-089", "hold_start", find_lifts(m.group(2)), m.group(1).lower(), note="hold_on"); continue
-        m = re.search(r"\b(?:will\s+)?start\s+(?:the\s+)?(?:morning|day)\s+on\s+(?:a\s+)?(wind|mechanical|patrol)\s*hold", s, re.I)
-        if m and (find_lifts(s) or _prev): add("P-089", "hold_start", find_lifts(s) or _prev, m.group(1).lower(), note="starts_day_on_hold"); continue
-        m = re.search(r"\b(?:looks?\s+to\s+open\s+around|hoping\s+to\s+(?:have\s+\w+\s+)?open\s+by|hoping\s+to\s+have\s+(?:\w+\s+)?open\s+by)\s+" + _tm, s, re.I)
-        if m and (find_lifts(s) or _prev): add("P-089", "delay", find_lifts(s) or _prev, None, note="hoped_start"); continue
-        _pairs = re.findall(r"([A-Za-z][A-Za-z\- ']*?)\s+at\s+(\d{1,2}(?::\d\d)?\s*(?:am|pm|a|p))\b", s, re.I)
-        if _pairs and not re.search(r"\b(?:open|close)\s+at\b", s, re.I):
-            _done = False
-            for nm, tm in _pairs:
-                _l = find_lifts(nm) if re.search(r"\bopen\b", nm, re.I) else find_lifts(nm.split(" and ")[-1].split(",")[-1].strip())
-                if _l: add("P-08b", "delay" if _late(re.match(_tm, tm, re.I)) else "scheduled_opening", _l, None, note="lift_at_time"); _done = True
-            if _done: continue
-        if find_lifts(s): _prev = find_lifts(s)
+    _squaw_era_rules(t, dt, ev, add)
     if ev: return ev
     if re.match(r"^(?:palisades|alpine)\b[^:]{0,15}:|^snow and weather|^today.s weather|^update:.*operating plan", t, re.I):
         add("P-060", "other", [], None); return ev
