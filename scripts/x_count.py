@@ -2,7 +2,7 @@
 usage: python3 -I scripts/x_count.py 2023                      (winter starting year, 3 queries)
        python3 -I scripts/x_count.py 2023 2023-10-01 2023-12-15   (originals only, custom window; end exclusive)"""
 import os, sys, json, urllib.request, urllib.parse
-KEY = open(os.path.expanduser("~/.config/x-api/bearer")).read().strip()
+KEY = open(os.path.join(os.environ.get("KEY_DIR", os.path.expanduser("~/.config")), "x-api", "bearer")).read().strip()
 Y = int(sys.argv[1])
 START = sys.argv[2] if len(sys.argv) > 3 else f"{Y}-10-01"
 END = sys.argv[3] if len(sys.argv) > 3 else f"{Y+1}-06-01"

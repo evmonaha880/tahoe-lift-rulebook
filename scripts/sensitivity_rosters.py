@@ -6,7 +6,7 @@ from datetime import date, datetime, timedelta
 import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # -I mode does not put the script folder on the path
 from config import LA
 root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-PY = os.environ.get("PY", os.path.expanduser("~/DataLake/.venv/bin/python"))
+PY = os.environ.get("PY", sys.executable)
 rows = list(csv.DictReader(open(os.path.join(root, "data/derived/lift_days.csv")))); cols = list(rows[0].keys())
 by = collections.defaultdict(list)
 for r in rows:

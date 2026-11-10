@@ -1,7 +1,7 @@
 """Does the forecaster's morning gust (blog_forecast.csv) add to the station morning gust for calling a wind-hold day? Leave-one-winter-out over the 6 winters that have forecast posts.
 Day level: did any lift hold for wind that day. Station = max gust 05:00-09:00 (early_gust). Forecast = ridgetop gust figure in the post for that day, posted by 09:00 (hi end of a range).
 Three rules, each fitted on the other winters: station line, forecast line, 'either' (two lines, OR). Reported on (1) days that have a forecast figure and (2) every covered-winter day (a missing figure = no information).
-DERIVED: the forecast figures are read from text by rule. usage: ~/DataLake/.venv/bin/python -I scripts/forecast_value.py   -> results/forecast_value.json"""
+DERIVED: the forecast figures are read from text by rule. usage: python3 -I scripts/forecast_value.py   -> results/forecast_value.json"""
 import os, json, pandas as pd
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 l = pd.read_csv(os.path.join(ROOT, "data/derived/lift_days.csv"), usecols=["winter", "date", "in_season", "held_wind", "early_gust"]); l = l[l.in_season == 1]

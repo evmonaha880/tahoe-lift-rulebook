@@ -2,7 +2,7 @@
 # Rebuild everything in order and run the checks. usage: scripts/run_all.sh   (needs a Python with numpy; set PY to override)
 set -eo pipefail   # pipefail: a failing check piped into tail must still stop the build
 cd "$(dirname "$0")/.."
-PY="${PY:-$HOME/DataLake/.venv/bin/python}"; [ -x "$PY" ] || PY=python3
+PY="${PY:-python3}"      # a Python with numpy; set PY to override
 $PY -c "import numpy" 2>/dev/null || { echo "numpy missing: pip install -r requirements.txt"; exit 1; }
 for y in 2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025; do for sp in train heldout; do $PY -I scripts/parse_posts.py $y $sp > /dev/null; done; done
 $PY -I tests/golden.py | tail -1

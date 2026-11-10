@@ -16,7 +16,7 @@ Q = {
  "schedule": "Is the post a morning plan listing which lifts will run and their hours?",
  "parking": "Is the post about parking lot status?",
 }
-def key(n): return open(os.path.expanduser(f"~/.config/{n}/key")).read().strip()
+def key(n): return open(os.path.join(os.environ.get("KEY_DIR", os.path.expanduser("~/.config")), n, "key")).read().strip()
 def call(url, body, k):
     for attempt in range(3):
         try:

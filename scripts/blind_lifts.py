@@ -4,7 +4,7 @@ import os, sys, json, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parse_posts import find_lifts, parse_post
-K = open(os.path.expanduser("~/.config/meta/key")).read().strip()
+K = open(os.path.join(os.environ.get("KEY_DIR", os.path.expanduser("~/.config")), "meta", "key")).read().strip()
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "derived")
 def ask(text):
     prompt = ("Ski resort lift-operations tweet. List ONLY lifts that this tweet says are on hold, closed, off schedule, or opening late/delayed "

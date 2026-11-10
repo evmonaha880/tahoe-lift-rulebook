@@ -2,7 +2,7 @@
 Compare with the count you expect first (scripts/x_count.py style); a pull far from the count is reported. Never prints the key. Nothing is written on an HTTP error.
 usage: python3 -I scripts/x_pull_account.py TahoeWeather 2015 [expected_count]"""
 import os, sys, json, time, urllib.request, urllib.parse, urllib.error
-KEY = open(os.path.expanduser("~/.config/x-api/bearer")).read().strip()
+KEY = open(os.path.join(os.environ.get("KEY_DIR", os.path.expanduser("~/.config")), "x-api", "bearer")).read().strip()
 acct, Y = sys.argv[1], int(sys.argv[2]); exp = int(sys.argv[3]) if len(sys.argv) > 3 else None
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "raw", f"x_{acct.lower()}", f"{Y}-{str(Y + 1)[2:]}.json")
 if os.path.exists(OUT): raise SystemExit(f"{OUT} exists; not pulling again (no double spend)")
