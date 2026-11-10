@@ -54,6 +54,17 @@ Only 2018-19, 2021-22, 2022-23, 2023-24, 2024-25 have enough expected lift-days 
 - The 25 mph rule has the highest recall (0.984) but very low precision (0.305), so its pooled F1 is the lowest (0.466). It tops the F1 table in 2 of 7 winters, but those are the tiny ones.
 - Per-lift rules called at 50% odds have the best precision of the learned methods, at the cost of recall: use them if a false alarm is costlier than a miss.
 
+## Lift level, without the lifts that began the day on hold
+
+Under decision 58 a lift that begins the day on hold counts as scheduled and held until its reopening post, so those lift-days are held by definition. They are 2,097 of the 11,828 scored rows. Dropping them leaves 9,731 rows, the harder question of whether a lift that was scheduled to run was held. Read the headline and this table together.
+
+| Method (pooled) | Precision | Recall | F1 |
+|---|---|---|---|
+| Per-lift rules, called at 50% odds | 0.629 | 0.454 | 0.527 |
+| Per-lift rules, called whenever the lift passes its line | 0.606 | 0.491 | 0.542 |
+| Best single wind line (learned on the other winters) | 0.593 | 0.484 | 0.533 |
+| 25 mph rule | 0.157 | 0.98 | 0.271 |
+
 ## Lift level, reconciliation: all named lift-days (not the headline)
 
 Including lift-days where a lift appears only because a post named it as held or delayed (14,801 rows) makes every method look better, because those extra rows are about 76% held by construction. We show it because the demo app may use this set.

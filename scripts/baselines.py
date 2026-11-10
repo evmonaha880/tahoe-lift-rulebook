@@ -71,6 +71,8 @@ def lift_level(S):
 SCHED = [r for r in rows if r["fit_ok"]]
 out["lift_level"] = lift_level(SCHED)                                   # headline: the roster said the lift was meant to run
 out["lift_level_all_named"] = lift_level(rows)                          # includes lifts that appear only because a post named them (76% held): inflated, shown to reconcile
+out["lift_level_without_began_on_hold"] = lift_level([r for r in SCHED if r["began_on_hold"] != "1"])   # rows where the lift began the day on hold are held by construction (decision 58): shown without them so the headline is not read alone
+out["lift_level_without_began_on_hold"]["row_set"] = "expected lift-days, minus lifts that began the day on hold (those are held by definition until their reopening post)"
 out["lift_level"]["row_set"] = "expected lift-days only (scheduled, plus lifts that normally run on a whole-side closure day)"; out["lift_level_all_named"]["row_set"] = "all lift-days incl. unscheduled lifts named only in hold/delay posts (selection-biased)"
 dw = sum(1 for W in WINTERS if out["day_level"][W]["learned"]["f1"] > out["day_level"][W]["mph25"]["f1"])
 out["day_level"]["winters_learned_beats_25mph"] = f"{dw} of {len(WINTERS)}"
@@ -92,7 +94,7 @@ print("\nday level: learned line beats 25 mph in", out["day_level"]["winters_lea
 # ---------------- docs/RESULTS.md (generated from the same numbers)
 def row(label, x): return f"| {label} | {x['precision']} | {x['recall']} | {x['f1']} |"
 def pct(x): return "n/a" if x is None else x
-L = out["lift_level"]; LA = out["lift_level_all_named"]; DL = out["day_level"]
+L = out["lift_level"]; LA = out["lift_level_all_named"]; LB = out["lift_level_without_began_on_hold"]; DL = out["day_level"]
 names = {"per_lift_called_at_50pct": "Per-lift rules, called at 50% odds", "per_lift_any_pass": "Per-lift rules, called whenever the lift passes its line",
          "best_single_wind_line": "Best single wind line (learned on the other winters)", "mph25": "25 mph rule"}
 md = ["# Results: do the recovered rules predict winters they never saw?", "",
@@ -134,6 +136,9 @@ md += ["", f"Only {', '.join(big)} have enough expected lift-days to mean much; 
        f"- One learned wind line scores a pooled F1 of {L['pooled']['best_single_wind_line']['f1']}, against {L['pooled']['per_lift_any_pass']['f1']} for per-lift rules (any pass) and {L['pooled']['per_lift_called_at_50pct']['f1']} for per-lift rules at 50% odds: fitting each lift separately adds {L['pooled']['per_lift_any_pass']['f1'] - L['pooled']['best_single_wind_line']['f1']:+.3f} of F1.",
        f"- The 25 mph rule has the highest recall ({L['pooled']['mph25']['recall']}) but very low precision ({L['pooled']['mph25']['precision']}), so its pooled F1 is the lowest ({L['pooled']['mph25']['f1']}). It tops the F1 table in {L['winters_won_by_method'].get('mph25', 0)} of {len([W for W in WINTERS if W in L])} winters, but those are the tiny ones.",
        "- Per-lift rules called at 50% odds have the best precision of the learned methods, at the cost of recall: use them if a false alarm is costlier than a miss.", "",
+       "## Lift level, without the lifts that began the day on hold", "",
+       f"Under decision 58 a lift that begins the day on hold counts as scheduled and held until its reopening post, so those lift-days are held by definition. They are {L['pooled']['n_lift_days'] - LB['pooled']['n_lift_days']:,} of the {L['pooled']['n_lift_days']:,} scored rows. Dropping them leaves {LB['pooled']['n_lift_days']:,} rows, the harder question of whether a lift that was scheduled to run was held. Read the headline and this table together.", "",
+       "| Method (pooled) | Precision | Recall | F1 |", "|---|---|---|---|"] + [row(names[m], LB["pooled"][m]) for m in names] + ["",
        "## Lift level, reconciliation: all named lift-days (not the headline)", "",
        f"Including lift-days where a lift appears only because a post named it as held or delayed ({LA['pooled']['n_lift_days']:,} rows) makes every method look better, because those extra rows are about 76% held by construction. "
        "We show it because the demo app may use this set.", "", "| Method (pooled) | Precision | Recall | F1 |", "|---|---|---|---|"]
