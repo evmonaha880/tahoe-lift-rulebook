@@ -30,7 +30,7 @@ def fit(rs, y, feats=FEATS, ge=True):
         if len(vals) < 3: continue
         step = max(1, len(vals) // 40)
         for t in vals[::step]:
-            s = score([r for r in rs if r[f] is not None], lambda r: r[f] >= t, y)
+            s = score(rs, lambda r: r[f] is not None and r[f] >= t, y)      # rows with no reading count as "not fired", so their real holds are misses
             if best is None or f1(s["tp"], s["fp"], s["fn"]) > f1(best[0]["tp"], best[0]["fp"], best[0]["fn"]): best = (s, f, t)   # exact F1, as in ruleslib.fit (the rounded value let near-ties pick the earlier threshold)
     return best
 BASE = lambda r: r["day_gust"] is not None and r["day_gust"] >= 25
@@ -45,7 +45,7 @@ print(f"DAY LEVEL: {len(D)} days with lift posts; wind-hold days {sum(d['held_wi
 print(f"{'held-out winter':16} {'n days':>6} {'base rate':>9} | {'learned rule':32} {'F1':>5} {'prec':>5} {'rec':>5} | {'baseline gust>=25':17} {'F1':>5} {'prec':>5} {'rec':>5}")
 for W in WINTERS:
     tr = [d for d in D if d["winter"] != W]; te = [d for d in D if d["winter"] == W]
-    s, f, t = fit(tr, "held_wind"); sc = score([d for d in te if d[f] is not None], lambda r: r[f] >= t, "held_wind"); bs = score(te, BASE, "held_wind")
+    s, f, t = fit(tr, "held_wind"); sc = score(te, lambda r: r[f] is not None and r[f] >= t, "held_wind"); bs = score(te, BASE, "held_wind")
     print(f"{W:16} {len(te):6} {sc['base_rate']:9.1%} | {f+' >= '+str(t):32} {sc['f1']:5.2f} {sc['precision'] or 0:5.2f} {sc['recall'] or 0:5.2f} | {'':17} {bs['f1']:5.2f} {bs['precision'] or 0:5.2f} {bs['recall'] or 0:5.2f}")
     res["day_level"][W] = dict(rule=f"{f} >= {t}", learned=sc, baseline=bs, trained_on=[w for w in WINTERS if w != W])
 def fit_pair(rs, y, feats):

@@ -38,11 +38,11 @@ def fit(rs, y, feats):
     """best single threshold rule 'feature >= t' by F1 (same search as recover_rules.py)"""
     best = None
     for f in feats:
-        sub = [r for r in rs if r[f] is not None]; vals = sorted({r[f] for r in sub})
+        vals = sorted({r[f] for r in rs if r[f] is not None})      # a row with no reading never fires the rule, so a real hold there is a miss (counted below over all rows)
         if len(vals) < 3: continue
         step = max(1, len(vals) // 40)
         for t in vals[::step]:
-            tp = sum(1 for r in sub if r[f] >= t and r[y]); fp = sum(1 for r in sub if r[f] >= t and not r[y]); fn = sum(1 for r in sub if r[f] < t and r[y])
+            tp = sum(1 for r in rs if r[f] is not None and r[f] >= t and r[y]); fp = sum(1 for r in rs if r[f] is not None and r[f] >= t and not r[y]); fn = sum(1 for r in rs if (r[f] is None or r[f] < t) and r[y])
             s = f1(tp, fp, fn)
             if best is None or s > best[0]: best = (s, f, t)
     return best
