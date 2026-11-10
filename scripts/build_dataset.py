@@ -244,7 +244,7 @@ def reopen_cols(mine, es, L):
     h = [e for e in mine if e["event_type"] in ("hold_start", "closed_day", "delay")]          # a delayed opening has a duration too
     if not h: return {"reopen_posted": "", "hold_minutes": ""}
     t0 = min(e["start"] for e in h); t00 = t0
-    if began_on_hold(mine) and t0[11:16] != OPEN_TIME: t0 = t0[:11] + OPEN_TIME + t0[16:]       # Evan 2026-11-07: a lift that begins the day on hold is held from the opening time until its reopening post
+    if began_on_hold(mine) and t0[11:16] != OPEN_TIME: t0 = t0[:11] + OPEN_TIME + t0[16:]       # the owner 2026-11-07: a lift that begins the day on hold is held from the opening time until its reopening post
     ro = sorted(x["start"] for x in es if x["event_type"] == "reopen" and x["start"] > t00 and (x["lift"] == L or x["lift"] == "ALL" or (x["lift"] in GROUPS and L in GROUPS[x["lift"]])))
     return {"reopen_posted": int(bool(ro)), "hold_minutes": max(0, minutes(t0, ro[0])) if ro else ""}
 def covid_era(W, date):

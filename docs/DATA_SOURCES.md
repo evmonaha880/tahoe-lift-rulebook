@@ -102,7 +102,7 @@ New columns in `lift_days.csv` (2026-11-07 evening): `closed_all`, `closed_all_t
 - Free, no key. Not needed today.
 
 ## Earlier private work: reference only
-The earlier private Tahoe Lift Call project left lift-day tables and X post pulls (Palisades 2023-24 and some 2025 slices; Heavenly 2023-24 through 2025-26). They are outside this repo. Observed in them: the 2023-24 pull was incomplete (909 of 1,171 posts). Use only as an independent check on the new parser, never as an input.
+An earlier private project left lift-day tables and X post pulls (Palisades 2023-24 and some 2025 slices; Heavenly 2023-24 through 2025-26). They are outside this repo. Observed in them: the 2023-24 pull was incomplete (909 of 1,171 posts). Use only as an independent check on the new parser, never as an input.
 
 ## 9. Data-quality fixes, 2026-11-07 (audit)
 - **Avalanche danger:** forecasts before 2020 carry only the top-level `danger_rating`, not the per-band list. It equals the max of the bands in all 2,685 products where both exist, so it is used as the fallback. Coverage of lift-days: 2018-19 0 to 79%, 2019-20 0 to 87%, 2020-21 69 to 88%. Days after the center stops forecasting (mid-April) stay blank.

@@ -8,8 +8,8 @@ Software archaeology on an unwritten system: **when and why do Palisades Tahoe l
 Built from an empty repo on 2026-11-07 at the AIE Code Summit Hackathon (problem statement: Software Archaeology). Submissions are due 5:00pm PT that day.
 
 ## What this project is NOT
-It is **not** the earlier "Tahoe Lift Call" / "Daily Call" / Latitude / Suez work. That was a different, private project: a morning decision product. This one recovers the rulebook.
-- Anything named Tahoe Lift Call, Daily Call, Latitude or Suez belongs to the old project.
+It is **not** an earlier private project (a morning decision product). This one recovers the rulebook.
+- Anything from that earlier project is old work.
 - Old notes, old data folders and old derived tables exist outside this repo. They are **reference only**: never import their code, never copy their tables in. One allowed use: an old table can be an *independent check* on the new parser, labelled as such.
 - The hackathon rule is new work only. If unsure whether something is old, ask.
 - Exact locations of old assets are in the owner's private handoff notes, not in this public repo.

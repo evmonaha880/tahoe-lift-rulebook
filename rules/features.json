@@ -515,7 +515,7 @@
    "asof": "post-derived",
    "unit": "0/1",
    "source": "ops posts",
-   "note": "a hold or delayed-opening post for the lift before 09:00. Evan's rule (2026-11-07): such a lift began the day on hold, so it counts as scheduled and is held from 09:00 until its reopening post"
+   "note": "a hold or delayed-opening post for the lift before 09:00. the owner's rule (2026-11-07): such a lift began the day on hold, so it counts as scheduled and is held from 09:00 until its reopening post"
   },
   "cause_first": {
    "role": "outcome",

@@ -626,7 +626,7 @@ def parse_post(p):
             if not hl: ev = [e for e in ev if not (e["lift"] is None and e["event_type"] in ("reopen", "closed_day", "hold_start", "partial"))]
     for e in ev:
         if e["event_type"] in ("hold_start", "closed_day", "delay", "partial", "warning"): e["cause_tags"] = cause_tags(_CTX["t"])
-    if SOD_RE.search(_CTX["t"]):                                      # 'will start/begin the day on wind hold': the lift is on hold from opening, whatever time the post went out (Evan 2026-11-07)
+    if SOD_RE.search(_CTX["t"]):                                      # 'will start/begin the day on wind hold': the lift is on hold from opening, whatever time the post went out (the owner 2026-11-07)
         for e in ev:
             if e["event_type"] in ("hold_start", "delay") and e["lift"]: e["begins_day_on_hold"] = True
     seen, out = set(), []

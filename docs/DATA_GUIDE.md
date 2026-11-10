@@ -79,7 +79,7 @@ Written 2026-11-08. One page that answers: what is each dataset, what is it assu
 ## 4. Assumption register (the ones that move numbers)
 
 1. **Removed (decision 63).** No reopening post now means the end of the hold is unknown. Only 1,240 of 4,311 held lift-days have an observed reopening. For wind holds the old assumption was usually right (94% of those days stayed windy through the afternoon); for mechanical, weather, patrol and unstated causes it was not safe.
-2. A lift on hold before 09:00 is a lift on hold and was meant to run (decision 58, confirmed by Evan 2026-11-08; the posts say "will begin the day on wind hold"). It added 1,741 lift-days, mostly holds, so pooled F1 rose by about 0.08: that rise is the definition, not a better model.
+2. A lift on hold before 09:00 is a lift on hold and was meant to run (decision 58, confirmed by the owner 2026-11-08; the posts say "will begin the day on wind hold"). It added 1,741 lift-days, mostly holds, so pooled F1 rose by about 0.08: that rise is the definition, not a better model.
 3. Whole-side closure expands only to lifts that had opened and not yet closed for the season (decision 65, replacing the winter-wide roster of decision 28): 272 of 788 expansion rows removed. Windows come from tweet evidence; sides with fewer than 20 named-roster days in a winter keep the old expansion and are flagged (`closed_all_basis`).
 4. Hedged language is a warning (decisions 23, 35). Models graded it differently.
 5. Winter 2020-21 is excluded from lift-level fits (decision 38).
@@ -94,13 +94,13 @@ Written 2026-11-08. One page that answers: what is each dataset, what is it assu
 | Gap | Size | Mitigation | Status |
 |---|---|---|---|
 | 2015-18 tweets unparsed | 3 winters, 2,299 posts | Parse on training posts only; samples frozen | open |
-| Staged openings | 272 closure rows for lifts not open that day removed | Per-lift windows from tweet evidence (decision 65); blog first-run dates as a cross-check; walk-through with Evan per season | done for closures; walk-through open |
+| Staged openings | 272 closure rows for lifts not open that day removed | Per-lift windows from tweet evidence (decision 65); blog first-run dates as a cross-check; walk-through with the owner per season | done for closures; walk-through open |
 | No station wind in 2015-16 | 1 winter | SNOTEL plus ERA5 estimate | designed, not built |
 | Weather inputs differ by winter | all | Common set from Siberia, Belmont, SNOTEL | designed, not built |
 | Forecast column only 2020-21 on (blog) | 6 winters | **NWS Reno forecast discussions cover all 11 winters** (a pre-9am issuance on every day, 2,673). A blind model-read pilot of 132 days: when the text gives a ridge figure (28 of 116 days with a station reading) rank correlation with Siberia is **0.84**, against 0.43 for the first regex; days where the reader found no ridge wind in the text had 20% windy days (55+ mph), days called calm 6%, days with a figure 68%. Tiny sample; wind-hold prediction not yet tested | pilot positive; full run on about 1,450 days with ridge wording needs a decision |
 | Lift eras and gondola mode not in the table | 4 lifts | `lift_era`, `operating_mode` columns | open |
 | Peak-gust under-read | 1 data point | Compare feed with NWS peak reports by storm | open |
-| No independent truth for holds | all | Spot checks, hand check of 52 posts still with Evan | open |
+| No independent truth for holds | all | Spot checks, hand check of 52 posts still with the owner | open |
 | Blog edges for 2018-19, 2019-20 | 2 winters | Tweets | open |
 | Snow depth before 2018 | 3 winters | ERA5 snowfall, flagged | designed, not built |
 
