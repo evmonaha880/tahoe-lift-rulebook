@@ -43,7 +43,7 @@ def build():
         for r in csv.DictReader(open(fp)):
             if r["horizon"] == "0" and r["asof_by_0900"] == "1" and r["fc_gust_hi"] and r["tgt_date"] not in seen:
                 seen.add(r["tgt_date"]); out[winter_of(r["tgt_date"])]["blog_forecast_days_by_0900_with_gust"] += 1
-    lp = P("data", "derived", "lift_days.csv")
+    lp = P("data", "derived", "lift_days_11w.csv")      # all 11 winters (lift_days.csv holds only the 8 core ones)
     for w in WINTERS: out[w]["lift_day_rows"] = 0; out[w]["lift_day_rows_scheduled"] = 0
     if os.path.exists(lp):
         for r in csv.DictReader(open(lp)):

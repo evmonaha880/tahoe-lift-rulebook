@@ -60,7 +60,7 @@ lim = json.load(open(os.path.join(root, "results", "baseline_metrics.json"))).ge
 if len(liftless) > lim: err(f"{len(liftless)} status events have no lift (baseline {lim}); the parser matched a pattern but found no lift")
 else: warn(f"{len(liftless)} status events have no lift (baseline {lim}); they carry no information and are listed for triage in the parser plan")
 # ---- lift-day tables: the 8 core winters (lift_days.csv, the headline) and all 11 (lift_days_11w.csv) get the same checks
-GUST_SRC_EARLY = {"station", "estimate"}      # step 2 splits "station" into station_15min and station_hourly
+GUST_SRC_EARLY = {"station_15min", "station_hourly", "estimate"}      # 15-minute ridge stations (2018-19 on), hourly Siberia/Belmont (2016-18), ERA5+SNOTEL estimate (2015-16)
 core_rows = None
 for LD in ("lift_days", "lift_days_11w"):
     rows = list(csv.DictReader(open(os.path.join(D, LD + ".csv"))))

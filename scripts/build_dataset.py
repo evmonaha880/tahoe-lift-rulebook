@@ -324,12 +324,12 @@ for Y in YEARS:
                 elif in_window(WIN, l_, date): exp_basis[l_] = "window"; lifts = set(lifts) | {l_}
         if not lifts: continue
         f = feats(weather, date, SN)
-        f["gust_src_early"] = "station" if f["early_gust"] is not None else ""
+        f["gust_src_early"] = "station_15min" if f["early_gust"] is not None else ""      # core winters: max of the 6 ridge stations, 05:00 to 09:00, 15-minute readings
         if Y < 2018 and date in WEATHER_COMMON:                      # 2015-18: no 15-minute station files in this loader; take the known-by-9am gust from the common weather table (station where it has one, else the ERA5+SNOTEL estimate), and say which
-            _wc = WEATHER_COMMON[date]
+            _wc = WEATHER_COMMON[date]; _had15 = f["early_gust"] is not None      # 2017-18 has 15-minute files from February: those rows keep station_15min
             for _k, _c in (("early_gust", "gust_best_early"), ("day_gust", "gust_best_day")):
                 if f[_k] is None and _wc[_c] != "": f[_k] = float(_wc[_c])
-            if f["early_gust"] is not None: f["gust_src_early"] = _wc["gust_src_early"]
+            if f["early_gust"] is not None and not _had15: f["gust_src_early"] = {"station": "station_hourly"}.get(_wc["gust_src_early"], _wc["gust_src_early"])      # 2016-18: Siberia and Belmont hourly only; 2015-16: ERA5+SNOTEL estimate
         f["new_snow24_snotel"] = f["new_snow24"]                    # old noisy SNOTEL-depth figure, kept for comparison
         f["new_snow24"] = depth_gain(DEPTH, date)                   # Alpine base depth sensor, dropout-filtered
         f["fnt_measured"] = f["fnt_day_gust"]                         # raw station reading (blank when the station was off)

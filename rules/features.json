@@ -61,7 +61,7 @@
    "unit": "mph",
    "source": "wwg 15-minute ridge stations (Siberia, Summit, Roundhouse Top, Scott Top, Belmont, Funitel Top)",
    "interval": "maximum 15-minute gust (or sustained speed) over local 05:00-09:00, all ridge stations",
-   "note": "usable for a morning-of call"
+   "note": "usable for a morning-of call. The description above is the 2018-19 on measurement; 2016-17 and early 2017-18 rows hold Siberia and Belmont hourly readings and 2015-16 rows an estimate (see gust_src_early), so compare winters across that line with care"
   },
   "early_spd": {
    "role": "feature",
@@ -113,7 +113,7 @@
    "role": "quality_flag",
    "asof": "morning (known by 9am)",
    "unit": "",
-   "note": "where early_gust came from: 'station' (15-minute ridge stations), 'estimate' (2015-18 winters without station files: ERA5 and SNOTEL regression from weather_common.csv, misses by about 7 to 11 mph), or blank (no gust)"
+   "note": "where early_gust came from: 'station_15min' (max of the 6 ridge stations, 05:00 to 09:00, 15-minute readings; every core winter), 'station_hourly' (2016-17, and 2017-18 days before the 15-minute files start in February: Siberia and Belmont hourly readings only, a coarser measurement that reads lower), 'estimate' (2015-16: ERA5 and SNOTEL regression from weather_common.csv, misses by about 7 to 11 mph), or blank (no gust)"
   },
   "sib_h40": {
    "role": "feature",
