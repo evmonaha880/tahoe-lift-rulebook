@@ -294,12 +294,15 @@ CASES = [
  ("We have officially closed Red Dog, Squaw Creek and Far East for the day. #squawlifts", [(C, "Red Dog", None)], []),
  ("Crest winds: 44mph, gust 60mph. WIND HOLDS except Funitel, Exhibition, Far East, beginner area (9am) https://t.co/HX3IY0SRwN #squawlifts", [(H, "ALL_OTHER", "wind")], []),
 ]
-b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
-fails = 0
-for i, (text, must, must_not) in enumerate(CASES, 1):
-    ev = parse_post({**b, "text": text}); have = {(e["event_type"], e["lift"], e["cause"]) for e in ev}
-    bad = [m for m in must if not any(h[0] == m[0] and h[1] == m[1] and (m[2] is None or h[2] == m[2]) for h in have)]
-    bad_not = [m for m in must_not if any(h[0] == m[0] and (m[1] is None or h[1] == m[1]) for h in have)]
-    if bad or bad_not:
-        fails += 1; print(f"FAIL #{i}: {text[:90]}\n   missing: {bad}  unexpected: {bad_not}\n   got: {sorted(have, key=str)[:8]}")
-print(f"{len(CASES)-fails}/{len(CASES)} golden cases pass"); sys.exit(1 if fails else 0)
+def main():
+    b = {"id": "t", "created_at": "2024-01-13T17:01:00.000Z"}
+    fails = 0
+    for i, (text, must, must_not) in enumerate(CASES, 1):
+        ev = parse_post({**b, "text": text}); have = {(e["event_type"], e["lift"], e["cause"]) for e in ev}
+        bad = [m for m in must if not any(h[0] == m[0] and h[1] == m[1] and (m[2] is None or h[2] == m[2]) for h in have)]
+        bad_not = [m for m in must_not if any(h[0] == m[0] and (m[1] is None or h[1] == m[1]) for h in have)]
+        if bad or bad_not:
+            fails += 1; print(f"FAIL #{i}: {text[:90]}\n   missing: {bad}  unexpected: {bad_not}\n   got: {sorted(have, key=str)[:8]}")
+    print(f"{len(CASES)-fails}/{len(CASES)} golden cases pass"); sys.exit(1 if fails else 0)
+
+if __name__ == "__main__": main()

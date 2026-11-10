@@ -6,6 +6,7 @@ PY="${PY:-$HOME/DataLake/.venv/bin/python}"; [ -x "$PY" ] || PY=python3
 $PY -c "import numpy" 2>/dev/null || { echo "numpy missing: pip install -r requirements.txt"; exit 1; }
 for y in 2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025; do for sp in train heldout; do $PY -I scripts/parse_posts.py $y $sp > /dev/null; done; done
 $PY -I tests/golden.py | tail -1
+$PY -I tests/timestamps.py --check | tail -1
 $PY -I scripts/pull_nws.py > /dev/null 2>&1 || echo "note: pull_nws skipped (offline); using saved alerts"
 $PY -I scripts/weather_qc.py | tail -1
 $PY -I scripts/build_dataset.py 2018 2019 2020 2021 2022 2023 2024 2025 | tail -1
