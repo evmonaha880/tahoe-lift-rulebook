@@ -6,7 +6,7 @@ Sources, each available (or honestly blank) in every winter:
   snotel_*        NRCS SNOTEL 784 (Palisades/Alpine) snow water and depth, measured, all 11 winters.
   trk_*           Truckee-Tahoe airport ASOS, valley wind (kt to mph). Blank for 2015-16.
   gust_est_*      a Siberia gust ESTIMATE from era5_* and snotel_* only (inputs identical in every winter), fitted leave-one-winter-out so a winter never sees its own gusts.
-  gust_best_*     the station value where the station has one, else gust_est_*; gust_src says which. Early = hours 5-8 (known by 9 am), day = hours 6-15.
+  gust_best_*     the station value where the station has one, else gust_est_*; gust_src (day) and gust_src_early say which. Early = hours 5-8 (known by 9 am), day = hours 6-15.
 Times are local clock hours. Station and ERA5 hours are Pacific; SNOTEL is read at its 09:00 stamp (NRCS local standard time, DST not verified, same assumption as build_dataset.py).
 usage: python3 -I scripts/build_weather_common.py  -> data/derived/weather_common.csv, results/weather_common.json (how good the estimate is, by winter)"""
 import os, csv, json, datetime, collections
@@ -133,6 +133,7 @@ for r in rows:
         st = r[f"sib_{kind}_gust"]
         r[f"gust_best_{kind}"] = st if st is not None else r[f"gust_est_{kind}"]
     r["gust_src"] = "station" if r["sib_day_gust"] is not None else ("estimate" if r["gust_est_day"] is not None else "none")
+    r["gust_src_early"] = "station" if r["sib_early_gust"] is not None else ("estimate" if r["gust_est_early"] is not None else "none")   # the known-by-9am gust can be an estimate even when the day gust is a station reading
 path = os.path.join(ROOT, "data", "derived", "weather_common.csv")
 with open(path + ".tmp", "w", newline="") as fh:
     w = csv.DictWriter(fh, list(rows[0])); w.writeheader(); w.writerows(rows)
@@ -140,5 +141,5 @@ os.replace(path + ".tmp", path)
 json.dump(dict(about="Leave-one-winter-out accuracy of the Siberia gust estimate built from ERA5 and SNOTEL only (days with a station reading).", estimate=report), open(os.path.join(ROOT, "results", "weather_common.json"), "w"), indent=1)
 print(len(rows), "days;", {W: sum(1 for r in rows if r["winter"] == W and r["gust_src"] == "station") for W in WINTERS})
 for kind in report: print(kind, {W: (v["mae_mph"], v["r2"]) for W, v in report[kind].items()})
-cols = [c for c in rows[0] if c not in ("date", "winter", "gust_src")]
+cols = [c for c in rows[0] if c not in ("date", "winter", "gust_src", "gust_src_early")]
 print("blank share by winter (any column):", {W: round(sum(r[c] is None for r in rows if r["winter"] == W for c in cols) / (sum(1 for r in rows if r["winter"] == W) * len(cols)), 2) for W in WINTERS})
