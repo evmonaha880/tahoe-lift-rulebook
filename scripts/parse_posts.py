@@ -319,161 +319,249 @@ def _side_scope(t):
     """ALL_PALISADES / ALL_ALPINE when the post names only one side, else ALL"""
     a = bool(re.search(r"\balpine\b", re.sub(r"#\w+", " ", t), re.I)); pl = bool(re.search(r"palisades|squaw|olympic valley", re.sub(r"#\w+", " ", t), re.I))
     return "ALL_ALPINE" if a and not pl else "ALL_PALISADES" if pl and not a else "ALL"
-def fix_patterns(p, ev, text, dt):
-    base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None, "confidence": 1.0}
-    out = list(ev); added = []
-    def add(rule, typ, lift, cause=None, **kw):
-        added.append({**base, "event_type": typ, "lift": lift, "cause": cause, "cause_source": "observed" if cause else "unstated", "parse_rule_id": rule, **kw})
-    sched = sorted({e["lift"] for e in ev if e["event_type"] == "scheduled_opening" and e["lift"]})
-    grp = lambda w: "UPPER_MOUNTAIN" if w.lower() == "upper" else "LOWER_MOUNTAIN"
+class _Fix:
+    """Working state for fix_patterns: the post, its events so far (out), and events the rules below add (added)."""
+    def __init__(s, p, ev, text, dt):
+        s.p, s.text, s.dt = p, text, dt
+        s.base = {"source_post_id": p["id"], "start": dt.isoformat(timespec="minutes"), "end": None, "confidence": 1.0}
+        s.out = list(ev); s.added = []
+        s.sched = sorted({e["lift"] for e in ev if e["event_type"] == "scheduled_opening" and e["lift"]})
+    def add(s, rule, typ, lift, cause=None, **kw):
+        s.added.append({**s.base, "event_type": typ, "lift": lift, "cause": cause, "cause_source": "observed" if cause else "unstated", "parse_rule_id": rule, **kw})
+def _grp(w): return "UPPER_MOUNTAIN" if w.lower() == "upper" else "LOWER_MOUNTAIN"
+
+def _fix_scope_sentences(s):
+    """Per-sentence rules: upper/lower-mountain scopes, 'also closed', mountain-run and sightseeing partials, 'instead of' swaps, 'all other lifts delayed'."""
+    text, sched = s.text, s.sched
     for sent in split_sentences(text):
         m = re.search(r"\b(?:the\s+)?(?:entire|whole)\s+(upper|lower)[- ]mountain\b", sent, re.I)                # 'the entire upper mountain ... will start the day on wind hold'
         if m and not re.search(r"anticipated weather impact|\b(?:may|might|could)\b|expected to", sent, re.I):
-            if re.search(r"\bon (?:\w+ )?hold\b|start the day on", sent, re.I): add("P-014e", "hold_start", grp(m.group(1)), cause_in(sent))
-            elif re.search(r"\bclosed\b", sent, re.I): add("P-014e", "closed_day", grp(m.group(1)), cause_in(sent))
-            elif re.search(r"\bdelay", sent, re.I): add("P-014e", "delay", grp(m.group(1)), cause_in(sent))
+            if re.search(r"\bon (?:\w+ )?hold\b|start the day on", sent, re.I): s.add("P-014e", "hold_start", _grp(m.group(1)), cause_in(sent))
+            elif re.search(r"\bclosed\b", sent, re.I): s.add("P-014e", "closed_day", _grp(m.group(1)), cause_in(sent))
+            elif re.search(r"\bdelay", sent, re.I): s.add("P-014e", "delay", _grp(m.group(1)), cause_in(sent))
         m = re.search(r"\ball (upper|lower)[- ]mountain lifts(?: at \w+)?[^.!?]{0,60}\b(?:are|will be)\s+(?:now\s+)?closed", sent, re.I)   # 'all upper mountain lifts ... are closed'
-        if m: add("P-014e", "closed_day", grp(m.group(1)), cause_in(sent) or cause_in(text))
+        if m: s.add("P-014e", "closed_day", _grp(m.group(1)), cause_in(sent) or cause_in(text))
         m = re.search(r"^(.*?)\b(?:is|are) also closed", sent, re.I)                                              # 'The Base to Base is also closed'
         if m and not re.search(r"\bterrain\b|\bside of\b|\barea\b|\bpocket\b|\bbowl\b|\btrail\b", sent, re.I):
-            for l in find_lifts(m.group(1)): add("P-020", "closed_day", l, cause_in(text))
+            for l in find_lifts(m.group(1)): s.add("P-020", "closed_day", l, cause_in(text))
         m = re.search(r"([^.!?]*?)\b(?:is|are) open for (?:the )?mountain run", sent, re.I)                        # 'Funitel is open for Mountain Run access'
         if m:
             for l in find_lifts(m.group(1).split(" and ")[-1]):
-                out = [e for e in out if not (e["event_type"] in ("reopen", "scheduled_opening") and e["lift"] == l)]
-                add("P-070", "partial", l, None, detail="mountain_run_only")
+                s.out = [e for e in s.out if not (e["event_type"] in ("reopen", "scheduled_opening") and e["lift"] == l)]
+                s.add("P-070", "partial", l, None, detail="mountain_run_only")
         m = re.search(r"\ball other (?:scheduled )?lifts (?:are|will be) delayed(?: due to ([^.!?]*))?", sent, re.I)  # 'All other lifts are delayed due to icing'
-        if m: add("P-013", "delay", "ALL_OTHER", cause_in(m.group(1) or ""), **{"except": sched})
+        if m: s.add("P-013", "delay", "ALL_OTHER", cause_in(m.group(1) or ""), **{"except": sched})
         m = re.search(r"([^.!?\n]*?)\bwill (?:run|operate|spin|be open|open) (?:today )?instead of ([^.!?\n]+)", sent, re.I)   # 'Emigrant will run today instead of Granite Chief'
         if m:
-            for a in find_lifts(m.group(1)): add("P-001s", "scheduled_opening", a)
-            for b in find_lifts(m.group(2)): add("P-020s", "closed_day", b)
+            for a in find_lifts(m.group(1)): s.add("P-001s", "scheduled_opening", a)
+            for b in find_lifts(m.group(2)): s.add("P-020s", "closed_day", b)
         if re.search(r"added to the schedule", sent, re.I) and re.search(r"delayed (?:opening|start)", sent, re.I):  # 'Exhibition has been added to the schedule and will have a delayed opening'
             for l in find_lifts(sent):
-                out = [e for e in out if not (e["event_type"] == "scheduled_opening" and e["lift"] == l)]; add("P-030", "delay", l)
+                s.out = [e for e in s.out if not (e["event_type"] == "scheduled_opening" and e["lift"] == l)]; s.add("P-030", "delay", l)
         for sm in re.finditer(r"sightseeing", sent, re.I):                                                         # sightseeing is a limited operation (an explicitly scheduled sightseeing run keeps both events)
             if re.search(r"\bsched", sent, re.I): break
             near = find_lifts(sent[max(0, sm.start() - 70): sm.start()])                                          # only the lift just before the word, not the whole roster in the same sentence
             for l in near[-1:]:
-                out = [e for e in out if not (e["event_type"] in ("reopen", "scheduled_opening") and e["lift"] == l) and not (e["event_type"] == "partial" and e["lift"] == l)]
-                add("P-070", "partial", l, None, detail="sightseeing")
+                s.out = [e for e in s.out if not (e["event_type"] in ("reopen", "scheduled_opening") and e["lift"] == l) and not (e["event_type"] == "partial" and e["lift"] == l)]
+                s.add("P-070", "partial", l, None, detail="sightseeing")
+
+def _fix_second_sentence_rules(s):
+    """Per-sentence rules for facts stated after a list: 'both open', holds, electrical issues, 'it is closed', 'remaining lifts open', download-only."""
+    text = s.text
     sents = split_sentences(text)
     for i, sent in enumerate(sents):
         m = re.search(r"^(.*?)\b(?:is|are) both open\b", sent, re.I)                                              # 'Headwall and Emigrant are both open!'
         if m:
-            for l in find_lifts(m.group(1)): add("P-040", "reopen", l)
+            for l in find_lifts(m.group(1)): s.add("P-040", "reopen", l)
         m = re.search(r"^(.*?)\b(?:is|are) (?:now )?on (?:an? )?(wind|mechanical|patrol|maintenance) hold\b", sent, re.I)   # a hold stated in a second sentence after a list
         if m and not re.search(r"following lifts", sent, re.I):
             subj = re.split(r"[:•]|\s-\s", m.group(1))[-1]                                                       # the words just before 'is on ... hold', not a whole list above it
             sl = [] if re.search(r"\ball\b|\bother\b|\bopen\b|\bscheduled\b", subj, re.I) else find_lifts(subj)
             if not re.search(r"\bis\b", sent[m.end(1):m.end(1) + 6], re.I) and len(sl) > 4: sl = []
             for l in (sl[-1:] if re.search(r"\bis\b", sent[m.end(1):m.end(1) + 6], re.I) else sl):
-                if not any(e["event_type"] == "hold_start" and e["lift"] == l for e in out + added): add("P-010", "hold_start", l, "mechanical" if m.group(2).lower() == "maintenance" else m.group(2).lower())
+                if not any(e["event_type"] == "hold_start" and e["lift"] == l for e in s.out + s.added): s.add("P-010", "hold_start", l, "mechanical" if m.group(2).lower() == "maintenance" else m.group(2).lower())
         m = re.search(r"\b(?:electrical|mechanical|technical|power)\s+(?:issues?|problems?|trouble|difficulties|challenges)\s+(?:on|with|at)\s+(?:the\s+)?([^.!?\n]+)", sent, re.I)   # 'electrical issues on the Funitel and Wa She Shu'
         if m:
             for l in find_lifts(m.group(1)):
-                if not any(e["event_type"] == "hold_start" and e["lift"] == l for e in out + added): add("P-010", "hold_start", l, "mechanical")
+                if not any(e["event_type"] == "hold_start" and e["lift"] == l for e in s.out + s.added): s.add("P-010", "hold_start", l, "mechanical")
         if i > 0 and re.search(r"^(?:it|they) (?:is|are) closed for (?:today|the day|the remainder)", sent, re.I):  # 'KT is having mechanical issues. It is closed for today'
             pl = find_lifts(sents[i - 1])
-            for l in pl[-1:]: add("P-020", "closed_day", l, cause_in(sents[i - 1] + " " + sent))
-            if pl: out = [e for e in out if not (e["event_type"] == "reopen" and e["lift"] is None)]
+            for l in pl[-1:]: s.add("P-020", "closed_day", l, cause_in(sents[i - 1] + " " + sent))
+            if pl: s.out = [e for e in s.out if not (e["event_type"] == "reopen" and e["lift"] is None)]
         m = re.search(r"^(.*?)\b(?:are|is) the remaining (?:lifts?|chairs?)(?: that are| still)? open", sent, re.I)   # 'Funitel and Gold Coast are the remaining lifts open'
         if m and not re.search(r"\bhold\b|\bdelay|patrol", text, re.I):
             ol = find_lifts(m.group(1))
-            for l in ol: add("P-040", "reopen", l)
-            if ol: add("P-013", "closed_day", "ALL_OTHER", None, **{"except": ol})
+            for l in ol: s.add("P-040", "reopen", l)
+            if ol: s.add("P-013", "closed_day", "ALL_OTHER", None, **{"except": ol})
         m = re.search(r"([^.!?\n]*?)\b(?:will be|is|are)\s+(?:running|operating|doing)\s+(?:downloads?|download only)|([^.!?\n]*?)\bwill (?:run|operate)\s+downloads?\s+only", sent, re.I)   # 'The Funitel will be running downloads'
         if m:
             for l in find_lifts(m.group(1) or m.group(2) or "")[-1:]:
-                out = [e for e in out if not (e["event_type"] in ("scheduled_opening", "reopen") and e["lift"] == l)]; add("P-070", "partial", l, None, detail="download_only")
+                s.out = [e for e in s.out if not (e["event_type"] in ("scheduled_opening", "reopen") and e["lift"] == l)]; s.add("P-070", "partial", l, None, detail="download_only")
+
+def _fix_plan_and_count_posts(s):
+    """A morning plan is a scheduled opening, not a reopening; '8 chairs and carpets' is a count, not lifts."""
+    text = s.text
     if re.search(r"\bwe plan (?:on|to) (?:spin(?:ning)?|run(?:ning)?|operat(?:e|ing)|open(?:ing)?)\b", text, re.I) and not re.search(r"\bnow open|reopen|are open|is open", text, re.I):   # a morning plan, not a reopening
-        for e in out:
+        for e in s.out:
             if e["event_type"] == "reopen": e["event_type"] = "scheduled_opening"; e["parse_rule_id"] = "P-001p"
     if re.search(r"\b\d+\s+(?:chairs?|lifts?)\s+(?:and|&)\s+carpets", text, re.I):                          # '8 chairs and carpets at Squaw Valley': a count, not lifts
-        out = [e for e in out if e["lift"] not in ("Palisades Carpets", "Alpine Carpets", "Carpets")]
-        if not any(e["event_type"] == "scheduled_opening" for e in out + added): add("P-001", "scheduled_opening", None, None, note="count_only")
+        s.out = [e for e in s.out if e["lift"] not in ("Palisades Carpets", "Alpine Carpets", "Carpets")]
+        if not any(e["event_type"] == "scheduled_opening" for e in s.out + s.added): s.add("P-001", "scheduled_opening", None, None, note="count_only")
+
+def _drop_laneless_events(s):
+    """A lift-less event is dropped when per-lift events of the same type exist."""
     for typ in ("closed_day", "hold_start", "reopen", "delay", "partial"):                                       # a list header must not leave a lift-less event beside the per-lift events
-        if any(e["event_type"] == typ and e["lift"] for e in out + added): out = [e for e in out if not (e["event_type"] == typ and e["lift"] is None)]
+        if any(e["event_type"] == typ and e["lift"] for e in s.out + s.added): s.out = [e for e in s.out if not (e["event_type"] == typ and e["lift"] is None)]
+
+def _fix_all_other_upper_lower(s):
+    """'+ALL other upper/lower mtn lifts' at the end of a hold list."""
+    text, sched = s.text, s.sched
     for m in re.finditer(r"(wind|mechanical|patrol)\s+hold\s*:", text, re.I):                                     # '+ALL other upper mtn lifts' at the end of a hold list
         mm = re.search(r"\+?\s*all other (upper|lower)\s*(?:mtn|mountain)\s*lifts?", text[m.end():], re.I)
-        if mm: add("P-014e", "hold_start", grp(mm.group(1)), m.group(1).lower(), **{"except": sched})
+        if mm: s.add("P-014e", "hold_start", _grp(mm.group(1)), m.group(1).lower(), **{"except": sched})
+
+def _fix_schedule_except_roster(s):
+    """'N lifts on the schedule, all lifts except X': scope opening plus the exceptions closed."""
+    text = s.text
     m = re.search(r"\b(?:at|on)\s+(alpine|palisades)\b[^.!?]{0,60}?\b\d+\s+lifts?\s+(?:are\s+)?(?:on|in)\s+the\s+schedule\W+(?:all lifts except(?: for)?|all lifts but)\s+([^.(!?\n]+)", text, re.I)   # '12 lifts on the schedule, all lifts except for ABC'
     if m:
         exc = find_lifts(m.group(2)); sd = "ALL_ALPINE" if m.group(1).lower() == "alpine" else "ALL_PALISADES"
-        out = [e for e in out if e["event_type"] != "scheduled_opening"]
-        add("P-001", "scheduled_opening", sd, None, **{"except": exc})
-        for l in exc: add("P-020s", "closed_day", l)
+        s.out = [e for e in s.out if e["event_type"] != "scheduled_opening"]
+        s.add("P-001", "scheduled_opening", sd, None, **{"except": exc})
+        for l in exc: s.add("P-020s", "closed_day", l)
+
+def _drop_dining_carpet(s):
+    """'Dining at High Camp' is a place, not the carpet."""
+    text = s.text
     if re.search(r"\b(?:dining|roller|skating|terrace|marketplace|restaurant)\b", text, re.I) and not re.search(r"high camp carpet|\bcarpet\b", text, re.I):
-        out = [e for e in out if e["lift"] != "High Camp Carpet"]                                                  # 'dining at High Camp' is a place, not the carpet
+        s.out = [e for e in s.out if e["lift"] != "High Camp Carpet"]                                                  # 'dining at High Camp' is a place, not the carpet
+
+def _fix_asterisk_roster(s):
+    """A roster with lifts noted with an asterisk: scheduled openings, asterisked ones become wind warnings."""
+    text = s.text
     m = re.search(r"\b(?:noted|marked|denoted|flagged) (?:with|by) (?:an? )?(?:\*|asterisk)[^:\n]*:?", text, re.I)       # '12 lifts scheduled ... impacts, noted with * below: Tram*, Funitel, Red Dog'
-    if m and not any(e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL") for e in out):
-        rest = text[m.end():]; out = [e for e in out if e["event_type"] != "warning"]
+    if m and not any(e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL") for e in s.out):
+        rest = text[m.end():]; s.out = [e for e in s.out if e["event_type"] != "warning"]
         for piece in re.split(r"[,\n\u2022]", rest):
             for l in find_lifts(piece):
-                add("P-001a", "scheduled_opening", l, None, **{"note": "roster"})
-                if piece.strip().rstrip("#").strip().endswith("*") or re.search(re.escape(piece.strip().split()[0] if piece.strip() else "x") + r"\*", piece): add("P-012a", "warning", l, "wind")
-    for e in out:                                                                                                 # 'all lifts except X that were on hold are now closed': X is not on hold
+                s.add("P-001a", "scheduled_opening", l, None, **{"note": "roster"})
+                if piece.strip().rstrip("#").strip().endswith("*") or re.search(re.escape(piece.strip().split()[0] if piece.strip() else "x") + r"\*", piece): s.add("P-012a", "warning", l, "wind")
+
+def _fix_hold_except(s):
+    """'All lifts except X that were on hold are now closed': X is not on hold."""
+    for e in s.out:                                                                                                 # 'all lifts except X that were on hold are now closed': X is not on hold
         if e["lift"] == "ALL_ON_HOLD" and e.get("except"):
-            ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "hold_start" and x["lift"] in ex)]
+            ex = set(e["except"]); s.out = [x for x in s.out if not (x["event_type"] == "hold_start" and x["lift"] in ex)]
+
+def _fix_off_schedule_lists(s):
+    """'A, B and C are off schedule': a closure, replacing the scheduled openings the roster rule produced."""
+    text, p = s.text, s.p
     # 'At Alpine: Summit, Scott and Lakeview are OFF schedule today': a header colon makes the roster rule read it as a schedule; it is a closure
     for mo in re.finditer(r"(?:^|[\n:.!?])\s*([^.!?\n]{4,160}?)\b(?:are|is)\s+off\s+(?:of\s+)?(?:the\s+)?schedule\b(?!\s+(?:until|after))", p["text"], re.I):
         lifts_off = find_lifts(mo.group(1))
         if lifts_off and not re.search(r"\bremain|\bexcept|\ball other|\bon the schedule\b", mo.group(1), re.I):
-            had = [x for x in out + added if x["event_type"] == "scheduled_opening" and x["lift"] in lifts_off]
+            had = [x for x in s.out + s.added if x["event_type"] == "scheduled_opening" and x["lift"] in lifts_off]
             if had:
-                out = [x for x in out if x not in had]; added = [x for x in added if x not in had]
-                for l in lifts_off: add("P-020o", "closed_day", l, None)
+                s.out = [x for x in s.out if x not in had]; s.added = [x for x in s.added if x not in had]
+                for l in lifts_off: s.add("P-020o", "closed_day", l, None)
+
+def _fix_all_other_exceptions(s):
+    """Listed scheduled lifts become the exceptions of an ALL_OTHER hold, delay or closure."""
     # 'The following lifts will spin at 9am: A, B, C ... All other lifts are on Hold': the listed lifts are the exceptions
-    _run = sorted({e["lift"] for e in out + added if e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL")})
+    _run = sorted({e["lift"] for e in s.out + s.added if e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL")})
     if _run:
-        for e in out + added:
+        for e in s.out + s.added:
             if e["lift"] == "ALL_OTHER" and e["event_type"] in ("hold_start", "delay", "closed_day") and not e.get("except"): e["except"] = _run
+
+def _fix_tomorrow_roster(s):
+    """A roster announced for tomorrow belongs to tomorrow's schedule, not today's."""
+    text, dt = s.text, s.dt
     # a roster announced for tomorrow ("Upper Mountain is opening tomorrow! NEW lifts added to schedule: ...") is not today's schedule
     if re.search(r"\btomorrow\b", text, re.I) and re.search(r"opening tomorrow|opens tomorrow|open tomorrow|added to (?:the |tomorrow.s )?schedule|schedule for tomorrow|tomorrow.s (?:schedule|plan|lifts)|will (?:be )?open(?:ing)? tomorrow", text, re.I) and not re.search(r"\btoday\b|\bthis morning\b|\bat 9\s*am\b", text, re.I):
         _nd = (dt + timedelta(days=1)).replace(hour=7, minute=0, second=0, microsecond=0).isoformat(timespec="minutes")
-        for e in out + added:
+        for e in s.out + s.added:
             if e["event_type"] == "scheduled_opening" and e["lift"]: e["start"] = _nd; e["note"] = "announced_prior_day"      # it belongs to tomorrow's schedule, not today's
+
+def _fix_closed_with_exceptions(s):
+    """'Closed for the day, with the exception of X': the exceptions are open, not closed."""
     # 'closed for the day, with the exception of X and Y': the exceptions are open, not closed
-    for e in list(out + added):
+    for e in list(s.out + s.added):
         if e["event_type"] == "closed_day" and (e["lift"] or "").startswith("ALL") and e.get("except"):
-            ex = set(e["except"]); out = [x for x in out if not (x["event_type"] == "closed_day" and x["lift"] in ex and x["source_post_id"] == e["source_post_id"])]; added = [x for x in added if not (x["event_type"] == "closed_day" and x["lift"] in ex)]
+            ex = set(e["except"]); s.out = [x for x in s.out if not (x["event_type"] == "closed_day" and x["lift"] in ex and x["source_post_id"] == e["source_post_id"])]; s.added = [x for x in s.added if not (x["event_type"] == "closed_day" and x["lift"] in ex)]
+
+def _fix_closed_other_on_hold(s):
+    """'All other lifts that were on hold will be closed': only lifts already on hold, not every other lift."""
+    text = s.text
     # 'all other lifts that were on wind hold will be closed for the day': only the lifts already on hold, not every other lift
     m = re.search(r"\ball other (?:scheduled )?lifts[^.!?]{0,60}\b(?:that|which) (?:were|are) on (?:a |an )?(?:(\w+) )?hold[^.!?]{0,40}\b(?:will be|are|is|now)\s+(?:now\s+)?closed", text, re.I)
     if m:
-        old = [e for e in out + added if e["lift"] == "ALL_OTHER" and e["event_type"] in ("hold_start", "delay")]
+        old = [e for e in s.out + s.added if e["lift"] == "ALL_OTHER" and e["event_type"] in ("hold_start", "delay")]
         if old:
             exc = old[0].get("except", [])
-            out = [x for x in out if x not in old]; added = [x for x in added if x not in old]
-            add("P-014h", "closed_day", "ALL_ON_HOLD", cause_in(m.group(0)) or old[0].get("cause"), **{"except": exc})
+            s.out = [x for x in s.out if x not in old]; s.added = [x for x in s.added if x not in old]
+            s.add("P-014h", "closed_day", "ALL_ON_HOLD", cause_in(m.group(0)) or old[0].get("cause"), **{"except": exc})
+
+def _fix_only_lift_open(s):
+    """'The only lift open is X' or 'starting the day with X, Y, Z' under a weather impact: the rest of that side has not opened."""
+    text = s.text
     # 'the only lift open at Squaw is X' and 'starting the day with X, Y, Z' under a weather impact: every other lift of that side has not opened
-    if not any((e["lift"] or "").startswith("ALL") for e in out + added if e["event_type"] in ("hold_start", "delay", "closed_day")):
+    if not any((e["lift"] or "").startswith("ALL") for e in s.out + s.added if e["event_type"] in ("hold_start", "delay", "closed_day")):
         for sent in split_sentences(text):
             sl = sent.lower()
             if re.search(r"\b(?:may|might|could|likely|hoping)\b|\bif\b", sl): continue
             mo = re.search(r"\bthe only (?:lifts?|chairs?)\b[^.!?]{0,40}\b(?:open|operating|running|spinning)\b|\bis the only (?:lift|chair)\b|\b(?:are|is) the only (?:lifts?|chairs?)\b", sl)
             if mo and find_lifts(sent) and re.search(r"\b(?:winds?|snow safety|weather|hold|delay\w*|impact\w*|avalanche|power|lightning|ice|icing)\b", text, re.I):
-                add("P-014o", "hold_start" if "hold" in text.lower() else "delay", _side_scope(text), cause_in(text), **{"except": find_lifts(sent)}); break
+                s.add("P-014o", "hold_start" if "hold" in text.lower() else "delay", _side_scope(text), cause_in(text), **{"except": find_lifts(sent)}); break
         else:
             ms = re.search(r"(?:start|begin)\w*\s+the\s+day\s+(?:at\s+[\w ]{3,25}\s+)?with\s*:", text, re.I)
             if ms and re.search(r"\b(?:winds?|snow safety|weather|hold|delay|impact\w*|avalanche)\b", text, re.I):
                 listed = find_lifts(text[ms.end():])
-                if len(listed) >= 2: add("P-014o", "delay", _side_scope(text), cause_in(text), **{"except": listed})
-    if not any((e["lift"] or "").startswith("ALL") for e in out + added if e["event_type"] in ("hold_start", "delay", "closed_day")):
+                if len(listed) >= 2: s.add("P-014o", "delay", _side_scope(text), cause_in(text), **{"except": listed})
+
+def _fix_all_operations_hold(s):
+    """'All operations on hold' or 'all lifts delayed': a side-wide hold or delay."""
+    text = s.text
+    if not any((e["lift"] or "").startswith("ALL") for e in s.out + s.added if e["event_type"] in ("hold_start", "delay", "closed_day")):
         for sent in split_sentences(text):
             sl = sent.lower()
             if re.search(r"\b(?:may|might|could|expect(?:ed)? to|likely|hoping|if)\b|\bhope", sl): continue
             if re.search(r"\ball (?:lift )?operations\b[^.!?]{0,70}\b(?:on hold|suspended|halted)\b|\b(?:the )?scheduled lifts (?:are|remain) on (?:\w+ )?hold\b|\ball operations are on hold", sl):
-                add("P-010w", "hold_start", _side_scope(text), cause_in(sent)); break           # 'all operations ... on hold', 'the scheduled lifts are on hold'
+                s.add("P-010w", "hold_start", _side_scope(text), cause_in(sent)); break           # 'all operations ... on hold', 'the scheduled lifts are on hold'
             if re.search(r"\ball (?:scheduled )?lifts\b[^.!?]{0,30}\b(?:will (?:be|have)|are) (?:a )?delayed", sl):
-                add("P-030w", "delay", _side_scope(text), cause_in(sent)); break
+                s.add("P-030w", "delay", _side_scope(text), cause_in(sent)); break
+
+def _fix_status_list_roster(s):
+    """An early post sorting lifts under Open / Delayed / Hold headings is the day's roster."""
+    dt = s.dt
     # an early post that sorts the day's lifts under Open / Delayed / Hold headings is the day's roster: every lift listed was on the schedule
     _st = collections.defaultdict(set)
-    for e in out + added:
+    for e in s.out + s.added:
         if e["lift"] and not e["lift"].startswith("ALL") and e["event_type"] in ("reopen", "delay", "hold_start"): _st[e["event_type"]].add(e["lift"])
-    if dt.hour < 10 and len(_st["reopen"]) >= 1 and len(_st["delay"] | _st["hold_start"]) >= 4 and not any(e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL") for e in out + added):
-        for l in sorted(_st["reopen"] | _st["delay"] | _st["hold_start"]): add("P-001s", "scheduled_opening", l, None, **{"note": "status_list_roster"})
-    fallback_events(p["text"], out + added, add, dt.hour)                                                          # keeps the line breaks the list sections need
-    final = out + added
+    if dt.hour < 10 and len(_st["reopen"]) >= 1 and len(_st["delay"] | _st["hold_start"]) >= 4 and not any(e["event_type"] == "scheduled_opening" and e["lift"] and not e["lift"].startswith("ALL") for e in s.out + s.added):
+        for l in sorted(_st["reopen"] | _st["delay"] | _st["hold_start"]): s.add("P-001s", "scheduled_opening", l, None, **{"note": "status_list_roster"})
+
+def fix_patterns(p, ev, text, dt):
+    """Second pass over a post's events: apply each correction rule below in order (first-written wins ties, so order matters)."""
+    s = _Fix(p, ev, text, dt)
+    _fix_scope_sentences(s)
+    _fix_second_sentence_rules(s)
+    _fix_plan_and_count_posts(s)
+    _drop_laneless_events(s)
+    _fix_all_other_upper_lower(s)
+    _fix_schedule_except_roster(s)
+    _drop_dining_carpet(s)
+    _fix_asterisk_roster(s)
+    _fix_hold_except(s)
+    _fix_off_schedule_lists(s)
+    _fix_all_other_exceptions(s)
+    _fix_tomorrow_roster(s)
+    _fix_closed_with_exceptions(s)
+    _fix_closed_other_on_hold(s)
+    _fix_only_lift_open(s)
+    _fix_all_operations_hold(s)
+    _fix_status_list_roster(s)
+    fallback_events(p["text"], s.out + s.added, s.add, dt.hour)                                                          # keeps the line breaks the list sections need
+    final = s.out + s.added
     for e in final:
         if e["lift"] is None and e["event_type"] in ("hold_start", "closed_day", "delay", "reopen", "partial"): e["event_type"] = "other"; e["note"] = "no_lift_named"
     return final
